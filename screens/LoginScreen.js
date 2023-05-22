@@ -1,8 +1,9 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import {useState, useEffect} from 'react'
-import { auth } from '../firebase'
+import { auth, firebase } from '../firebase'
 import { useNavigation } from '@react-navigation/core'
+import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
@@ -30,13 +31,44 @@ const LoginScreen = () => {
     }
 
     const handleLogin = () => {
-        auth
-          .signInWithEmailAndPassword(email, password)
-          .then(userCredentials => {
+        //  auth.setPersistence('session')
+        //  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+        //     .then(function() {
+        //         // Existing and future Auth states are now persisted in the current
+        //         // session only. Closing the window would clear any existing state even
+        //         // if a user forgets to sign out.
+        //         // ...
+        //         // New sign-in will be persisted with session persistence.
+        //         return signInWithEmailAndPassword(auth, email, password);
+        //     })
+        //     .catch(function(error) {
+        //         // Handle Errors here.
+        //         var errorCode = error.code;
+        //         var errorMessage = error.message;
+        //     });
+        // (async () => {
+        //     await setPersistence(auth, browserLocalPersistence);
+        //   })
+        // setPersistence(auth, auth.setPersistence.NONE)
+        // .then(()=> {
+        signInWithEmailAndPassword(auth,email, password)
+        .then(userCredentials => {
             const user = userCredentials.user;
             console.log('logged in with:', user.email);
+        
+        }).catch(error => alert(error.message))            
+            
+        // });
+
+        // AsyncStorage.setItem("keepLoggedIn", JSON.stringify(true));
+
+
+        // signInWithEmailAndPassword(auth,email, password)
+        //   .then(userCredentials => {
+        //     const user = userCredentials.user;
+        //     console.log('logged in with:', user.email);
           
-          }).catch(error => alert(error.message))
+        //   }).catch(error => alert(error.message))
     }
 
     return (
@@ -61,7 +93,7 @@ const LoginScreen = () => {
         <View style={styles.buttonContainer}>
             <TouchableOpacity
                 onPress={handleLogin}
-                style={styles.button} >
+                style={styles.externalMedia} >
                  <Text style={styles.buttonText}> Login </Text>   
             </TouchableOpacity>
 
@@ -97,6 +129,15 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 5,
 
+    },
+    
+    externalMedia: {
+        backgroundColor: 'green',
+        width: '30%',
+        padding: 15,
+        borderRadius: 35,
+        alignItems: 'center',
+        marginTop: 40,
     },
 
     buttonContainer: {
