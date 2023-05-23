@@ -30,7 +30,8 @@
     "react-native-snap-carousel": "^3.9.1",
     "react-native-swiper": "^1.6.0",
     "uid": "^2.0.2",
-    "react-native-web": "~0.18.10"
+    "react-native-web": "~0.18.10",
+    "@expo/webpack-config": "^18.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
