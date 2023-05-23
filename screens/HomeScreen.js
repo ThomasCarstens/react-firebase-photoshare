@@ -1,6 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Image } from 'expo-image';
+// import { Image } from 'expo-image';
 import { auth, storage, database } from '../firebase'
 import { uid } from 'uid';
 import { useNavigation } from '@react-navigation/core'
@@ -8,6 +8,11 @@ import { getDownloadURL, getStorage, ref, uploadBytes,  } from 'firebase/storage
 import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import * as ImagePicker from "expo-image-picker";
 import firebase from 'firebase/compat/app';
+import ImageSlider from 'react-native-image-slider';
+import Swiper from 'react-native-swiper';
+import SwiperComponent from '..';
+// import Carousel from 'react-native-snap-carousel';
+// import Carousel from 'react-native-reanimated-carousel';
 
 const HomeScreen = () => {
   const [url, setUrl] = useState();
@@ -99,21 +104,56 @@ const HomeScreen = () => {
             navigation.replace("Login")
         }).catch(error =>alert(error.message))
   }
+
   const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+
+  const frontImage = (image.uri)?(image.uri):url
+  const images = [
+    'https://placeimg.com/640/640/nature',
+    'https://placeimg.com/640/640/people',
+    'https://placeimg.com/640/640/animals',
+    'https://placeimg.com/640/640/beer',
+  ];
+
+  const _onMomentumScrollEnd = (e, state, context) => {
+    console.log(state, context)
+  };
+
+//   _renderItem = ({item, index}) => {
+//     return (
+//         <View style={styles.slide}>
+//             <Text style={styles.title}>{ item.title }</Text>
+//         </View>
+//     );
+// }
 
   return (
     <View style={styles.container}>
         
       <Text>Email: {auth.currentUser?.email}</Text>
 
-
-      <Image style={styles.imageContainer} 
-        source="https://picsum.photos/seed/696/3000/2000"
+      {/* <Image 
+        // style={styles.imageContainer} 
+        
+        source={{uri:`https://placeimg.com/640/640/nature`,}}
+        // style={styles.imageContainer} 
+        style={{ width: 300, height: 300, borderRadius: 40 }}
+        placeholder={blurhash}
+        contentFit="cover"
+        transition={1000}
+      /> */}
+      <Image 
+        // style={styles.imageContainer} 
+        
+        source={{uri:`${frontImage}`,}}
+        // style={styles.imageContainer} 
+        style={{ width: 300, height: 300, borderRadius: 40 }}
         placeholder={blurhash}
         contentFit="cover"
         transition={1000}
       />
+      
 
 
      <TouchableOpacity style={styles.button} onPress={pickImage} >
@@ -127,7 +167,18 @@ const HomeScreen = () => {
       <TouchableOpacity style={styles.button} onPress={handleSignOut}>
         <Text style={styles.buttonText}>Sign out</Text>
       </TouchableOpacity>
+
+      {/* <Carousel
+              ref={(c) => { this._carousel = c; }}
+              data={images}
+              renderItem={this._renderItem}
+              sliderWidth={"40px"}
+              itemWidth={"40px"}
+              windowSize={10}
+            /> */}
+
     </View>
+    
   )
 }
 
@@ -135,6 +186,7 @@ export default HomeScreen
 
 
 const styles = StyleSheet.create({
+  
     container: {
         // flex:1,
         justifyContent: 'center',
@@ -147,12 +199,31 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         // alignItems: 'center',
         width:100,
-        height:600,
+        height:100,
         borderRadius:50,
-        resizeMode: 'contain',
+        // resizeMode: 'contain',
     },
 
-
+    buttonsSlider: {
+      height: 15,
+      marginTop: -25,
+      marginBottom: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'row',
+    },
+    buttonSlider: {
+      margin: 3,
+      width: 8,
+      height: 8,
+      borderRadius: 8 / 2,
+      backgroundColor: '#ccc',
+      opacity: 0.9,
+    },
+    buttonSelected: {
+      opacity: 1,
+      backgroundColor: '#fff',
+    },
     button: {
         backgroundColor: '#0782F9',
         width: '60%',
