@@ -1,5 +1,5 @@
-import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight, ToastAndroid } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 // import { Image } from 'expo-image';
 import { auth, storage, database } from '../firebase'
 import { uid } from 'uid';
@@ -9,16 +9,24 @@ import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import * as ImagePicker from "expo-image-picker";
 import firebase from 'firebase/compat/app';
 import ImageSlider from 'react-native-image-slider';
+import { useToast } from 'react-native-fast-toast';
+import Toast from 'react-native-fast-toast';
+// import Toast, { useToast } from 'react-native-toast-notifications';
+// import { Platform } from 'react-native/types';
+// import Toast from 'react-native-fast-toast/lib/typescript/toast';
 
 // import Carousel from 'react-native-snap-carousel';
 // import Carousel from 'react-native-reanimated-carousel';
 
 const HomeScreen = () => {
+  // const toast = useToast()
+  const toast = useRef(null);
   const [url, setUrl] = useState();
   const navigation = useNavigation();
   const [image, setImage] = useState('');
   const [uploading, setUploading] = useState(false);
-  var images = [
+  
+  const images = [
     'https://placeimg.com/640/640/nature',
     'https://placeimg.com/640/640/people',
     'https://placeimg.com/640/640/animals',
@@ -27,6 +35,7 @@ const HomeScreen = () => {
     'https://placeimg.com/640/640/people',
   ];
   const [gallery, setGallery] = useState(images)
+  // setGallery(images)
   const storage = getStorage();
 
   useEffect(() => {
@@ -41,6 +50,27 @@ const HomeScreen = () => {
             console.log('Error on download.')
         }
     }
+
+    getImage()
+  })
+
+  useEffect(() => {
+    const getImage = async() => {
+        
+        // const listReference = ref(storage, 'images/');
+
+        // listReference.listAll().then((list)=>{
+        //   list.items.forEach
+
+        // })
+        // await getDownloadURL(reference).then((x)=> {
+        //     console.log('downloadable? : ', x)
+        //     setUrl(x);
+        // })
+        // if (url==undefined) {
+        //     console.log('Error on download.')
+        // }
+    }}
 
     getImage()
   })
@@ -103,32 +133,75 @@ const HomeScreen = () => {
     setImage(null);
   }
 
+
+  const getNewImage = () => {
+
+  }
+
   const handlePicSelection = ( gameName, picNb ) => {
     console.log(gameName)
     let spoofMemo = {'labrador': [2, 3, 6], 
                       'shiba inu': [1, 4] }
     console.log(spoofMemo[gameName])
     if (spoofMemo[gameName].includes(picNb)) {
-      // activate green shade
-      // alert('Correct answer')
-      ToastAndroid.showWithGravity(
-        'Correct answer',
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
+      
+      // Toast.showWithGravity(
+      //     'Correct answer',
+      //     ToastAndroid.SHORT,
+      //     ToastAndroid.CENTER,
+      //   )
+      // // activate green shade
+      // // alert('Correct answer')
+      // Platform.select({
+      //   native: () => {
+      //     };
+          
+      //   default: () => {
+      //     Toast.showWithGravity(
+      //     'Correct answer',
+      //     Toast.SHORT,
+      //     Toast.CENTER,
+      //   )};
+
+
+      // })();
+
+      
       // change picture
-      currentGallery=gallery
-      console.log(currentGallery)
-      currentGallery[picNb-1] = 'https://placeimg.com/640/640/beer';
-      setGallery(currentGallery)
+      // currentGallery= gallery
+      // console.log(currentGallery)
+
+      // gallery[picNb-1] = frontImage;
+      // testgallery = currentGallery
+      // setGallery(gallery)
+      // images[picNb-1] = frontImage;
+      
+      setGallery(prevState => {
+          // console.log(typeof prevState)
+          newState = [...prevState]
+          extraImage = frontImage //getNewImage();
+          newState[picNb-1] = extraImage;
+          
+          return newState})
+
+      // setGallery([frontImage, frontImage, frontImage, frontImage,frontImage, frontImage])
+        
+      // setGallery(images)
+
+      toast.current.show("Yes", { type: "failure" });
+
+
     } else {
-      ToastAndroid.showWithGravity(
-        'Error',
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
+      toast.current.show("No", { type: "failure" });
     }
-    return
+    // else {
+    //   ToastAndroid.showWithGravity(
+    //     'Error',
+    //     ToastAndroid.SHORT,
+    //     ToastAndroid.CENTER,
+    //   );
+    // }
+    return images
   }
 
   const handleSignOut = () => {
@@ -161,6 +234,7 @@ const HomeScreen = () => {
 
   return (
     <View>
+      <Toast ref={toast} />
       <View style={{padding: 20}}></View>
       <View style={{flexDirection: 'row'}}>
       <View style={{ flex: 1, width: 20, height: 200, backgroundColor: 'green' }}/>
@@ -197,6 +271,7 @@ const HomeScreen = () => {
         transition={1000}
       />
       </TouchableHighlight>
+      <TouchableHighlight onPress={()=> handlePicSelection('shiba inu', 5)}>
       <Image 
         source={{uri:`${gallery[4]}`,}}
         style={{ width: 100, height: 100, borderRadius: 40 }}
@@ -204,8 +279,10 @@ const HomeScreen = () => {
         contentFit="cover"
         transition={1000}
       />
+      </TouchableHighlight>
       </View>
       <View style={{flexDirection: 'column'}}>
+      <TouchableHighlight onPress={()=> handlePicSelection('shiba inu', 3)}>
       <Image 
         source={{uri:`${gallery[2]}`,}}
         style={{ width: 100, height: 100, borderRadius: 40 }}
@@ -213,6 +290,8 @@ const HomeScreen = () => {
         contentFit="cover"
         transition={1000}
       />
+      </TouchableHighlight>
+      <TouchableHighlight onPress={()=> handlePicSelection('shiba inu', 6)}>
       <Image 
         source={{uri:`${gallery[5]}`,}}
         style={{ width: 100, height: 100, borderRadius: 40 }}
@@ -220,6 +299,7 @@ const HomeScreen = () => {
         contentFit="cover"
         transition={1000}
       />
+      </TouchableHighlight>
       </View>
       <View style={{ flex: 1, width: 20, height: 200, backgroundColor: 'green' }}/>
     </View>
