@@ -1,10 +1,10 @@
-import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight, TextInput } from 'react-native'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 // import { Image } from 'expo-image';
 import { auth, storage, database } from '../firebase'
 import { uid } from 'uid';
 import { useNavigation } from '@react-navigation/core'
-import { getDownloadURL, getStorage, ref, uploadBytes,  } from 'firebase/storage'
+import { getDownloadURL, getMetadata, getStorage, list, listAll, ref, uploadBytes,  } from 'firebase/storage'
 import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import * as ImagePicker from "expo-image-picker";
 import firebase from 'firebase/compat/app';
@@ -18,6 +18,9 @@ import Toast from 'react-native-fast-toast';
 // import Carousel from 'react-native-snap-carousel';
 // import Carousel from 'react-native-reanimated-carousel';
 
+
+
+
 const HomeScreen = () => {
   // const toast = useToast()
   const toast = useRef(null);
@@ -25,6 +28,7 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(true)
   
   const images = [
     'https://placeimg.com/640/640/nature',
@@ -34,47 +38,109 @@ const HomeScreen = () => {
     'https://placeimg.com/640/640/nature',
     'https://placeimg.com/640/640/people',
   ];
-  const [gallery, setGallery] = useState(images)
+  
+  
   // setGallery(images)
   const storage = getStorage();
-
+  var categoryURLs = []
+  // categoryURLs.push("sup")
+  const [onlineGallery, setOnlineGallery] = useState([]) 
+  const [gallery, setGallery] = useState([null])
+  const [galleryTags, setGalleryTags] = useState([])
   useEffect(() => {
     const getImage = async() => {
         
         const reference = ref(storage, '/fab.jpeg');
         await getDownloadURL(reference).then((x)=> {
-            console.log('downloadable? : ', x)
+            console.log('downloadable1? : ', x)
             setUrl(x);
         })
         if (url==undefined) {
-            console.log('Error on download.')
+            console.log('Error on one.')
         }
     }
+    
+    // getImage()
+    const getOnlineImages = async() => {
+        const listRef = ref(storage, 'shiba inu/');
+        await list(listRef)
+        .then((res) => {
+          // res.prefixes.forEach((folderRef) => {
+          //   // All the prefixes under listRef.
+          //   // You may call listAll() recursively on them.
+          // });
+          // while (counter < res.items.length) {
+            
+            res.items.forEach((itemRef) => {
+            
 
-    getImage()
-  })
+                              getDownloadURL(itemRef).then((y)=> {
+                              getMetadata(itemRef)
+                                .then((metadata) => {
+                                  
+                                  setGalleryTags(old => [...old, metadata.customMetadata['tag']])
+                                  // Metadata now contains the metadata for 'images/forest.jpg'
+                                })
+                                .catch((error) => {
+                                  console.log(error)
+                                  // Uh-oh, an error occurred!
+                                });
 
-  useEffect(() => {
-    const getImage = async() => {
+
+                                // newArray.push(y)
+                               
+                                setOnlineGallery(old => [...old, y])
+                                setGallery(old => [...old, y])
+              
+                            }).catch((error) => {
+                              console.log('Error in CatList.')
+                              console.log(error)
+                              
+                              // Uh-oh, an error occurred!
+                            });
         
-        // const listReference = ref(storage, 'images/');
+                    
+        });
+        setLoading(false);
+        // Get metadata properties
+        
+     })
+        
+      // })
+    // return newArray
+    //   const listRef = ref(storage, 'shiba inu/');
+    //   const res = await listAll(listRef)
+    //   const requests = res.items.map(itemRef => getDownloadURL(itemRef))
+    //   const urls = await Promise.all(requests)
+      // return urls
+      // setOnlineGallery(urls)
+      
+      
+    }
+    
+    getOnlineImages();  
+    
 
-        // listReference.listAll().then((list)=>{
-        //   list.items.forEach
+    // Find all the prefixes and items.
+    
+      // console.log(categoryURLs) // empty
+      // setOnlineGallery(newOne)
+    }, [])  
+  
+  console.log('LENGTH: ', onlineGallery.length)
 
-        // })
-        // await getDownloadURL(reference).then((x)=> {
-        //     console.log('downloadable? : ', x)
-        //     setUrl(x);
-        // })
-        // if (url==undefined) {
-        //     console.log('Error on download.')
-        // }
-    }}
+  const pushImage = (y) => {
+    if (onlineGallery) {
+      setOnlineGallery(current => [...current, y])
+    } else {
+      setOnlineGallery([y])
+    }
+  }
 
-    getImage()
-  })
 
+  // console.log('hey' ,newOne)
+  // setOnlineGallery(newOne)
+  // console.log('oooh', categoryURLs)
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -94,8 +160,12 @@ const HomeScreen = () => {
     
     const blob = await response.blob();
     const filename = image.uri.substring(image.uri.lastIndexOf('/')+1);
+    // var name=prompt("Please enter your name","Harry Potter");
     const metadata = {
       contentType: 'image/jpeg',
+      customMetadata: {
+        'tag': customMetadataInput
+      }
     };
     
     console.log('image name is: ', filename)
@@ -105,7 +175,7 @@ const HomeScreen = () => {
     // } catch(error) {
     //     console.log(error.message)
     // } 
-    const in_images = 'images/'+filename
+    const in_images = 'shiba inu/'+filename
     const storageRef = ref(storage, in_images)
     // uploadBytes(storageRef, filename).then((snapshot) => {
     //   console.log('Uploaded a blob or file!');
@@ -141,66 +211,60 @@ const HomeScreen = () => {
   const handlePicSelection = ( gameName, picNb ) => {
     console.log(gameName)
     let spoofMemo = {'labrador': [2, 3, 6], 
-                      'shiba inu': [1, 4] }
+                      'shiba_inu': [1, 4] }
+    
+    
+    // The real memo will have to be image-based. Like a tag.
+    console.log('TAGS\n', galleryTags, picNb-1, gameName)
+    // For now, we're just using the gallery indexes (picNb)
     console.log(spoofMemo[gameName])
-    if (spoofMemo[gameName].includes(picNb)) {
-      
-      // Toast.showWithGravity(
-      //     'Correct answer',
-      //     ToastAndroid.SHORT,
-      //     ToastAndroid.CENTER,
-      //   )
-      // // activate green shade
-      // // alert('Correct answer')
-      // Platform.select({
-      //   native: () => {
-      //     };
-          
-      //   default: () => {
-      //     Toast.showWithGravity(
-      //     'Correct answer',
-      //     Toast.SHORT,
-      //     Toast.CENTER,
-      //   )};
+    // if (spoofMemo[gameName].includes(picNb)) {
+    if (galleryTags[picNb-1].includes(gameName)) {  
+    // New image... from onlineGallery  
 
-
-      // })();
-
-      
-      // change picture
-      // currentGallery= gallery
-      // console.log(currentGallery)
-
-      // gallery[picNb-1] = frontImage;
-      // testgallery = currentGallery
-      // setGallery(gallery)
-      // images[picNb-1] = frontImage;
-      
       setGallery(prevState => {
+          randomInt = Math.floor(Math.random() * onlineGallery.length) ;
+          console.log(randomInt)
           // console.log(typeof prevState)
           newState = [...prevState]
-          extraImage = frontImage //getNewImage();
+          extraImage = onlineGallery[randomInt] //getNewImage();
+
+          setOnlineGallery( prevOnline => {
+            prevOnline.splice(randomInt, 1);
+            console.log(prevOnline)
+            return prevOnline
+          })
+          
           newState[picNb-1] = extraImage;
           
           return newState})
 
-      // setGallery([frontImage, frontImage, frontImage, frontImage,frontImage, frontImage])
-        
-      // setGallery(images)
-
       toast.current.show("Yes", { type: "failure" });
 
-
     } else {
+
+      setGallery(prevState => {
+
+        // console.alog(typeof prevState)
+        // newState = [...prevState]
+        galleryContents = onlineGallery
+        galleryContents.sort( () => .5 - Math.random() );
+
+
+        // setOnlineGallery( prevOnline => {
+        //   prevOnline.splice(randomInt, 1);
+        //   console.log(prevOnline)
+        //   return prevOnline
+        // })
+        
+        // newState[picNb-1] = extraImage;
+        
+        return galleryContents})
+
+
       toast.current.show("No", { type: "failure" });
     }
-    // else {
-    //   ToastAndroid.showWithGravity(
-    //     'Error',
-    //     ToastAndroid.SHORT,
-    //     ToastAndroid.CENTER,
-    //   );
-    // }
+
     return images
   }
 
@@ -215,22 +279,15 @@ const HomeScreen = () => {
   const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
-  var frontImage = (image.uri)?(image.uri):url
-  
+  // var frontImage = (image.uri)?(image.uri):url
+  // console.log(onlineGallery)
 
   const _onMomentumScrollEnd = (e, state, context) => {
     console.log(state, context)
   };
+  const [customMetadataInput, onChangeCustomMetadataInput] = useState('category/species');
 
-//   _renderItem = ({item, index}) => {
-//     return (
-//         <View style={styles.slide}>
-//             <Text style={styles.title}>{ item.title }</Text>
-//         </View>
-//     );
-// }
-
-
+  
 
   return (
     <View>
@@ -239,8 +296,9 @@ const HomeScreen = () => {
       <View style={{flexDirection: 'row'}}>
       <View style={{ flex: 1, width: 20, height: 200, backgroundColor: 'green' }}/>
       <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba inu', 1)}>
+      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 1)}>
         <Image 
+
           source={{uri:`${gallery[0]}`,}}
           style={{ width: 100, height: 100, borderRadius: 40 }}
           placeholder={blurhash}
@@ -249,7 +307,7 @@ const HomeScreen = () => {
         />
       </TouchableHighlight>
       
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba inu', 4)}>
+      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 4)}>
         <Image 
           source={{uri:`${gallery[3]}`,}}
           style={{ width: 100, height: 100, borderRadius: 40 }}
@@ -262,7 +320,7 @@ const HomeScreen = () => {
       </View>
 
       <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba inu', 2)}>
+      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 2)}>
       <Image 
         source={{uri:`${gallery[1]}`,}}
         style={{ width: 100, height: 100, borderRadius: 40 }}
@@ -271,7 +329,7 @@ const HomeScreen = () => {
         transition={1000}
       />
       </TouchableHighlight>
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba inu', 5)}>
+      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 5)}>
       <Image 
         source={{uri:`${gallery[4]}`,}}
         style={{ width: 100, height: 100, borderRadius: 40 }}
@@ -282,7 +340,7 @@ const HomeScreen = () => {
       </TouchableHighlight>
       </View>
       <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba inu', 3)}>
+      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 3)}>
       <Image 
         source={{uri:`${gallery[2]}`,}}
         style={{ width: 100, height: 100, borderRadius: 40 }}
@@ -291,7 +349,7 @@ const HomeScreen = () => {
         transition={1000}
       />
       </TouchableHighlight>
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba inu', 6)}>
+      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 6)}>
       <Image 
         source={{uri:`${gallery[5]}`,}}
         style={{ width: 100, height: 100, borderRadius: 40 }}
@@ -308,25 +366,6 @@ const HomeScreen = () => {
         
       <Text>Email: {auth.currentUser?.email}</Text>
 
-      {/* <Image 
-        // style={styles.imageContainer} 
-        
-        source={{uri:`https://placeimg.com/640/640/nature`,}}
-        // style={styles.imageContainer} 
-        style={{ width: 300, height: 300, borderRadius: 40 }}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      /> */}
-
-      {/* <Image 
-        source={{uri:`${frontImage}`,}}
-        style={{ width: 300, height: 300, borderRadius: 40 }}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      /> */}
-      
       
 
      <TouchableOpacity style={styles.button} onPress={pickImage} >
@@ -341,14 +380,15 @@ const HomeScreen = () => {
         <Text style={styles.buttonText}>Sign out</Text>
       </TouchableOpacity>
 
-      {/* <Carousel
-              ref={(c) => { this._carousel = c; }}
-              data={images}
-              renderItem={this._renderItem}
-              sliderWidth={"40px"}
-              itemWidth={"40px"}
-              windowSize={10}
-            /> */}
+      <TextInput
+      onChangeText={onChangeCustomMetadataInput}
+      value={customMetadataInput}
+      style={styles.input}>
+
+        
+      </TextInput>
+
+
 
     </View>
     </View>
@@ -359,6 +399,12 @@ export default HomeScreen
 
 
 const styles = StyleSheet.create({
+    input: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      padding: 10,
+    },
     flexContainer: {
       flex: 1,
       padding: 20,
@@ -461,3 +507,6 @@ const styles = StyleSheet.create({
 
 
 })
+
+
+      
