@@ -8,7 +8,7 @@ import { browserLocalPersistence, browserSessionPersistence, setPersistence, sig
 
 import Orientation, { LANDSCAPE_LEFT, OrientationLocker } from 'react-native-orientation-locker';
 import * as ScreenOrientation from 'expo-screen-orientation';
-ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
+// ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
 const SelectionScreen = ({ navigation }) => {
     // Orientation.lockToLandscape();
     

@@ -14,7 +14,7 @@ const LoginScreen = () => {
 
         const unsubscribe = auth.onAuthStateChanged(user=> {
             if (user) {
-                navigation.replace("Home")
+                navigation.replace("Selection")
             }
         })
         return unsubscribe
@@ -31,26 +31,7 @@ const LoginScreen = () => {
     }
 
     const handleLogin = () => {
-        //  auth.setPersistence('session')
-        //  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
-        //     .then(function() {
-        //         // Existing and future Auth states are now persisted in the current
-        //         // session only. Closing the window would clear any existing state even
-        //         // if a user forgets to sign out.
-        //         // ...
-        //         // New sign-in will be persisted with session persistence.
-        //         return signInWithEmailAndPassword(auth, email, password);
-        //     })
-        //     .catch(function(error) {
-        //         // Handle Errors here.
-        //         var errorCode = error.code;
-        //         var errorMessage = error.message;
-        //     });
-        // (async () => {
-        //     await setPersistence(auth, browserLocalPersistence);
-        //   })
-        // setPersistence(auth, auth.setPersistence.NONE)
-        // .then(()=> {
+
         signInWithEmailAndPassword(auth,email, password)
         .then(userCredentials => {
             const user = userCredentials.user;
@@ -58,17 +39,10 @@ const LoginScreen = () => {
         
         }).catch(error => alert(error.message))            
             
-        // });
+    }
 
-        // AsyncStorage.setItem("keepLoggedIn", JSON.stringify(true));
-
-
-        // signInWithEmailAndPassword(auth,email, password)
-        //   .then(userCredentials => {
-        //     const user = userCredentials.user;
-        //     console.log('logged in with:', user.email);
-          
-        //   }).catch(error => alert(error.message))
+    const handleAnonUser = () => {
+        navigation.replace("Selection")
     }
 
     return (
@@ -93,15 +67,22 @@ const LoginScreen = () => {
         <View style={styles.buttonContainer}>
             <TouchableOpacity
                 onPress={handleLogin}
-                style={styles.externalMedia} >
-                 <Text style={styles.buttonText}> Login </Text>   
+                style={[styles.button, styles.buttonOutline]} >
+                 <Text style={styles.buttonOutlineText}> Login </Text>   
             </TouchableOpacity>
 
             <TouchableOpacity
                 onPress={handleSignUp}
                 style={[styles.button, styles.buttonOutline]} >
-                 <Text style={styles.buttonOutlineText}> Register </Text>   
+                 <Text style={styles.buttonOutlineText}> Sign Up </Text>   
             </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={handleAnonUser}
+                style={[styles.button, styles.buttonOutline]} >
+                 <Text style={styles.buttonOutlineText}> Try without an account </Text>   
+            </TouchableOpacity>
+            
         </View>
     </KeyboardAvoidingView>
   )

@@ -23,7 +23,9 @@ import * as Progress from 'react-native-progress';
 
 
 const HomeScreen = (props) => {
-  const gameName = props.route.params.name
+  const gameName = props.route.params?.name
+  // gameName = gameName?gameName:"shiba inu"
+
   // const toast = useToast()
   const toast = useRef(null);
   const [url, setUrl] = useState();
@@ -59,6 +61,12 @@ const HomeScreen = (props) => {
   }
   const [instructionText, setInstructionText] = useState(spoofInstructions[learningLevel])
   const [correctTag, setCorrectTag] = useState(spoofCorrectTag[learningLevel])
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: gameName,
+    });
+  }, []);
 
   useEffect(() => {
     setInstructionText(spoofInstructions[learningLevel]); //TBD. Database.
