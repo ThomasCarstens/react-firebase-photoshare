@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight, TextInput } from 'react-native'
+import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight, TextInput, StatusBar } from 'react-native'
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 // import { Image } from 'expo-image';
 import { auth, storage, database } from '../firebase'
@@ -11,6 +11,7 @@ import firebase from 'firebase/compat/app';
 import ImageSlider from 'react-native-image-slider';
 import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
+import * as Progress from 'react-native-progress';
 // import Toast, { useToast } from 'react-native-toast-notifications';
 // import { Platform } from 'react-native/types';
 // import Toast from 'react-native-fast-toast/lib/typescript/toast';
@@ -29,6 +30,9 @@ const HomeScreen = () => {
   const [image, setImage] = useState('');
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true)
+  const [correctClickCount, setCorrectClickCount] = useState(0)
+  const [incorrectClickCount, setIncorrectClickCount] = useState(0)
+  const [learningLevel, setLearningLevel] = useState(0)
   
   const images = [
     'https://placeimg.com/640/640/nature',
@@ -48,6 +52,7 @@ const HomeScreen = () => {
   const [gallery, setGallery] = useState([null])
   const [galleryTags, setGalleryTags] = useState([])
   useEffect(() => {
+    
     const getImage = async() => {
         
         const reference = ref(storage, '/fab.jpeg');
@@ -86,12 +91,17 @@ const HomeScreen = () => {
                                   // Uh-oh, an error occurred!
                                 });
 
-
-                                // newArray.push(y)
                                
                                 setOnlineGallery(old => [...old, y])
                                 setGallery(old => [...old, y])
-              
+
+                                // Make sure render is loaded in useEffect (issue with progress bar upon first setGallery)
+                                setTimeout(() => {
+                                  console.log("Set as loaded after 1 seconds.");
+                                  setLoading(false); // Inefficient
+                                }, 1000);
+                                
+                                
                             }).catch((error) => {
                               console.log('Error in CatList.')
                               console.log(error)
@@ -101,7 +111,7 @@ const HomeScreen = () => {
         
                     
         });
-        setLoading(false);
+        
         // Get metadata properties
         
      })
@@ -119,6 +129,8 @@ const HomeScreen = () => {
     }
     
     getOnlineImages();  
+    
+
     
 
     // Find all the prefixes and items.
@@ -210,58 +222,73 @@ const HomeScreen = () => {
 
   const handlePicSelection = ( gameName, picNb ) => {
     console.log(gameName)
+    // TBD | gameName is associated to the Selection Screen.
     let spoofMemo = {'labrador': [2, 3, 6], 
                       'shiba_inu': [1, 4] }
     
     
-    // The real memo will have to be image-based. Like a tag.
-    console.log('TAGS\n', galleryTags, picNb-1, gameName)
-    // For now, we're just using the gallery indexes (picNb)
-    console.log(spoofMemo[gameName])
+    
+    /* Spoof Memo (now removed): we're just using the gallery indexes (picNb)
+    // console.log(spoofMemo[gameName])
     // if (spoofMemo[gameName].includes(picNb)) {
+    */
+
+    // The real memo is now image-based. Like a tag.
+    console.log('TAGS\n', galleryTags, picNb-1, gameName)
     if (galleryTags[picNb-1].includes(gameName)) {  
     // New image... from onlineGallery  
 
       setGallery(prevState => {
           randomInt = Math.floor(Math.random() * onlineGallery.length) ;
-          console.log(randomInt)
+          if (randomInt == picNb-1){
+            randomInt = picNb
+          }
+          // console.log(randomInt)
           // console.log(typeof prevState)
           newState = [...prevState]
-          extraImage = onlineGallery[randomInt] //getNewImage();
+
+
 
           setOnlineGallery( prevOnline => {
             prevOnline.splice(randomInt, 1);
-            console.log(prevOnline)
+            // prevOnline.splice(picNb-1, 1);
+            // console.log(prevOnline)
             return prevOnline
           })
+          setGalleryTags( prevOnline => {
+            prevOnline.splice(randomInt, 1);
+            // prevOnline.splice(picNb-1, 1);
+            // console.log(prevOnline)
+            return prevOnline
+          })
+
+          extraImage = onlineGallery[randomInt] //getNewImage();
+
+          // error is that randomInt could well be the pic that we want to replace.
+          // TBD
           
+          newState.splice(randomInt, 1);          
+
           newState[picNb-1] = extraImage;
           
           return newState})
-
+      setCorrectClickCount(prevState=> prevState+1)
       toast.current.show("Yes", { type: "failure" });
 
     } else {
-
+      // 
       setGallery(prevState => {
 
-        // console.alog(typeof prevState)
-        // newState = [...prevState]
-        galleryContents = onlineGallery
-        galleryContents.sort( () => .5 - Math.random() );
 
+        // galleryContents = onlineGallery
 
-        // setOnlineGallery( prevOnline => {
-        //   prevOnline.splice(randomInt, 1);
-        //   console.log(prevOnline)
-        //   return prevOnline
-        // })
+        // mixing up
+        // galleryContents.sort( () => .5 - Math.random() );
+
         
-        // newState[picNb-1] = extraImage;
-        
-        return galleryContents})
+        return prevState})
 
-
+      setIncorrectClickCount(prevState=> prevState+1)
       toast.current.show("No", { type: "failure" });
     }
 
@@ -286,14 +313,41 @@ const HomeScreen = () => {
     console.log(state, context)
   };
   const [customMetadataInput, onChangeCustomMetadataInput] = useState('category/species');
-
   
+  // progress bar - within the level we are at.
+  const progressCalculate = () => {
+    console.log('is Loaded before progress calculation? ', !loading)
+    //(make sure loaded)
+    if (loading){
+      return 0
+    } else {
+
+    index = 0
+    let correctLeftInGallery = galleryTags.filter((value) => {
+      index++
+      console.log(index)
+      return (value.includes("shiba_inu") && index<6 )
+    })    
+    console.log("correct ones in gallery: ", correctLeftInGallery)
+    // correct images that are yet-unclicked from the 6 in view.
+    let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
+    // average correct click rate over correct+incorrect clicks -- it's 0 if correct is 0.
+
+    if ((averageCorrectRate > 80) || ((correctLeftInGallery.length == 0 ) && !loading)){
+      // Next level when 80% correct rate OR no more correctLeftInGallery  
+      console.log('Level Up.')
+      setLearningLevel(prev => prev+1)
+      // TBD | Learning Level changes the online + main gallery
+    }
+    return averageCorrectRate
+  }
+  }
 
   return (
     <View>
       <Toast ref={toast} />
       <View style={{padding: 20}}></View>
-      <View style={{flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row'}} on>
       <View style={{ flex: 1, width: 20, height: 200, backgroundColor: 'green' }}/>
       <View style={{flexDirection: 'column'}}>
       <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 1)}>
@@ -362,11 +416,22 @@ const HomeScreen = () => {
       <View style={{ flex: 1, width: 20, height: 200, backgroundColor: 'green' }}/>
     </View>
 
+    <Progress.Bar progress={progressCalculate()} width={200} height={30} justifyContent='center'/>
+    {/* <View style={styles.container}>
+      <View style={{padding: 20}}></View>
+
+      <View style={styles.progressBar}>
+      </View>
+      <Text style={styles.text3}>{(100*correctClickCount/(correctClickCount+incorrectClickCount)).toFixed(2)}%</Text>
+
+      <StatusBar style="auto" />
+    </View> */}
+
+
     <View style={styles.container}>
-        
       <Text>Email: {auth.currentUser?.email}</Text>
 
-      
+    
 
      <TouchableOpacity style={styles.button} onPress={pickImage} >
         <Text style={styles.buttonText}>Choose File</Text>
@@ -399,6 +464,25 @@ export default HomeScreen
 
 
 const styles = StyleSheet.create({
+      text1: {
+        fontSize: 34
+      },
+      text2: {
+        fontSize: 22,
+        margin: 5
+      },
+      text3: {
+        fontSize: 18
+      },
+      progressBar: {
+      width: '80%',
+      height: 40,
+      // backgroundColor: '#fff',
+      borderWidth: 3,
+      borderRadius: 8,
+      // borderColor: '#555',
+      flexDirection:"row"
+    },
     input: {
       height: 40,
       margin: 12,
