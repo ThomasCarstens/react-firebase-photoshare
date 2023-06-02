@@ -19,10 +19,11 @@ import * as Progress from 'react-native-progress';
 // import Carousel from 'react-native-snap-carousel';
 // import Carousel from 'react-native-reanimated-carousel';
 
+//https://www.wineware.co.uk/glassware/beginners-guide-to-different-types-of-wine-glasses
 
 
-
-const HomeScreen = () => {
+const HomeScreen = (props) => {
+  const gameName = props.route.params.name
   // const toast = useToast()
   const toast = useRef(null);
   const [url, setUrl] = useState();
@@ -32,7 +33,8 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(true)
   const [correctClickCount, setCorrectClickCount] = useState(0)
   const [incorrectClickCount, setIncorrectClickCount] = useState(0)
-  const [learningLevel, setLearningLevel] = useState(0)
+  const [learningLevel, setLearningLevel] = useState(1)
+  
   
   const images = [
     'https://placeimg.com/640/640/nature',
@@ -42,8 +44,89 @@ const HomeScreen = () => {
     'https://placeimg.com/640/640/nature',
     'https://placeimg.com/640/640/people',
   ];
+
+  // Later on, each storage folder is linked to an instruction + correct tag
+  const spoofInstructions = {
+    1: 'Level 1: Dogs: where is the Shiba Inu?',
+    2: 'Level 2: Nuts: find the walnuts',
+    3: 'Level 3: Wines: where are the Red Wine Glasses?',
+    4: 'Game complete.'
+  }
+  const spoofCorrectTag = {
+    1: 'shiba_inu',
+    2: 'walnut',
+    3: 'red',
+  }
+  const [instructionText, setInstructionText] = useState(spoofInstructions[learningLevel])
+  const [correctTag, setCorrectTag] = useState(spoofCorrectTag[learningLevel])
+
+  useEffect(() => {
+    setInstructionText(spoofInstructions[learningLevel]); //TBD. Database.
+    setCorrectTag(spoofCorrectTag[learningLevel])
+    getOnlineImages()
+  }, [learningLevel])
+
+
+  const getOnlineImages = async( ) => {
+    console.log('Level: ___'+ learningLevel)
+    const listRef = ref(storage, gameName + '/shiba inu/'+learningLevel+'/');
+    // TBD | according to gameName
+    await list(listRef)
+    .then((res) => {
+      // reinitialise current gallery 
+        setGallery(old => [])
+        setGalleryTags(old => [])
+        res.items.forEach((itemRef) => {
+        
+
+                          getDownloadURL(itemRef).then((y)=> {
+                          getMetadata(itemRef)
+                            .then((metadata) => {
+                              
+                              setGalleryTags(old => [...old, metadata.customMetadata['tag']])
+                              // Metadata now contains the metadata for 'images/forest.jpg'
+                            })
+                            .catch((error) => {
+                              console.log(error)
+                              // Uh-oh, an error occurred!
+                            });
+
+                           
+                            setOnlineGallery(old => [...old, y])
+                            setGallery(old => [...old, y])
+
+                            // Make sure render is loaded in useEffect (issue with progress bar upon first setGallery)
+                            setTimeout(() => {
+                              console.log("Set as loaded after 1 seconds.");
+                              setLoading(false); // Inefficient
+                            }, 2000);
+                            
+                            
+                        }).catch((error) => {
+                          console.log('Error in CatList.')
+                          console.log(error)
+                          
+                          // Uh-oh, an error occurred!
+                        });
+    
+                
+    });
+    
+    // Get metadata properties
+    
+ })
+    
+  // })
+// return newArray
+//   const listRef = ref(storage, 'shiba inu/');
+//   const res = await listAll(listRef)
+//   const requests = res.items.map(itemRef => getDownloadURL(itemRef))
+//   const urls = await Promise.all(requests)
+  // return urls
+  // setOnlineGallery(urls)
   
   
+}
   // setGallery(images)
   const storage = getStorage();
   var categoryURLs = []
@@ -51,93 +134,37 @@ const HomeScreen = () => {
   const [onlineGallery, setOnlineGallery] = useState([]) 
   const [gallery, setGallery] = useState([null])
   const [galleryTags, setGalleryTags] = useState([])
-  useEffect(() => {
-    
-    const getImage = async() => {
-        
-        const reference = ref(storage, '/fab.jpeg');
-        await getDownloadURL(reference).then((x)=> {
-            console.log('downloadable1? : ', x)
-            setUrl(x);
-        })
-        if (url==undefined) {
-            console.log('Error on one.')
-        }
-    }
-    
-    // getImage()
-    const getOnlineImages = async() => {
-        const listRef = ref(storage, 'shiba inu/');
-        await list(listRef)
-        .then((res) => {
-          // res.prefixes.forEach((folderRef) => {
-          //   // All the prefixes under listRef.
-          //   // You may call listAll() recursively on them.
-          // });
-          // while (counter < res.items.length) {
-            
-            res.items.forEach((itemRef) => {
-            
 
-                              getDownloadURL(itemRef).then((y)=> {
-                              getMetadata(itemRef)
-                                .then((metadata) => {
-                                  
-                                  setGalleryTags(old => [...old, metadata.customMetadata['tag']])
-                                  // Metadata now contains the metadata for 'images/forest.jpg'
-                                })
-                                .catch((error) => {
-                                  console.log(error)
-                                  // Uh-oh, an error occurred!
-                                });
 
-                               
-                                setOnlineGallery(old => [...old, y])
-                                setGallery(old => [...old, y])
+  
 
-                                // Make sure render is loaded in useEffect (issue with progress bar upon first setGallery)
-                                setTimeout(() => {
-                                  console.log("Set as loaded after 1 seconds.");
-                                  setLoading(false); // Inefficient
-                                }, 1000);
-                                
-                                
-                            }).catch((error) => {
-                              console.log('Error in CatList.')
-                              console.log(error)
-                              
-                              // Uh-oh, an error occurred!
-                            });
-        
-                    
-        });
-        
-        // Get metadata properties
-        
-     })
-        
-      // })
-    // return newArray
-    //   const listRef = ref(storage, 'shiba inu/');
-    //   const res = await listAll(listRef)
-    //   const requests = res.items.map(itemRef => getDownloadURL(itemRef))
-    //   const urls = await Promise.all(requests)
-      // return urls
-      // setOnlineGallery(urls)
-      
-      
-    }
+  // useEffect(() => {
     
-    getOnlineImages();  
+  //   const getImage = async() => {
+        
+  //       const reference = ref(storage, '/fab.jpeg');
+  //       await getDownloadURL(reference).then((x)=> {
+  //           console.log('downloadable1? : ', x)
+  //           setUrl(x);
+  //       })
+  //       if (url==undefined) {
+  //           console.log('Error on one.')
+  //       }
+  //   }
+    
+  //   // getImage()
+    
+    
+  //   getOnlineImages();  
     
 
     
 
-    // Find all the prefixes and items.
+  //   // Find all the prefixes and items.
     
-      // console.log(categoryURLs) // empty
-      // setOnlineGallery(newOne)
-    }, [])  
+  //     // console.log(categoryURLs) // empty
+  //     // setOnlineGallery(newOne)
+  //   }, [])  
   
   console.log('LENGTH: ', onlineGallery.length)
 
@@ -171,7 +198,7 @@ const HomeScreen = () => {
     const response = await fetch(image.uri)
     
     const blob = await response.blob();
-    const filename = image.uri.substring(image.uri.lastIndexOf('/')+1);
+    const filename = image.uri.substring(image.uri.lastIndexOf('/')+4);
     // var name=prompt("Please enter your name","Harry Potter");
     const metadata = {
       contentType: 'image/jpeg',
@@ -187,7 +214,7 @@ const HomeScreen = () => {
     // } catch(error) {
     //     console.log(error.message)
     // } 
-    const in_images = 'shiba inu/'+filename
+    const in_images = 'shiba inu/'+learningLevel+'/'+filename
     const storageRef = ref(storage, in_images)
     // uploadBytes(storageRef, filename).then((snapshot) => {
     //   console.log('Uploaded a blob or file!');
@@ -220,32 +247,31 @@ const HomeScreen = () => {
 
   }
 
-  const handlePicSelection = ( gameName, picNb ) => {
-    console.log(gameName)
-    // TBD | gameName is associated to the Selection Screen.
-    let spoofMemo = {'labrador': [2, 3, 6], 
-                      'shiba_inu': [1, 4] }
-    
-    
-    
+  const handlePicSelection = ( picNb ) => {
+
     /* Spoof Memo (now removed): we're just using the gallery indexes (picNb)
-    // console.log(spoofMemo[gameName])
-    // if (spoofMemo[gameName].includes(picNb)) {
+       let spoofMemo = {'labrador': [2, 3, 6], 
+                         'shiba_inu': [1, 4] }
+       console.log(spoofMemo[gameName])
+       if (spoofMemo[gameName].includes(picNb)) {
     */
 
-    // The real memo is now image-based. Like a tag.
-    console.log('TAGS\n', galleryTags, picNb-1, gameName)
-    if (galleryTags[picNb-1].includes(gameName)) {  
+  // TBD | gameName is associated to the Selection Screen.
+
+  // The real memo is now image-based. Like a tag.
+    console.log('TAGS\n', galleryTags, picNb-1)
+
+    if (galleryTags[picNb-1].includes(correctTag)) {  
     // New image... from onlineGallery  
 
       setGallery(prevState => {
-          randomInt = Math.floor(Math.random() * onlineGallery.length) ;
+          let randomInt = Math.floor(Math.random() * onlineGallery.length) ;
           if (randomInt == picNb-1){
             randomInt = picNb
           }
           // console.log(randomInt)
           // console.log(typeof prevState)
-          newState = [...prevState]
+          let newState = [...prevState]
 
 
 
@@ -262,7 +288,7 @@ const HomeScreen = () => {
             return prevOnline
           })
 
-          extraImage = onlineGallery[randomInt] //getNewImage();
+          let extraImage = onlineGallery[randomInt] //getNewImage();
 
           // error is that randomInt could well be the pic that we want to replace.
           // TBD
@@ -312,8 +338,13 @@ const HomeScreen = () => {
   const _onMomentumScrollEnd = (e, state, context) => {
     console.log(state, context)
   };
-  const [customMetadataInput, onChangeCustomMetadataInput] = useState('category/species');
+  const [customMetadataInput, onChangeCustomMetadataInput] = useState('nut/almond');
   
+
+  const handleSelectionScreen = () => {
+    navigation.replace("Selection")
+  }
+
   // progress bar - within the level we are at.
   const progressCalculate = () => {
     console.log('is Loaded before progress calculation? ', !loading)
@@ -321,24 +352,40 @@ const HomeScreen = () => {
     if (loading){
       return 0
     } else {
+    let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
 
-    index = 0
-    let correctLeftInGallery = galleryTags.filter((value) => {
+    var index = 0
+    var correctLeftInGallery = galleryTags.filter((value) => {
       index++
       console.log(index)
       return (value.includes("shiba_inu") && index<6 )
-    })    
+    })
+    // || ((correctLeftInGallery.length == 0 ) && !loading)
+    if ((averageCorrectRate > 0.8) ){
+      // Next level when 80% correct rate OR no more correctLeftInGallery  
+      setCorrectClickCount(0)  //reset (avoid loop)
+      setIncorrectClickCount(0)
+      console.log('Level Up.')
+
+      // Learning Level changes the gallery + instructions
+
+      setLearningLevel(prev => prev+1) 
+      
+      
+
+      
+      
+
+      
+      
+    }
+    
     console.log("correct ones in gallery: ", correctLeftInGallery)
     // correct images that are yet-unclicked from the 6 in view.
-    let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
     // average correct click rate over correct+incorrect clicks -- it's 0 if correct is 0.
 
-    if ((averageCorrectRate > 80) || ((correctLeftInGallery.length == 0 ) && !loading)){
-      // Next level when 80% correct rate OR no more correctLeftInGallery  
-      console.log('Level Up.')
-      setLearningLevel(prev => prev+1)
-      // TBD | Learning Level changes the online + main gallery
-    }
+    // ERROR with ||
+    
     return averageCorrectRate
   }
   }
@@ -346,25 +393,30 @@ const HomeScreen = () => {
   return (
     <View>
       <Toast ref={toast} />
-      <View style={{padding: 20}}></View>
-      <View style={{flexDirection: 'row'}} on>
+      <View style={{padding: 10}}></View>
+      <Text style={{fontSize: 20}}> {instructionText} </Text>
+      <View style={{padding: 10}}></View>
+      <View style={{flexDirection: 'row'}} >
       <View style={{ flex: 1, width: 20, height: 200, backgroundColor: 'green' }}/>
+
+      
+
       <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 1)}>
+      <TouchableHighlight onPress={()=> handlePicSelection(1)}>
         <Image 
 
           source={{uri:`${gallery[0]}`,}}
-          style={{ width: 100, height: 100, borderRadius: 40 }}
+          style={styles.imageContainer}
           placeholder={blurhash}
           contentFit="cover"
           transition={1000}
         />
       </TouchableHighlight>
       
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 4)}>
+      <TouchableHighlight onPress={()=> handlePicSelection(4)}>
         <Image 
           source={{uri:`${gallery[3]}`,}}
-          style={{ width: 100, height: 100, borderRadius: 40 }}
+          style={styles.imageContainer}
           placeholder={blurhash}
           contentFit="cover"
           transition={1000}
@@ -374,19 +426,19 @@ const HomeScreen = () => {
       </View>
 
       <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 2)}>
+      <TouchableHighlight onPress={()=> handlePicSelection(2)}>
       <Image 
         source={{uri:`${gallery[1]}`,}}
-        style={{ width: 100, height: 100, borderRadius: 40 }}
+        style={styles.imageContainer}
         placeholder={blurhash}
         contentFit="cover"
         transition={1000}
       />
       </TouchableHighlight>
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 5)}>
+      <TouchableHighlight onPress={()=> handlePicSelection(5)}>
       <Image 
         source={{uri:`${gallery[4]}`,}}
-        style={{ width: 100, height: 100, borderRadius: 40 }}
+        style={styles.imageContainer}
         placeholder={blurhash}
         contentFit="cover"
         transition={1000}
@@ -394,29 +446,37 @@ const HomeScreen = () => {
       </TouchableHighlight>
       </View>
       <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 3)}>
+      <TouchableHighlight onPress={()=> handlePicSelection(3)}>
       <Image 
         source={{uri:`${gallery[2]}`,}}
-        style={{ width: 100, height: 100, borderRadius: 40 }}
+        style={styles.imageContainer}
         placeholder={blurhash}
         contentFit="cover"
         transition={1000}
       />
       </TouchableHighlight>
-      <TouchableHighlight onPress={()=> handlePicSelection('shiba_inu', 6)}>
+      <TouchableHighlight onPress={()=> handlePicSelection(6)}>
       <Image 
         source={{uri:`${gallery[5]}`,}}
-        style={{ width: 100, height: 100, borderRadius: 40 }}
+        style={styles.imageContainer}
         placeholder={blurhash}
         contentFit="cover"
         transition={1000}
       />
       </TouchableHighlight>
       </View>
+
       <View style={{ flex: 1, width: 20, height: 200, backgroundColor: 'green' }}/>
     </View>
+    {/* <View padding={70} ></View> */}
+    <View padding={60} style={{flexDirection: 'row'}} /* for the progress bar */ >
+      <Text>Progress: </Text>
+      <Progress.Bar progress={progressCalculate()}  width={200} height={20}/>
+      
+      
+    </View>
 
-    <Progress.Bar progress={progressCalculate()} width={200} height={30} justifyContent='center'/>
+    
     {/* <View style={styles.container}>
       <View style={{padding: 20}}></View>
 
@@ -430,8 +490,12 @@ const HomeScreen = () => {
 
     <View style={styles.container}>
       <Text>Email: {auth.currentUser?.email}</Text>
-
-    
+      
+      {/* <TextInput
+      onChangeText={onChangeCustomMetadataInput}
+      value={customMetadataInput}
+      style={styles.input}>
+      </TextInput> 
 
      <TouchableOpacity style={styles.button} onPress={pickImage} >
         <Text style={styles.buttonText}>Choose File</Text>
@@ -439,19 +503,17 @@ const HomeScreen = () => {
 
       <TouchableOpacity style={styles.button} onPress={uploadImage} >
         <Text style={styles.buttonText}>Upload</Text>
+      </TouchableOpacity> */}
+
+      <TouchableOpacity style={styles.button} onPress={handleSelectionScreen}>
+        <Text style={styles.buttonText}>Game Selection</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleSignOut}>
         <Text style={styles.buttonText}>Sign out</Text>
       </TouchableOpacity>
 
-      <TextInput
-      onChangeText={onChangeCustomMetadataInput}
-      value={customMetadataInput}
-      style={styles.input}>
 
-        
-      </TextInput>
 
 
 
@@ -475,13 +537,15 @@ const styles = StyleSheet.create({
         fontSize: 18
       },
       progressBar: {
-      width: '80%',
-      height: 40,
+      width: '100%',
+      height: 20,
+      justifyContent: 'space-evenly',
+      alignItems: 'stretch',
       // backgroundColor: '#fff',
-      borderWidth: 3,
-      borderRadius: 8,
-      // borderColor: '#555',
-      flexDirection:"row"
+      // borderWidth: 3,
+      // borderRadius: 8,
+      // // borderColor: '#555',
+      // flexDirection:"row"
     },
     input: {
       height: 40,
@@ -506,7 +570,8 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
         width:100,
         height:100,
-        borderRadius:50,
+        borderRadius:20,
+        
         // resizeMode: 'contain',
     },
 
@@ -533,10 +598,10 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: '#0782F9',
         width: '60%',
-        padding: 15,
+        padding: 10,
         borderRadius: 10,
         alignItems: 'center',
-        marginTop: 40,
+        marginTop: 20,
     },
     selectButton: {
         borderRadius: 5,
@@ -560,11 +625,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold'
       },
-      imageContainer: {
-        marginTop: 30,
-        marginBottom: 50,
-        alignItems: 'center'
-      },
+      // imageContainer: {
+      //   marginTop: 30,
+      //   marginBottom: 50,
+      //   alignItems: 'center'
+      // },
       progressBarContainer: {
         marginTop: 20
       },

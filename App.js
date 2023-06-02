@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SelectionScreen from './screens/SelectionScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -14,6 +15,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen options={{headerShown: false}} name="Selection" component={SelectionScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen options={{headerShown: false}} name="Login" component={LoginScreen} />
         
