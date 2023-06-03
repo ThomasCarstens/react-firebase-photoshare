@@ -18,10 +18,10 @@ const SelectionScreen = ({ navigation }) => {
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
     let thumbnailStyle = webView?(styles.imageStyleWeb):(styles.imageStyleMobile)
     
-    // <SafeAreaView style={{...styles.webContainer}}> 
-    //          <View style={{...styles.webContent}}>
+
     return (
-      
+    <SafeAreaView style={{...styles.webContainer}}> 
+             <View style={{...styles.webContent}}>      
 
       <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{width: '102%', left: '-2%',  height: '120%', top: '-5%'}}>
   
@@ -143,10 +143,10 @@ const SelectionScreen = ({ navigation }) => {
       
   
       </ImageBackground>
-
+   </View>
+         </SafeAreaView>
   )
-        //   </View>
-        // </SafeAreaView>
+        
 }
 
 // COMPONENT-IN-COMPONENT DOES NOT WORK

@@ -1,4 +1,4 @@
-import { Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import {useState, useEffect} from 'react'
 import { auth, firebase } from '../firebase'
@@ -46,6 +46,9 @@ const LoginScreen = () => {
     }
 
     return (
+    <SafeAreaView style={{...styles.webContainer}}> 
+            <View style={{...styles.webContent}}>   
+
     <KeyboardAvoidingView
         style={styles.container}
         behavior="padding">
@@ -87,6 +90,8 @@ const LoginScreen = () => {
             
         </View>
     </KeyboardAvoidingView>
+    </View>
+         </SafeAreaView>
   )
 }
 
@@ -158,7 +163,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 
-
+    // WEB VIEW
+    webContainer: {
+        flex: 1,
+        marginBottom: 200,
+        alignItems: "center",
+        justifyContent: "center", 
+      },
+      webContent: {
+        width: "100%",
+        maxWidth: 400,
+        maxHeight: 1000,
+      },
 
     
 

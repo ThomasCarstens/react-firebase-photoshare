@@ -29,7 +29,7 @@ const HomeScreen = (props) => {
 
   const spoofOutcomeImages = {
     "Dogs": {
-    1: require("../assets/context/Dogs/bulldogs.png"),
+    1: require("../assets/context/Dogs/all3.png"),
     2: require("../assets/context/Dogs/boxer_bullmastiff.png"),
     3: require("../assets/context/Dogs/mastiff_bullmastiff_table.png"),
     }
@@ -64,8 +64,8 @@ const HomeScreen = (props) => {
 
   // Later on, each storage folder is linked to an instruction + correct tag
   const spoofInstructions = {
-    1: 'Level 1: Find the Boxer.',
-    2: 'Level 2: Find the Bullmastiff',
+    1: 'Level 1: Find all the Boxers.',
+    2: 'Level 2: Find the Bullmastiffs',
     3: 'Level 3: Where is the English Mastiff?',
     4: 'Test: Find the bullmastiffs until there are none left.',
     5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
@@ -107,7 +107,7 @@ const HomeScreen = (props) => {
   // Screen title.
   useEffect(() => {
     navigation.setOptions({
-      title: gameName+': '+learningLevel+'. '+correctTag,
+      title: gameName+' Game',
     });
   }, []);
 
@@ -202,7 +202,7 @@ const HomeScreen = (props) => {
                           .then((metadata) => {
                             
                             setGalleryTags(old => {
-                              val = [...old, metadata.customMetadata['tag']]
+                              let val = [...old, metadata.customMetadata['tag']]
                               if (val.length%6==0){
                                 // let randomInt = Math.floor(Math.random() * onlineGallery.length) ;
   
@@ -243,7 +243,7 @@ const HomeScreen = (props) => {
 
                           // setGalleryTags(old => [...old, correctTag])
                           setGallery(old => {
-                            val = [...old, y]
+                            let val = [...old, y]
                             if (val.length%6==0){
                               // let randomInt = Math.floor(Math.random() * onlineGallery.length) ;
 
@@ -601,13 +601,13 @@ const HomeScreen = (props) => {
   }
   }
 
-  openModal = () => {
+  const openModal = () => {
     setModalVisible(true)
   }
-{/* <SafeAreaView style ={styles.webContainer}>
-    <View style ={styles.webContent}> */}
+
   return (
-    
+ <SafeAreaView style ={styles.webContainer}>
+    <View style ={styles.webContent}>   
     <View>
       <Toast ref={toast} />
       <View style={{padding: 10}}></View>
@@ -744,7 +744,7 @@ const HomeScreen = (props) => {
     </View>
 
 
-
+    
       {/* MODAL IF modalVisible */}
       <Modal
       animationType="slide"
@@ -756,7 +756,8 @@ const HomeScreen = (props) => {
         setModalVisible(!modalVisible);
       }}
       >
-
+    <SafeAreaView style ={styles.webContainer}>
+        <View style ={styles.webContent}>   
       <View backgroundColor='rgba(46, 204, 113, 0.35)'>
           {/* <View style={{ flexDirection:"row"}}> */}
             {/* <View padding={400} ></View> */}
@@ -793,18 +794,20 @@ const HomeScreen = (props) => {
                   <Text> {"\n BACK TO GAME"} </Text>
               </TouchableOpacity>  
               
-              <Image source={outcomeImage} style={{height:300, width:380, marginLeft:-20, marginBottom:-190}}></Image>
+              <Image source={outcomeImage} style={{height:320, width:380, marginLeft:10, marginBottom:-100}}></Image>
 
             {/* </View> */}
 
           </View>
       </View>
+      </View>
+     </SafeAreaView> 
       </Modal>
     </View>
- 
+      </View>
+     </SafeAreaView> 
   )
-    //  </View>
-    // </SafeAreaView>
+
 }
 
 export default HomeScreen
@@ -972,7 +975,6 @@ const styles = StyleSheet.create({
       flexDirection : 'column', 
       justifyContent: 'space-evenly',
     },
-    // END OF WEB VIEW.
 })
 
 
