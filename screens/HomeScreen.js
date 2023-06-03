@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight, TextInput, StatusBar } from 'react-native'
+import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight, TextInput, StatusBar, Modal } from 'react-native'
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 // import { Image } from 'expo-image';
 import { auth, storage, database } from '../firebase'
@@ -38,7 +38,8 @@ const HomeScreen = (props) => {
   const [correctClickCount, setCorrectClickCount] = useState(0)
   const [incorrectClickCount, setIncorrectClickCount] = useState(0)
   const [learningLevel, setLearningLevel] = useState(1)
-  
+  const [successRate, setSuccessRate] = useState(1)
+  const [modalVisible, setModalVisible] = useState(true)
   
   
   const images = [
@@ -55,7 +56,7 @@ const HomeScreen = (props) => {
     1: 'Level 1: Find the Boxer.',
     2: 'Level 2: Find the Bullmastiff',
     3: 'Level 3: Where is the English Mastiff?',
-    4: 'Game complete.'
+    4: 'Game complete: '+ (100*successRate).toFixed(2)+ ' % success rate.'
   }
 
   // const spoofInstructions = {
@@ -70,6 +71,7 @@ const HomeScreen = (props) => {
     1: 'Boxer',
     2: 'Bullmastiff',
     3: 'Mastiff',
+    4: 'Results:'
   }
 }
 
@@ -437,7 +439,7 @@ const HomeScreen = (props) => {
     console.log('TAGS\n', galleryTags, picNb-1)
     let randomInt = Math.floor(Math.random() * gallery.length) ;
     console.log('randomInt', randomInt)
-    if (galleryTags[picNb-1].includes(correctTag)) {  
+    if (galleryTags[picNb-1]?.includes(correctTag)) {  
     // New image... from onlineGallery  
 
       setGallery(prevState => {
@@ -511,7 +513,7 @@ const HomeScreen = (props) => {
     var correctLeftInGallery = galleryTags.filter((value) => {
       index++
       console.log(index)
-      return (value.includes("shiba_inu") && index<6 )
+      return (value.includes(correctTag) && index<7 )
     })
     // || ((correctLeftInGallery.length == 0 ) && !loading)
     // if ((averageCorrectRate > 0.8) ){
@@ -521,6 +523,8 @@ const HomeScreen = (props) => {
       // Next level when 80% correct rate OR no more correctLeftInGallery  
       setCorrectClickCount(0)  //reset (avoid loop)
       setIncorrectClickCount(0)
+      setSuccessRate(prev => (prev+averageCorrectRate)/2) // will be reset once per game.
+      console.log('successRate: ', successRate)
       console.log('Level Up.')
 
       // Learning Level changes the gallery + instructions
@@ -677,6 +681,67 @@ const HomeScreen = (props) => {
 
 
     </View>
+
+
+
+      {/* MODAL IF modalVisible */}
+      <Modal
+      animationType="slide"
+      transparent={true}
+      // backgroundColor='rgba(22, 160, 133, 0.8)'
+      visible={modalVisible} //instead of on state change modalVisible
+      onRequestClose={() => {
+        Alert.alert("Modal has been closed.");
+        setModalVisible(!modalVisible);
+      }}
+      >
+
+      <View backgroundColor='rgba(46, 204, 113, 0.35)'>
+          
+          <View style={styles.modalRow}>
+
+            {/* <TouchableOpacity
+              style={styles.gameSelection}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+
+                navigation.navigate('Selection')
+              }}>
+                
+              <Text> {"\nBACK TO GAME SELECTION"} </Text>
+            </TouchableOpacity> */}
+
+            
+            <TouchableOpacity
+              // style={styles.gameSelection}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}>
+                <Text> {"\n START GAME"} </Text>
+                
+
+                <Image source={require("../assets/context/Dogs/mastiff_bullmastiff.png")} style={{height:150, width:200, marginTop:400, marginLeft:280}}></Image>
+
+            </TouchableOpacity> 
+            
+
+            
+
+
+{/* 
+            <TouchableOpacity
+              style={styles.gameSelection}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <Text> {"\nReturn"} </Text>
+            </TouchableOpacity>  */}
+            
+             
+
+          </View>
+      </View>
+      </Modal>
     </View>
  
   )
@@ -828,6 +893,25 @@ const styles = StyleSheet.create({
       width: "100%",
       maxWidth: 400,
       maxHeight: 1000,
+    },
+    gameSelection: {
+      left: '2%',
+      top: '60%',
+      justifyContent: "flex-start",
+      alignItems: 'center',
+      width: 200,
+      height: 40,
+      // backgroundColor:'rgba(144, 144, 0, 0.8)',
+      backgroundColor:'rgba(22, 160, 133, 0.8)',
+      borderRadius: 50
+    },
+
+    modalRow: {
+      top: '-60%',
+      width: '600%',
+      height: '100%', 
+      flexDirection : 'column', 
+      justifyContent: 'space-evenly',
     },
     // END OF WEB VIEW.
 })
