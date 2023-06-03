@@ -52,11 +52,18 @@ const HomeScreen = (props) => {
 
   // Later on, each storage folder is linked to an instruction + correct tag
   const spoofInstructions = {
-    1: 'Level 1: Dogs: where is the Shiba Inu?',
-    2: 'Level 2: Nuts: find the walnuts',
-    3: 'Level 3: Wines: where are the Red Wine Glasses?',
+    1: 'Level 1: Find the Boxer.',
+    2: 'Level 2: Find the Bullmastiff',
+    3: 'Level 3: Where is the English Mastiff?',
     4: 'Game complete.'
   }
+
+  // const spoofInstructions = {
+  //   1: 'Level 1: Dogs: where is the Shiba Inu?',
+  //   2: 'Level 2: Nuts: find the walnuts',
+  //   3: 'Level 3: Wines: where are the Red Wine Glasses?',
+  //   4: 'Game complete.'
+  // }
 
   const spoofCorrectTag = {
   'Dogs': {
@@ -77,6 +84,7 @@ const HomeScreen = (props) => {
   const [incorrectTag, setIncorrectTag ] = useState('Bullmastiff')
   const [instructionText, setInstructionText] = useState(spoofInstructions[learningLevel])
   const [correctTag, setCorrectTag] = useState(spoofCorrectTag[gameName][learningLevel])
+  const [sort, setSort] = useState(false)
 
   useEffect(() => {
     navigation.setOptions({
@@ -99,9 +107,29 @@ const HomeScreen = (props) => {
     // reinitialise current gallery 
     setGallery(old => [])
     setGalleryTags(old => [])
-    getImagesFromRef(correctListRef)
-    getImagesFromRef(incorrectListRef)
+    // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
+    // labelBatch(labelListRef, 'Mastiff')
+    getImagesFromRef(correctListRef).then(()=>{
+      getImagesFromRef(incorrectListRef)
+    })
+    
+    
+    console.log(galleryTags)
   }, [correctTag, incorrectTag])
+
+  // useEffect(()=> {
+  //   if (gallery.length>5) {
+  //     setGallery((prevOrder)=>{
+  //     console.log(prevOrder[0])
+  //     let temp = prevOrder[0]
+  //     prevOrder[0] = prevOrder[3]
+  //     prevOrder[3] = temp
+  //     // [prevOrder[0], prevOrder[3]]=[prevOrder[3], prevOrder[0]]
+  //     return prevOrder
+  //   })
+  //   }
+    
+  // }, [sort])
 
   const getImagesFromRef = async(ref) => {
     // TBD | according to gameName
@@ -120,8 +148,25 @@ const HomeScreen = (props) => {
                         getMetadata(itemRef)
                           .then((metadata) => {
                             
-                            setGalleryTags(old => [...old, metadata.customMetadata['tag']])
+                            setGalleryTags(old => {
+                              val = [...old, metadata.customMetadata['tag']]
+                              if (val.length%6==0){
+                                // let randomInt = Math.floor(Math.random() * onlineGallery.length) ;
+  
+                                let temp = val[0]
+                                val[0] = val [3]
+                                val[3] = temp
+  
+                                // randomInt = Math.floor(Math.random() * onlineGallery.length) ;
+                                temp = val[2]
+                                val[2] = val [5]
+                                val[5] = temp
+                                
+                              }
+                              return val
+                                
                             // Metadata now contains the metadata for 'images/forest.jpg'
+                          })
                           })
                           .catch((error) => {
                             console.log(error)
@@ -144,14 +189,85 @@ const HomeScreen = (props) => {
                           // });
 
                           // setGalleryTags(old => [...old, correctTag])
-                          setOnlineGallery(old => [...old, y])
-                          setGallery(old => [...old, y])
+                          setGallery(old => {
+                            val = [...old, y]
+                            if (val.length%6==0){
+                              // let randomInt = Math.floor(Math.random() * onlineGallery.length) ;
 
+                              let temp = val[0]
+                              val[0] = val [3]
+                              val[3] = temp
+
+                              // randomInt = Math.floor(Math.random() * onlineGallery.length) ;
+                              temp = val[2]
+                              val[2] = val [5]
+                              val[5] = temp
+
+        
+
+                            }
+                            return val
+                          })
+
+                          
+                          // setGallery(old => [...old, y])
+                          
+                          // if (gallery.length > 3) {
+                          //   setSort(true)
+                          // }
                           // Make sure render is loaded in useEffect (issue with progress bar upon first setGallery)
                           // setTimeout(() => {
                           //   console.log("Set as loaded after 1 seconds.");
                           //   setLoading(false); // Inefficient
                           // }, 2000);
+                          
+                          
+                      }).catch((error) => {
+                        console.log('Error in CatList.')
+                        console.log(error)
+                    
+                      });
+
+              
+      });
+
+
+
+      })
+
+
+  }
+
+
+
+  const labelBatch = async(ref, tag) => {
+    // TBD | according to gameName
+    await list(ref)
+    .then((res) => {
+      
+      // .
+      // sliced to 10 correct tags
+      res.items.forEach((itemRef) => {
+      
+
+                        getDownloadURL(itemRef).then((y)=> {
+                          
+
+                          // This was a workaround... but it labelled everything at once. (/!\ DO NOT SPLIT FOR-EACH)
+                          const metadata = {
+                                contentType: 'image/jpeg',
+                                customMetadata: {
+                                  'tag': tag
+                                }
+                              };
+                          updateMetadata(itemRef, metadata)
+                          .then((metadata) => {
+
+                          }).catch((error) => {
+                            console.log(error)
+                            // Uh-oh, an error occurred!
+                          });
+
                           
                           
                       }).catch((error) => {
@@ -307,7 +423,7 @@ const HomeScreen = (props) => {
   }
 
   const handlePicSelection = ( picNb ) => {
-
+    setLoading(false)
     /* Spoof Memo (now removed): we're just using the gallery indexes (picNb)
        let spoofMemo = {'labrador': [2, 3, 6], 
                          'shiba_inu': [1, 4] }
@@ -315,47 +431,25 @@ const HomeScreen = (props) => {
        if (spoofMemo[gameName].includes(picNb)) {
     */
 
-  // TBD | gameName is associated to the Selection Screen.
-
+  // DONE | gameName is associated to the Selection Screen.
+      
   // The real memo is now image-based. Like a tag.
     console.log('TAGS\n', galleryTags, picNb-1)
-
+    let randomInt = Math.floor(Math.random() * gallery.length) ;
+    console.log('randomInt', randomInt)
     if (galleryTags[picNb-1].includes(correctTag)) {  
     // New image... from onlineGallery  
 
       setGallery(prevState => {
-          let randomInt = Math.floor(Math.random() * onlineGallery.length) ;
-          if (randomInt == picNb-1){
-            randomInt = picNb
-          }
-          // console.log(randomInt)
-          // console.log(typeof prevState)
+          
           let newState = [...prevState]
 
-
-
-          setOnlineGallery( prevOnline => {
-            prevOnline.splice(randomInt, 1);
-            // prevOnline.splice(picNb-1, 1);
-            // console.log(prevOnline)
-            return prevOnline
-          })
           setGalleryTags( prevOnline => {
-            prevOnline.splice(randomInt, 1);
-            // prevOnline.splice(picNb-1, 1);
-            // console.log(prevOnline)
+            prevOnline.splice(picNb-1, 1);
             return prevOnline
           })
 
-          let extraImage = onlineGallery[randomInt] //getNewImage();
-
-          // error is that randomInt could well be the pic that we want to replace.
-          // TBD
-          
-          newState.splice(randomInt, 1);          
-
-          newState[picNb-1] = extraImage;
-          
+          newState.splice(picNb-1, 1);                   
           return newState})
       setCorrectClickCount(prevState=> prevState+1)
       toast.current.show("Yes", { type: "failure" });
@@ -367,7 +461,7 @@ const HomeScreen = (props) => {
 
         // galleryContents = onlineGallery
 
-        // mixing up
+        // mixing up (not done well bc tags no longer aligned)
         // galleryContents.sort( () => .5 - Math.random() );
 
         
@@ -420,7 +514,10 @@ const HomeScreen = (props) => {
       return (value.includes("shiba_inu") && index<6 )
     })
     // || ((correctLeftInGallery.length == 0 ) && !loading)
-    if ((averageCorrectRate > 0.8) ){
+    // if ((averageCorrectRate > 0.8) ){
+    console.log('level if 0: ', correctLeftInGallery.length)
+    if (correctLeftInGallery.length == 0){
+      setLoading(true)
       // Next level when 80% correct rate OR no more correctLeftInGallery  
       setCorrectClickCount(0)  //reset (avoid loop)
       setIncorrectClickCount(0)
