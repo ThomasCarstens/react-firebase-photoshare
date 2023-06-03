@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import {useState, useEffect} from 'react'
 import { auth, firebase } from '../firebase'
@@ -49,6 +49,8 @@ const LoginScreen = () => {
     <KeyboardAvoidingView
         style={styles.container}
         behavior="padding">
+        <Image source={require("../assets/bg/learnFast.png")} style={{height:150, width:300, marginLeft:0, borderRadius: 20}}></Image>
+        <View padding={20}></View>
         <View style={styles.inputContainer}>
             <TextInput
                 placeholder="Email"

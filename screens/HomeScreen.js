@@ -25,7 +25,18 @@ import { SafeAreaView } from 'react-native-web';
 
 const HomeScreen = (props) => {
   const gameName = "Dogs"
-  // const gameName = props.route.params?.name // TBD | Reinstate.
+  // const gameName = props.route.params?.name // TBD | Reinstate with navigation.
+
+  const spoofOutcomeImages = {
+    "Dogs": {
+    1: require("../assets/context/Dogs/bulldogs.png"),
+    2: require("../assets/context/Dogs/boxer_bullmastiff.png"),
+    3: require("../assets/context/Dogs/mastiff_bullmastiff_table.png"),
+    }
+  }
+  
+
+  
   // gameName = gameName?gameName:"shiba inu"
 
   // const toast = useToast()
@@ -40,7 +51,7 @@ const HomeScreen = (props) => {
   const [learningLevel, setLearningLevel] = useState(1)
   const [successRate, setSuccessRate] = useState(1)
   const [modalVisible, setModalVisible] = useState(true)
-  
+
   
   const images = [
     'https://placeimg.com/640/640/nature',
@@ -56,7 +67,8 @@ const HomeScreen = (props) => {
     1: 'Level 1: Find the Boxer.',
     2: 'Level 2: Find the Bullmastiff',
     3: 'Level 3: Where is the English Mastiff?',
-    4: 'Game complete: '+ (100*successRate).toFixed(2)+ ' % success rate.'
+    4: 'Test: Find the bullmastiffs until there are none left.',
+    5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
   }
 
   // const spoofInstructions = {
@@ -71,23 +83,28 @@ const HomeScreen = (props) => {
     1: 'Boxer',
     2: 'Bullmastiff',
     3: 'Mastiff',
-    4: 'Results:'
+    4: 'Bullmastiff',
+    5: 'Results:'
   }
 }
 
   const spoofIncorrectTag= {
     'Dogs': {
-      1: 'Bullmastiff',
-      2: 'Boxer',
-      3: 'Bullmastiff',      
+      1: ['Bullmastiff'],
+      2: ['Boxer'],
+      3: ['Bullmastiff'],     
+      4: ['Mastiff', 'Boxer'],
+      5: ['']  
     }
     
   }
-  const [incorrectTag, setIncorrectTag ] = useState('Bullmastiff')
+  const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   const [instructionText, setInstructionText] = useState(spoofInstructions[learningLevel])
   const [correctTag, setCorrectTag] = useState(spoofCorrectTag[gameName][learningLevel])
   const [sort, setSort] = useState(false)
-
+  const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
+  const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofInstructions).pop()))
+  // Screen title.
   useEffect(() => {
     navigation.setOptions({
       title: gameName+': '+learningLevel+'. '+correctTag,
@@ -98,25 +115,59 @@ const HomeScreen = (props) => {
   useEffect(() => {
     setInstructionText(spoofInstructions[learningLevel]); //TBD. Database.
     setCorrectTag(spoofCorrectTag[gameName][learningLevel])
+
     setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
-    console.log('Level: ___'+ learningLevel)
+    
+    setOutcomeImage(spoofOutcomeImages[gameName][learningLevel])
+    
+    setProgressInGame ( learningLevel/(Object.keys(spoofInstructions).pop()) )
+
+    
   }, [learningLevel])
+
+  useEffect(() => {
+    toast.current.show(instructionText, { type: "success" });
+  }, [instructionText])
 
   // Images from different sources.
   useEffect(()=> {
     const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
-    const incorrectListRef = ref(storage, gameName + '/'+incorrectTag+'/');
+    const incorrectListRef = ref(storage, gameName + '/'+incorrectTag[0]+'/');
+    if (incorrectTag.length>1){
+      var incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
+    }
+    // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
     // reinitialise current gallery 
     setGallery(old => [])
     setGalleryTags(old => [])
     // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
     // labelBatch(labelListRef, 'Mastiff')
-    getImagesFromRef(correctListRef).then(()=>{
-      getImagesFromRef(incorrectListRef)
-    })
+    
+      getImagesFromRef(incorrectListRef).then(()=>{
+
+        getImagesFromRef(correctListRef, 5).then(()=> {
+          if (incorrectListRef2){
+            getImagesFromRef(incorrectListRef2)
+          }
+        })
+
+        // if (typeof incorrectTag != Array){
+        //   const incorrectListRef = ref(storage, gameName + '/'+incorrectTag+'/');
+        //   getImagesFromRef(incorrectListRef)
+        // } else {
+        //   const incorrectListRef = ref(storage, gameName + '/'+incorrectTag[0]+'/');
+        //     getImagesFromRef(incorrectListRef).then(()=>{
+
+        //     const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
+        //     getImagesFromRef(incorrectListRef2)
+        //   })
+        // }
+      })     
+    // }
+
     
     
-    console.log(galleryTags)
+    // console.log(galleryTags)
   }, [correctTag, incorrectTag])
 
   // useEffect(()=> {
@@ -133,14 +184,14 @@ const HomeScreen = (props) => {
     
   // }, [sort])
 
-  const getImagesFromRef = async(ref) => {
+  const getImagesFromRef = async(ref, upperLimit=3) => {
     // TBD | according to gameName
     await list(ref)
     .then((res) => {
       
       // .
       // sliced to 10 correct tags
-      res.items.slice(0, 3).forEach((itemRef) => {
+      res.items.slice(0, upperLimit).forEach((itemRef) => {
       
 
                         getDownloadURL(itemRef).then((y)=> {
@@ -454,7 +505,7 @@ const HomeScreen = (props) => {
           newState.splice(picNb-1, 1);                   
           return newState})
       setCorrectClickCount(prevState=> prevState+1)
-      toast.current.show("Yes", { type: "failure" });
+      // toast.current.show("Yes", { type: "failure" });
 
     } else {
       // 
@@ -470,7 +521,7 @@ const HomeScreen = (props) => {
         return prevState})
 
       setIncorrectClickCount(prevState=> prevState+1)
-      toast.current.show("No", { type: "failure" });
+      toast.current.show("That's a "+galleryTags[picNb-1]+".", { type: "error" });
     }
 
     return images
@@ -505,7 +556,7 @@ const HomeScreen = (props) => {
     console.log('is Loaded before progress calculation? ', !loading)
     //(make sure loaded)
     if (loading){
-      return 0
+      return progressInGame
     } else {
     let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
 
@@ -546,8 +597,12 @@ const HomeScreen = (props) => {
 
     // ERROR with ||
     
-    return averageCorrectRate
+    return progressInGame
   }
+  }
+
+  openModal = () => {
+    setModalVisible(true)
   }
 {/* <SafeAreaView style ={styles.webContainer}>
     <View style ={styles.webContent}> */}
@@ -631,7 +686,7 @@ const HomeScreen = (props) => {
       <View style={{ flex: 1, width: 20, height: 200, backgroundColor: 'green' }}/>
     </View>
     {/* <View padding={70} ></View> */}
-    <View padding={60} style={{flexDirection: 'row'}} /* for the progress bar */ >
+    <View padding={50} style={{flexDirection: 'row'}} /* for the progress bar */ >
       <Text>Progress: </Text>
       <Progress.Bar progress={progressCalculate()}  width={200} height={20}/>
       
@@ -652,25 +707,31 @@ const HomeScreen = (props) => {
 
 
     <View style={styles.container}>
-      <Text>Email: {auth.currentUser?.email}</Text>
+      {/* <Text>Email: {auth.currentUser?.email}</Text> */}
       
-      <TextInput
+      {/* <TextInput
       onChangeText={onChangeCustomMetadataInput}
       value={customMetadataInput}
       style={styles.input}>
-      </TextInput> 
+      </TextInput>  */}
 
-     <TouchableOpacity style={styles.button} onPress={pickImage} >
+      <TouchableOpacity style={styles.button} onPress={openModal} >
+            <Text style={styles.buttonText}>Hint</Text>
+      </TouchableOpacity>
+
+     {/* <TouchableOpacity style={styles.button} onPress={pickImage} >
         <Text style={styles.buttonText}>Choose File</Text>
       </TouchableOpacity>
 
+      
+
       <TouchableOpacity style={styles.button} onPress={uploadImage} >
         <Text style={styles.buttonText}>Upload</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
-      <TouchableOpacity style={styles.button} onPress={handleSelectionScreen}>
-        <Text style={styles.buttonText}>Game Selection</Text>
-      </TouchableOpacity>
+      {/* <TouchableOpacity style={styles.button} onPress={handleSelectionScreen}>
+        <Text style={styles.buttonText}>Back to Game Selection</Text>
+      </TouchableOpacity> */}
 
       <TouchableOpacity style={styles.button} onPress={handleSignOut}>
         <Text style={styles.buttonText}>Sign out</Text>
@@ -697,47 +758,44 @@ const HomeScreen = (props) => {
       >
 
       <View backgroundColor='rgba(46, 204, 113, 0.35)'>
+          {/* <View style={{ flexDirection:"row"}}> */}
+            {/* <View padding={400} ></View> */}
           
-          <View style={styles.modalRow}>
+            <View style={styles.modalRow}>
 
-            {/* <TouchableOpacity
-              style={styles.gameSelection}
-              onPress={() => {
-                setModalVisible(!modalVisible);
+              <TouchableOpacity
+                style={styles.gameSelection}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
 
-                navigation.navigate('Selection')
-              }}>
-                
-              <Text> {"\nBACK TO GAME SELECTION"} </Text>
-            </TouchableOpacity> */}
+                  // navigation.navigate('Selection')
+                }}>
+                <Text color="red">{"In this game, you learn to differentiate different dogs."}</Text>
+      
+              </TouchableOpacity>
 
-            
-            <TouchableOpacity
-              // style={styles.gameSelection}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}>
-                <Text> {"\n START GAME"} </Text>
-                
+              {/* <TouchableOpacity
+                style={styles.gameSelection}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
 
-                <Image source={require("../assets/context/Dogs/mastiff_bullmastiff.png")} style={{height:150, width:200, marginTop:400, marginLeft:280}}></Image>
+                  navigation.navigate('Selection')
+                }}>
+      
+                <Text> {"\n EXIT TO GAME SELECTION"} </Text>
+              </TouchableOpacity> */}
 
-            </TouchableOpacity> 
-            
+              <TouchableOpacity
+                style={styles.gameSelection}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}>
+                  <Text> {"\n BACK TO GAME"} </Text>
+              </TouchableOpacity>  
+              
+              <Image source={outcomeImage} style={{height:300, width:380, marginLeft:-20, marginBottom:-190}}></Image>
 
-            
-
-
-{/* 
-            <TouchableOpacity
-              style={styles.gameSelection}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}>
-              <Text> {"\nReturn"} </Text>
-            </TouchableOpacity>  */}
-            
-             
+            {/* </View> */}
 
           </View>
       </View>
@@ -895,12 +953,13 @@ const styles = StyleSheet.create({
       maxHeight: 1000,
     },
     gameSelection: {
-      left: '2%',
-      top: '60%',
+      left: '4%',
+      top: '57%',
       justifyContent: "flex-start",
       alignItems: 'center',
       width: 200,
       height: 40,
+      marginTop:160,
       // backgroundColor:'rgba(144, 144, 0, 0.8)',
       backgroundColor:'rgba(22, 160, 133, 0.8)',
       borderRadius: 50

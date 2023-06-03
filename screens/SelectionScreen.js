@@ -10,9 +10,9 @@ import Orientation, { LANDSCAPE_LEFT, OrientationLocker } from 'react-native-ori
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { SafeAreaView } from 'react-native-web';
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
-if (!webView){
-  ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
-}
+// if (!webView){
+//   ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
+// }
 const SelectionScreen = ({ navigation }) => {
     // Orientation.lockToLandscape();
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
