@@ -1,4 +1,4 @@
-import { ImageBackground, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ImageBackground, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import {useState, useEffect} from 'react'
 import { auth, firebase } from '../firebase'
@@ -8,189 +8,133 @@ import { browserLocalPersistence, browserSessionPersistence, setPersistence, sig
 
 import Orientation, { LANDSCAPE_LEFT, OrientationLocker } from 'react-native-orientation-locker';
 import * as ScreenOrientation from 'expo-screen-orientation';
-// ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
+import { SafeAreaView } from 'react-native-web';
+const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
+if (!webView){
+  ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
+}
 const SelectionScreen = ({ navigation }) => {
     // Orientation.lockToLandscape();
+    let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
+    let thumbnailStyle = webView?(styles.imageStyleWeb):(styles.imageStyleMobile)
     
-
+    // <SafeAreaView style={{...styles.webContainer}}> 
+    //          <View style={{...styles.webContent}}>
     return (
       
+
       <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{width: '102%', left: '-2%',  height: '120%', top: '-5%'}}>
-  
-      {/* <VideoRecorder
-          onRecordingComplete={(videoBlob) => {
-            // Do something with the video...
-            console.log('videoBlob', videoBlob)
-          }}
-        /> */}
   
       <ScrollView contentContainerStyle= {styles.gameRow}>
   
         {/* "BONES" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Dogs' })}
-        >
-          <ImageBackground source={require('../assets/triceratops_skull.jpg')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Dogs' })}>
+          <ImageBackground source={require('../assets/triceratops_skull.jpg')} 
+            style={thumbnailBg} imageStyle={thumbnailStyle}>
             <Text style ={styles.gameText}> {'Dogs'} </Text>
-          </ImageBackground>
-          
+          </ImageBackground>     
         </TouchableOpacity>      
 
         {/* "BONES" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Bones' })}
-        >
-          <ImageBackground source={require('../assets/triceratops_skull.jpg')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Bones' })}>
+          <ImageBackground source={require('../assets/triceratops_skull.jpg')} 
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Bones'} </Text>
           </ImageBackground>
-          
         </TouchableOpacity>          
   
         {/* "BONES" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Dragonflies' })}
-        >
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Dragonflies' })} >
+          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Dragonflies'} </Text>
-          </ImageBackground>
-          
+          </ImageBackground>    
         </TouchableOpacity>
   
-  
-  
-  
         {/* "CREATURES" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Creatures' })}
-        >
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Creatures' })}>
+          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Creatures'} </Text>
-          </ImageBackground>
-          
+          </ImageBackground>  
         </TouchableOpacity>        
   
         {/* "CRABS" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Crabs' })}
-        >
-          <ImageBackground source={require('../assets/crab.jpg')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Crabs' })}>
+          <ImageBackground source={require('../assets/crab.jpg')} 
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Crabs'} </Text>
-          </ImageBackground>
-          
+          </ImageBackground>  
         </TouchableOpacity>     
   
         {/* "REPTILES" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Reptiles' })}
-        >
-          <ImageBackground source={require('../assets/crab.jpg')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Reptiles' })}>
+          <ImageBackground source={require('../assets/crab.jpg')} 
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Reptiles'} </Text>
-          </ImageBackground>
-          
+          </ImageBackground> 
         </TouchableOpacity>   
   
-        {/* "3D" BUTTON */}
-        {/* <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('TEST_3D_SCENE', { name: '3D' })}
-        >
-          <ImageBackground source={require('./assets/bg/loadingscreen01.png')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: '4'}} imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
-            <Text style ={styles.gameText}> {'3D'} </Text>
-          </ImageBackground>
-        </TouchableOpacity>     */}
-  
         {/* "ENGINES" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Engines' })}
-        >
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} 
-          imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Engines' })}>
+          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Engines'} </Text>
           </ImageBackground>
         </TouchableOpacity>  
   
         {/* "CARS" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Cars' })}
-        >
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} 
-          imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Cars' })}>
+          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Cars'} </Text>
           </ImageBackground>
         </TouchableOpacity>  
   
         {/* "TURTLES" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Turtles' })}
-        >
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} 
-          imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Turtles' })}>
+          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Turtles'} </Text>
           </ImageBackground>
         </TouchableOpacity>  
   
         {/* "WEAPONRY" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Weaponry' })}
-        >
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} 
-          imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Weaponry' })} >
+          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}> 
             <Text style ={styles.gameText}> {'Weaponry'} </Text>
           </ImageBackground>
         </TouchableOpacity>    
   
         {/* "FLOWERS" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Pokemon' })}
-        >
-          <ImageBackground source={require('../assets/bg/loadingscreen02.png')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} 
-          imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Pokemon' })}>
+          <ImageBackground source={require('../assets/bg/loadingscreen02.png')} 
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Pokemon'} </Text>
           </ImageBackground>
         </TouchableOpacity>    
   
         {/* "FLOWERS" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Fish' })}
-        >
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} 
-          imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Fish' })}>
+          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
+          style={styles.imageBackgroundMobile}  imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Fish'} </Text>
           </ImageBackground>
         </TouchableOpacity>    
   
         {/* "FLOWERS" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'Mustaches' })}
-        >
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Mustaches' })}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
-          style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} 
-          imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Mustaches'} </Text>
           </ImageBackground>
         </TouchableOpacity>    
   
         {/* "FLOWERS" BUTTON */}
-        <TouchableOpacity
-          style={styles.gameSelection}
-          onPress={() => navigation.navigate('Home', { name: 'LivingRoom' })}
-        >
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'LivingRoom' })}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
-          style={{flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4}} 
-          imageStyle={{ borderRadius: 60, borderWidth: 4, borderColor: 'black'}}>
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'LivingRoom'} </Text>
           </ImageBackground>
         </TouchableOpacity> 
@@ -198,16 +142,62 @@ const SelectionScreen = ({ navigation }) => {
       </ScrollView>
       
   
-  
       </ImageBackground>
 
   )
+        //   </View>
+        // </SafeAreaView>
 }
 
+// COMPONENT-IN-COMPONENT DOES NOT WORK
+// const SelectionScreen = ({ navigation }) => {
+//     const ContainerForWeb = ({ navigation }) => {
+//       <SafeAreaView style={{...styles.webContainer}}> 
+//         <View style={{...styles.webContent}}>
+//           <InsideSelectionScreen/>
+//         </View>
+//       </SafeAreaView>
+//     }
+//     const ContainerForMobile = ({ navigation }) => {
+//         <View >
+//           <InsideSelectionScreen/>
+//         </View>
+//     } 
+    
+//   if (webView) {
+//     return (<ContainerForWeb/>)
+//   } else {
+//     return (<ContainerForMobile/>)
+//   }
+  
+//   }
+
+
+
 export default SelectionScreen
+// this is an issue. Inside(...) is for android and SelectionScreen is for web.
+
+
+
 
 
 var styles = StyleSheet.create({
+  // THUMBNAILS: WEB
+    imageStyleWeb: {
+      borderRadius: 60, borderWidth: 4, borderColor: 'black'
+    },
+    imageBackgroundWeb: {
+      flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4
+    },
+  // THUMBNAILS: MOBILE
+
+    imageStyleMobile: {
+      borderRadius: 60, borderWidth: 4, borderColor: 'black'
+    },
+    imageBackgroundMobile: {
+      flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4
+    },
+
     gameSelection: {
       left: '0%',
       top: '5%',
@@ -259,17 +249,6 @@ var styles = StyleSheet.create({
       borderRadius: 50    
     },
   
-    // overScreen: {
-    //   // flex:1,
-    //   // alignItems: 'stretch', // THIS IS THE FUCKING IMPOSTOR
-    //   justifyContent: 'center',
-    //   position: 'absolute',
-    //   left: '85%',          //0% FOR WHEN THE BOTTOM BAR ANSWERS IS ACTIVE
-    //   top: '90%',//150 //40% FOR WHEN THE BOTTOM BAR ANSWERS IS ACTIVE
-    //   width: '10%',//100
-    //   height: '7%',
-    //   backgroundColor:'rgba(255, 0, 0, 0.8)',
-    // },
   
     exitButtonRed: {
       justifyContent: "flex-start",
@@ -279,17 +258,19 @@ var styles = StyleSheet.create({
       backgroundColor:'red',
     },
     container: {
-      // flex: 1, //EDIT TESTS
       alignItems: 'center',
       height: '100%',
       justifyContent: 'center',
+      marginHorizontal: 300,
+      marginVertical: 300,
     },
-  
+    emptyContainer: {
+      padding: 20,
+      flex: 1,
+    },  
     center: {
       width: '100%',
       height: '120%',  // 40 Set for Question Window | 90 Set for Close Inspection window //TBD> Don't edit this...
-  
-      //for buttons layout
       flexDirection : 'row', 
       justifyContent: 'space-between',
     },
@@ -396,4 +377,17 @@ var styles = StyleSheet.create({
       backgroundColor: "rgba(149, 144, 0, 0.2)",
       // padding: 10
     },
+    // WEB VIEW
+    webContainer: {
+      flex: 1,
+      marginBottom: 200,
+      alignItems: "center",
+      justifyContent: "center", 
+    },
+    webContent: {
+      width: "100%",
+      maxWidth: 1000,
+      maxHeight: 400,
+    },
+    // END OF WEB VIEW.
   })

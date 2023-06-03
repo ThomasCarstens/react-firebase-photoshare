@@ -4,7 +4,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import { auth, storage, database } from '../firebase'
 import { uid } from 'uid';
 import { useNavigation } from '@react-navigation/core'
-import { getDownloadURL, getMetadata, getStorage, list, listAll, ref, uploadBytes,  } from 'firebase/storage'
+import { getDownloadURL, getMetadata, getStorage, list, listAll, ref, updateMetadata, uploadBytes,  } from 'firebase/storage'
 import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import * as ImagePicker from "expo-image-picker";
 import firebase from 'firebase/compat/app';
@@ -12,6 +12,7 @@ import ImageSlider from 'react-native-image-slider';
 import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
+import { SafeAreaView } from 'react-native-web';
 // import Toast, { useToast } from 'react-native-toast-notifications';
 // import { Platform } from 'react-native/types';
 // import Toast from 'react-native-fast-toast/lib/typescript/toast';
@@ -23,7 +24,8 @@ import * as Progress from 'react-native-progress';
 
 
 const HomeScreen = (props) => {
-  const gameName = props.route.params?.name
+  const gameName = "Dogs"
+  // const gameName = props.route.params?.name // TBD | Reinstate.
   // gameName = gameName?gameName:"shiba inu"
 
   // const toast = useToast()
@@ -36,6 +38,7 @@ const HomeScreen = (props) => {
   const [correctClickCount, setCorrectClickCount] = useState(0)
   const [incorrectClickCount, setIncorrectClickCount] = useState(0)
   const [learningLevel, setLearningLevel] = useState(1)
+  
   
   
   const images = [
@@ -54,84 +57,132 @@ const HomeScreen = (props) => {
     3: 'Level 3: Wines: where are the Red Wine Glasses?',
     4: 'Game complete.'
   }
+
   const spoofCorrectTag = {
-    1: 'shiba_inu',
-    2: 'walnut',
-    3: 'red',
+  'Dogs': {
+    1: 'Boxer',
+    2: 'Bullmastiff',
+    3: 'Mastiff',
   }
+}
+
+  const spoofIncorrectTag= {
+    'Dogs': {
+      1: 'Bullmastiff',
+      2: 'Boxer',
+      3: 'Bullmastiff',      
+    }
+    
+  }
+  const [incorrectTag, setIncorrectTag ] = useState('Bullmastiff')
   const [instructionText, setInstructionText] = useState(spoofInstructions[learningLevel])
-  const [correctTag, setCorrectTag] = useState(spoofCorrectTag[learningLevel])
+  const [correctTag, setCorrectTag] = useState(spoofCorrectTag[gameName][learningLevel])
 
   useEffect(() => {
     navigation.setOptions({
-      title: gameName,
+      title: gameName+': '+learningLevel+'. '+correctTag,
     });
   }, []);
 
+  // Game parameters.
   useEffect(() => {
     setInstructionText(spoofInstructions[learningLevel]); //TBD. Database.
-    setCorrectTag(spoofCorrectTag[learningLevel])
-    getOnlineImages()
+    setCorrectTag(spoofCorrectTag[gameName][learningLevel])
+    setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
+    console.log('Level: ___'+ learningLevel)
   }, [learningLevel])
 
+  // Images from different sources.
+  useEffect(()=> {
+    const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
+    const incorrectListRef = ref(storage, gameName + '/'+incorrectTag+'/');
+    // reinitialise current gallery 
+    setGallery(old => [])
+    setGalleryTags(old => [])
+    getImagesFromRef(correctListRef)
+    getImagesFromRef(incorrectListRef)
+  }, [correctTag, incorrectTag])
 
-  const getOnlineImages = async( ) => {
-    console.log('Level: ___'+ learningLevel)
-    const listRef = ref(storage, gameName + '/shiba inu/'+learningLevel+'/');
+  const getImagesFromRef = async(ref) => {
     // TBD | according to gameName
-    await list(listRef)
+    await list(ref)
     .then((res) => {
-      // reinitialise current gallery 
-        setGallery(old => [])
-        setGalleryTags(old => [])
-        res.items.forEach((itemRef) => {
-        
+      
+      // .
+      // sliced to 10 correct tags
+      res.items.slice(0, 3).forEach((itemRef) => {
+      
 
-                          getDownloadURL(itemRef).then((y)=> {
-                          getMetadata(itemRef)
-                            .then((metadata) => {
-                              
-                              setGalleryTags(old => [...old, metadata.customMetadata['tag']])
-                              // Metadata now contains the metadata for 'images/forest.jpg'
-                            })
-                            .catch((error) => {
-                              console.log(error)
-                              // Uh-oh, an error occurred!
-                            });
+                        getDownloadURL(itemRef).then((y)=> {
 
-                           
-                            setOnlineGallery(old => [...old, y])
-                            setGallery(old => [...old, y])
+                        // Metadata works... but not efficient for large batches.
 
-                            // Make sure render is loaded in useEffect (issue with progress bar upon first setGallery)
-                            setTimeout(() => {
-                              console.log("Set as loaded after 1 seconds.");
-                              setLoading(false); // Inefficient
-                            }, 2000);
+                        getMetadata(itemRef)
+                          .then((metadata) => {
                             
-                            
-                        }).catch((error) => {
-                          console.log('Error in CatList.')
-                          console.log(error)
+                            setGalleryTags(old => [...old, metadata.customMetadata['tag']])
+                            // Metadata now contains the metadata for 'images/forest.jpg'
+                          })
+                          .catch((error) => {
+                            console.log(error)
+                            // Uh-oh, an error occurred!
+                          });
                           
-                          // Uh-oh, an error occurred!
-                        });
-    
-                
-    });
-    
-    // Get metadata properties
-    
- })
-    
-  // })
-// return newArray
-//   const listRef = ref(storage, 'shiba inu/');
-//   const res = await listAll(listRef)
-//   const requests = res.items.map(itemRef => getDownloadURL(itemRef))
-//   const urls = await Promise.all(requests)
-  // return urls
-  // setOnlineGallery(urls)
+
+                          // This was a workaround... but it labelled everything at once. (/!\ DO NOT SPLIT FOR-EACH)
+                          // const metadata = {
+                          //       contentType: 'image/jpeg',
+                          //       customMetadata: {
+                          //         'tag': correctTag
+                          //       }
+                          //     };
+                          // updateMetadata(itemRef, metadata)
+                          // .then((metadata) => {
+                          //   // Updated metadata for 'images/forest.jpg' is returned in the Promise
+                          // }).catch((error) => {
+                          //   // Uh-oh, an error occurred!
+                          // });
+
+                          // setGalleryTags(old => [...old, correctTag])
+                          setOnlineGallery(old => [...old, y])
+                          setGallery(old => [...old, y])
+
+                          // Make sure render is loaded in useEffect (issue with progress bar upon first setGallery)
+                          // setTimeout(() => {
+                          //   console.log("Set as loaded after 1 seconds.");
+                          //   setLoading(false); // Inefficient
+                          // }, 2000);
+                          
+                          
+                      }).catch((error) => {
+                        console.log('Error in CatList.')
+                        console.log(error)
+                    
+                      });
+
+              
+      });
+
+
+
+      })
+
+
+  }
+
+  const getOnlineImages = ( ) => {
+
+    //   setGallery((previousOrder)=>{
+    //   newOrder = previousOrder
+    //   for (i=0; i<6; i++){
+    //     [ newOrder[i*2 + 1], newOrder[i*2 + 11] ] = [ newOrder[i*2 + 11], newOrder[i*2 + 1] ];
+        
+    //   }
+    //   console.log('sorting')
+    //   return newOrder
+    // })
+
+  
   
   
 }
@@ -222,7 +273,7 @@ const HomeScreen = (props) => {
     // } catch(error) {
     //     console.log(error.message)
     // } 
-    const in_images = 'shiba inu/'+learningLevel+'/'+filename
+    const in_images = gameName+'/'+correctTag+'/'+filename
     const storageRef = ref(storage, in_images)
     // uploadBytes(storageRef, filename).then((snapshot) => {
     //   console.log('Uploaded a blob or file!');
@@ -397,8 +448,10 @@ const HomeScreen = (props) => {
     return averageCorrectRate
   }
   }
-
+{/* <SafeAreaView style ={styles.webContainer}>
+    <View style ={styles.webContent}> */}
   return (
+    
     <View>
       <Toast ref={toast} />
       <View style={{padding: 10}}></View>
@@ -483,6 +536,7 @@ const HomeScreen = (props) => {
       
       
     </View>
+    
 
     
     {/* <View style={styles.container}>
@@ -499,7 +553,7 @@ const HomeScreen = (props) => {
     <View style={styles.container}>
       <Text>Email: {auth.currentUser?.email}</Text>
       
-      {/* <TextInput
+      <TextInput
       onChangeText={onChangeCustomMetadataInput}
       value={customMetadataInput}
       style={styles.input}>
@@ -511,7 +565,7 @@ const HomeScreen = (props) => {
 
       <TouchableOpacity style={styles.button} onPress={uploadImage} >
         <Text style={styles.buttonText}>Upload</Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleSelectionScreen}>
         <Text style={styles.buttonText}>Game Selection</Text>
@@ -527,7 +581,10 @@ const HomeScreen = (props) => {
 
     </View>
     </View>
+ 
   )
+    //  </View>
+    // </SafeAreaView>
 }
 
 export default HomeScreen
@@ -570,6 +627,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
+
 
     imageContainer: {
         // flex:1,
@@ -662,7 +720,19 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 
-
+    // WEB VIEW
+    webContainer: {
+      flex: 1,
+      marginBottom: 200,
+      alignItems: "center",
+      justifyContent: "center", 
+    },
+    webContent: {
+      width: "100%",
+      maxWidth: 400,
+      maxHeight: 1000,
+    },
+    // END OF WEB VIEW.
 })
 
 
