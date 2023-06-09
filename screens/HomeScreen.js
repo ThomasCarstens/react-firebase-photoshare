@@ -13,6 +13,7 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag} from '../gameFile';
 // import Toast, { useToast } from 'react-native-toast-notifications';
 // import { Platform } from 'react-native/types';
 // import Toast from 'react-native-fast-toast/lib/typescript/toast';
@@ -24,16 +25,10 @@ import { SafeAreaView } from 'react-native-web';
 
 
 const HomeScreen = (props) => {
-  const gameName = "Dogs"
-  // const gameName = props.route.params?.name // TBD | Reinstate with navigation.
+  
+  
 
-  const spoofOutcomeImages = {
-    "Dogs": {
-    1: require("../assets/context/Dogs/all3.png"),
-    2: require("../assets/context/Dogs/boxer_bullmastiff.png"),
-    3: require("../assets/context/Dogs/mastiff_bullmastiff_table.png"),
-    }
-  }
+
   
 
   
@@ -61,67 +56,60 @@ const HomeScreen = (props) => {
     'https://placeimg.com/640/640/nature',
     'https://placeimg.com/640/640/people',
   ];
-
-  // Later on, each storage folder is linked to an instruction + correct tag
-  const spoofInstructions = {
-    1: 'Level 1: Find all the Boxers.',
-    2: 'Level 2: Find the Bullmastiffs',
-    3: 'Level 3: Where is the English Mastiff?',
-    4: 'Test: Find the bullmastiffs until there are none left.',
-    5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
-  }
-
-  // const spoofInstructions = {
-  //   1: 'Level 1: Dogs: where is the Shiba Inu?',
-  //   2: 'Level 2: Nuts: find the walnuts',
-  //   3: 'Level 3: Wines: where are the Red Wine Glasses?',
-  //   4: 'Game complete.'
-  // }
-
-  const spoofCorrectTag = {
-  'Dogs': {
-    1: 'Boxer',
-    2: 'Bullmastiff',
-    3: 'Mastiff',
-    4: 'Bullmastiff',
-    5: 'Results:'
-  }
-}
-
-  const spoofIncorrectTag= {
-    'Dogs': {
-      1: ['Bullmastiff'],
-      2: ['Boxer'],
-      3: ['Bullmastiff'],     
-      4: ['Mastiff', 'Boxer'],
-      5: ['']  
-    }
     
-  }
+// const gameName = props.route.params?.name // TBD | Reinstate with navigation.
+  const selectedGame = "Africa"
+  const userLearningLevel = 1 //TBD | Get from database.
+  const gameName = spoofGameSets[selectedGame][userLearningLevel-1]
+  console.log(gameName, "is the game noww.")
+
   const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
-  const [instructionText, setInstructionText] = useState(spoofInstructions[learningLevel])
+  const [instructionText, setInstructionText] = useState(spoofInstructions[gameName][learningLevel])
   const [correctTag, setCorrectTag] = useState(spoofCorrectTag[gameName][learningLevel])
   const [sort, setSort] = useState(false)
   const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
-  const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofInstructions).pop()))
+  const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofInstructions[gameName]).pop()))
+  
+  
   // Screen title.
   useEffect(() => {
     navigation.setOptions({
       title: gameName+' Game',
     });
+    // const id_Morocco = ref(storage, "Africa_country_identification" + '/'+"Morocco"+'/');
+    // const id_Algeria = ref(storage, "Africa_country_identification" + '/'+"Algeria"+'/');
+    // const id_Tunisia = ref(storage, "Africa_country_identification" + '/'+"Tunisia"+'/');
+    // const id_Libya = ref(storage, "Africa_country_identification" + '/'+"Libya"+'/');
+    // labelBatch(id_Morocco, "Morocco")
+    // labelBatch(id_Algeria, "Algeria")
+    // labelBatch(id_Tunisia, "Tunisia")
+    // labelBatch(id_Libya, "Libya")
+    // const loc_Morocco = ref(storage, "Africa_country_of_location" + '/'+"Morocco"+'/');
+    // const loc_Algeria = ref(storage, "Africa_country_of_location" + '/'+"Algeria"+'/');
+    // const loc_Tunisia = ref(storage, "Africa_country_of_location" + '/'+"Tunisia"+'/');
+    // const loc_Libya = ref(storage, "Africa_country_of_location" + '/'+"Libya"+'/');
+    // labelBatch(loc_Morocco, "Morocco")
+    // labelBatch(loc_Algeria, "Algeria")
+    // labelBatch(loc_Tunisia, "Tunisia")
+    // labelBatch(loc_Libya, "Libya")
   }, []);
 
+  
   // Game parameters.
   useEffect(() => {
-    setInstructionText(spoofInstructions[learningLevel]); //TBD. Database.
+    // Within 1 game
+    setInstructionText(spoofInstructions[gameName][learningLevel]); //TBD. Database.
     setCorrectTag(spoofCorrectTag[gameName][learningLevel])
-
     setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
-    
     setOutcomeImage(spoofOutcomeImages[gameName][learningLevel])
-    
-    setProgressInGame ( learningLevel/(Object.keys(spoofInstructions).pop()) )
+    setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[gameName]).pop()) )
 
+    if (correctTag == "end"){
+      if (spoofGameSets[gameName].length > userLearningLevel){
+        userLearningLevel++
+        gameName = spoofGameSets[selectedGame][userLearningLevel-1]
+      }
+    }
     
   }, [learningLevel])
 
@@ -600,14 +588,14 @@ const HomeScreen = (props) => {
     return progressInGame
   }
   }
-
+  {/* <SafeAreaView style ={styles.webContainer}>
+      <View style ={styles.webContent}>  */}
   const openModal = () => {
     setModalVisible(true)
   }
 
   return (
- <SafeAreaView style ={styles.webContainer}>
-    <View style ={styles.webContent}>   
+   
     <View>
       <Toast ref={toast} />
       <View style={{padding: 10}}></View>
@@ -756,9 +744,11 @@ const HomeScreen = (props) => {
         setModalVisible(!modalVisible);
       }}
       >
-    <SafeAreaView style ={styles.webContainer}>
-        <View style ={styles.webContent}>   
-      <View backgroundColor='rgba(46, 204, 113, 0.35)'>
+
+    {/* SAFE AREA !!
+     <SafeAreaView style ={styles.webContainer}>
+        <View style ={styles.webContent}>    */}
+      <View backgroundColor='rgba(46, 204, 113, 0.8)'>
           {/* <View style={{ flexDirection:"row"}}> */}
             {/* <View padding={400} ></View> */}
           
@@ -785,29 +775,30 @@ const HomeScreen = (props) => {
       
                 <Text> {"\n EXIT TO GAME SELECTION"} </Text>
               </TouchableOpacity> */}
+              <Image source={outcomeImage} style={{height:370, width:330, marginLeft:15, marginBottom:-650}}></Image>
 
               <TouchableOpacity
                 style={styles.gameSelection}
                 onPress={() => {
                   setModalVisible(!modalVisible);
                 }}>
-                  <Text> {"\n BACK TO GAME"} </Text>
+                  <Text style={{fontWeight:"bold"}}> {"\n BACK TO GAME"} </Text>
               </TouchableOpacity>  
               
-              <Image source={outcomeImage} style={{height:320, width:380, marginLeft:10, marginBottom:-100}}></Image>
 
             {/* </View> */}
 
           </View>
       </View>
-      </View>
-     </SafeAreaView> 
+      {/* </View>
+
+     </SafeAreaView>  */}
       </Modal>
     </View>
-      </View>
-     </SafeAreaView> 
+      
   )
-
+// </View>
+//      </SafeAreaView> 
 }
 
 export default HomeScreen
@@ -956,15 +947,17 @@ const styles = StyleSheet.create({
       maxHeight: 1000,
     },
     gameSelection: {
+
+      // fontWeight: "bold",
       left: '4%',
       top: '57%',
       justifyContent: "flex-start",
       alignItems: 'center',
       width: 200,
-      height: 40,
+      height: 50,
       marginTop:160,
       // backgroundColor:'rgba(144, 144, 0, 0.8)',
-      backgroundColor:'rgba(22, 160, 133, 0.8)',
+      backgroundColor:'rgba(102, 140, 190, 1)',
       borderRadius: 50
     },
 

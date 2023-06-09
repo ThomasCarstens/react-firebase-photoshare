@@ -44,10 +44,10 @@ const LoginScreen = () => {
     const handleAnonUser = () => {
         navigation.replace("Selection")
     }
-
+{/* <SafeAreaView style={{...styles.webContainer}}> 
+            <View style={{...styles.webContent}}>    */}
     return (
-    <SafeAreaView style={{...styles.webContainer}}> 
-            <View style={{...styles.webContent}}>   
+    
 
     <KeyboardAvoidingView
         style={styles.container}
@@ -90,9 +90,10 @@ const LoginScreen = () => {
             
         </View>
     </KeyboardAvoidingView>
-    </View>
-         </SafeAreaView>
+    
   )
+//   </View>
+//          </SafeAreaView>
 }
 
 export default LoginScreen
