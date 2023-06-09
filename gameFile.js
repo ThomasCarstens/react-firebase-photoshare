@@ -2,6 +2,8 @@
 
 const spoofGameSets = {
     "Africa": ["Africa_country_identification", "Africa_country_of_location"],
+    "Dogs": ["Dogs", "Spaniels"],
+    "Cheeses": ["Cheeses"],
 };
 
 var spoofOutcomeImages = {
@@ -63,7 +65,7 @@ const spoofInstructions = {
         3: 'Now Algeria',//vs. Welsh Springer.
         4: 'Now Libya',//vs. Welsh Springer.
         5: 'Finally: Algeria',//vs. Welsh Springer.
-        6: 'Test your knowledge: find the American water s.', //vs ['Field Spaniel', 'Boykin spaniel']
+        6: 'Game complete!', //vs ['Field Spaniel', 'Boykin spaniel']
         // 5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
         },    
     "Africa_country_of_location": {

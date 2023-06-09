@@ -1,5 +1,5 @@
-import { ImageBackground, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Image, ImageBackground, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useRef } from 'react'
 import {useState, useEffect} from 'react'
 import { auth, firebase } from '../firebase'
 import { useNavigation } from '@react-navigation/core'
@@ -9,24 +9,35 @@ import { browserLocalPersistence, browserSessionPersistence, setPersistence, sig
 import Orientation, { LANDSCAPE_LEFT, OrientationLocker } from 'react-native-orientation-locker';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { SafeAreaView } from 'react-native-web';
+import Toast from 'react-native-fast-toast';
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
-// if (!webView){
-//   ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
-// }
+
 const SelectionScreen = ({ navigation }) => {
     // Orientation.lockToLandscape();
+    const toast = useRef(null);
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
     let thumbnailStyle = webView?(styles.imageStyleWeb):(styles.imageStyleMobile)
-    
+    if (!webView){
+      ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
+    } 
+
+    const plsCreateAccount = () => {
+      toast.current.show('Create an account to unlock this course ! ', { type: "success" });
+    }
+
+    const plsAwaitRelease = () => {
+      toast.current.show('Course released soon ! ', { type: "success" });
+    }
+
 {/* <SafeAreaView style={{...styles.webContainer}}> 
              <View style={{...styles.webContent}}>     */}
     return (
       
-
+      
       <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{width: '102%', left: '-2%',  height: '120%', top: '-5%'}}>
-  
+      <Toast ref={toast} marginBottom={200} />
       <ScrollView contentContainerStyle= {styles.gameRow}>
-  
+      
         {/* "BONES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Dogs' })}>
           <ImageBackground source={require('../assets/triceratops_skull.jpg')} 
@@ -36,106 +47,117 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity>      
 
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Bones' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Cheeses' })}>
           <ImageBackground source={require('../assets/triceratops_skull.jpg')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Bones'} </Text>
+            <Text style ={styles.gameText}> {'Cheeses'} </Text>
           </ImageBackground>
         </TouchableOpacity>          
   
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Dragonflies' })} >
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Africa' })} >
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Dragonflies'} </Text>
+            <Text style ={styles.gameText}> {'Africa'} </Text>
           </ImageBackground>    
         </TouchableOpacity>
   
         {/* "CREATURES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Creatures' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Creatures'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>  
         </TouchableOpacity>        
   
         {/* "CRABS" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Crabs' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/crab.jpg')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Crabs'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>  
         </TouchableOpacity>     
   
         {/* "REPTILES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Reptiles' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/crab.jpg')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Reptiles'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground> 
         </TouchableOpacity>   
   
         {/* "ENGINES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Engines' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Engines'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>
         </TouchableOpacity>  
   
         {/* "CARS" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Cars' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Cars'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>
         </TouchableOpacity>  
   
         {/* "TURTLES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Turtles' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Turtles'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>
         </TouchableOpacity>  
   
         {/* "WEAPONRY" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Weaponry' })} >
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}> 
             <Text style ={styles.gameText}> {'Weaponry'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>
         </TouchableOpacity>    
   
         {/* "FLOWERS" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Pokemon' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen02.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Pokemon'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>
         </TouchableOpacity>    
   
         {/* "FLOWERS" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Fish' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile}  imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Fish'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>
         </TouchableOpacity>    
   
         {/* "FLOWERS" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Mustaches' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Mustaches'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>
         </TouchableOpacity>    
   
         {/* "FLOWERS" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'LivingRoom' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'LivingRoom'} </Text>
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>
         </TouchableOpacity> 
   
@@ -388,6 +410,13 @@ var styles = StyleSheet.create({
       width: "100%",
       maxWidth: 1000,
       maxHeight: 400,
+    },
+    lock: {
+      width: "100%",
+      width:60,
+      height: 60,
+      marginLeft: 40,
+      marginTop:30
     },
     // END OF WEB VIEW.
   })

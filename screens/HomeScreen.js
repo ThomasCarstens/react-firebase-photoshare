@@ -14,6 +14,8 @@ import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
 import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag} from '../gameFile';
+import * as ScreenOrientation from 'expo-screen-orientation';
+
 // import Toast, { useToast } from 'react-native-toast-notifications';
 // import { Platform } from 'react-native/types';
 // import Toast from 'react-native-fast-toast/lib/typescript/toast';
@@ -25,11 +27,58 @@ import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag
 
 
 const HomeScreen = (props) => {
-  
-  
+  const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
+  const [gameSetLevel, setGameSetLevel] = useState(0)
 
+  // Screen title.
+  useEffect(() => {
+    navigation.setOptions({
+      title: gameName+' Game',
+    });
+
+    if (!webView){
+      ScreenOrientation.lockAsync(2); //LANDSCAPE_LEFT
+    } 
+    // const A = ref(storage, "Cheeses" + '/'+"Rochebaron"+'/');
+    // const B = ref(storage, "Cheeses" + '/'+"Bleu d'Auvergne"+'/');
+    // const C = ref(storage, "Cheeses" + '/'+"Roquefort"+'/');
+    // // const D = ref(storage, "Cheeses" + '/'+"Libya"+'/');
+    // labelBatch(A, "Rochebaron")
+    // labelBatch(B, "Bleu d'Auvergne")
+    // labelBatch(C, "Roquefort")
+    // labelBatch(D, "Libya")
+    // const E = ref(storage, "Africa_country_of_location" + '/'+"Morocco"+'/');
+    // const F = ref(storage, "Africa_country_of_location" + '/'+"Algeria"+'/');
+    // const G = ref(storage, "Africa_country_of_location" + '/'+"Tunisia"+'/');
+    // const H = ref(storage, "Africa_country_of_location" + '/'+"Libya"+'/');
+    // labelBatch(E, "Morocco")
+    // labelBatch(F, "Algeria")
+    // labelBatch(G, "Tunisia")
+    // labelBatch(H, "Libya")
+    if (auth.currentUser) {
+      const userDataRef = ref_d(database, auth.currentUser.email.split('.')[0] + '/'+selectedGame);
+
+      onValue(userDataRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data){
+              console.log('profile pic now is:', data)
+            setGameSetLevel(data.gameSetLevel)
+            }
+            
+          })
+
+      
+     
+    } else {
+      // const userLearningLevel = 1 //TBD | Get from database.
+    }
+  }, []);
 
   
+  
+ 
+      
+
 
   
   // gameName = gameName?gameName:"shiba inu"
@@ -43,7 +92,7 @@ const HomeScreen = (props) => {
   const [loading, setLoading] = useState(true)
   const [correctClickCount, setCorrectClickCount] = useState(0)
   const [incorrectClickCount, setIncorrectClickCount] = useState(0)
-  const [learningLevel, setLearningLevel] = useState(1)
+  const [learningLevel, setLearningLevel] = useState(1) // TBD | Keep user game level
   const [successRate, setSuccessRate] = useState(1)
   const [modalVisible, setModalVisible] = useState(true)
 
@@ -57,10 +106,9 @@ const HomeScreen = (props) => {
     'https://placeimg.com/640/640/people',
   ];
     
-// const gameName = props.route.params?.name // TBD | Reinstate with navigation.
-  const selectedGame = "Africa"
-  const userLearningLevel = 1 //TBD | Get from database.
-  const gameName = spoofGameSets[selectedGame][userLearningLevel-1]
+  
+  
+  var gameName = spoofGameSets[selectedGame][gameSetLevel]
   console.log(gameName, "is the game noww.")
 
   const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
@@ -69,49 +117,27 @@ const HomeScreen = (props) => {
   const [sort, setSort] = useState(false)
   const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
   const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofInstructions[gameName]).pop()))
-  
-  
-  // Screen title.
-  useEffect(() => {
-    navigation.setOptions({
-      title: gameName+' Game',
-    });
-    // const id_Morocco = ref(storage, "Africa_country_identification" + '/'+"Morocco"+'/');
-    // const id_Algeria = ref(storage, "Africa_country_identification" + '/'+"Algeria"+'/');
-    // const id_Tunisia = ref(storage, "Africa_country_identification" + '/'+"Tunisia"+'/');
-    // const id_Libya = ref(storage, "Africa_country_identification" + '/'+"Libya"+'/');
-    // labelBatch(id_Morocco, "Morocco")
-    // labelBatch(id_Algeria, "Algeria")
-    // labelBatch(id_Tunisia, "Tunisia")
-    // labelBatch(id_Libya, "Libya")
-    // const loc_Morocco = ref(storage, "Africa_country_of_location" + '/'+"Morocco"+'/');
-    // const loc_Algeria = ref(storage, "Africa_country_of_location" + '/'+"Algeria"+'/');
-    // const loc_Tunisia = ref(storage, "Africa_country_of_location" + '/'+"Tunisia"+'/');
-    // const loc_Libya = ref(storage, "Africa_country_of_location" + '/'+"Libya"+'/');
-    // labelBatch(loc_Morocco, "Morocco")
-    // labelBatch(loc_Algeria, "Algeria")
-    // labelBatch(loc_Tunisia, "Tunisia")
-    // labelBatch(loc_Libya, "Libya")
-  }, []);
+  const [gameComplete, setGameComplete] = useState(false)
+  const [gameSetComplete, setGameSetComplete] = useState(false)
+  const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
+
+  /
 
   
   // Game parameters.
   useEffect(() => {
     // Within 1 game
+    if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
+      setGameComplete(true)
+      return
+    }
     setInstructionText(spoofInstructions[gameName][learningLevel]); //TBD. Database.
     setCorrectTag(spoofCorrectTag[gameName][learningLevel])
     setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
     setOutcomeImage(spoofOutcomeImages[gameName][learningLevel])
     setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[gameName]).pop()) )
-
-    if (correctTag == "end"){
-      if (spoofGameSets[gameName].length > userLearningLevel){
-        userLearningLevel++
-        gameName = spoofGameSets[selectedGame][userLearningLevel-1]
-      }
-    }
     
-  }, [learningLevel])
+  }, [learningLevel, gameSetLevel])
 
   useEffect(() => {
     toast.current.show(instructionText, { type: "success" });
@@ -567,9 +593,9 @@ const HomeScreen = (props) => {
       console.log('Level Up.')
 
       // Learning Level changes the gallery + instructions
-
-      setLearningLevel(prev => prev+1) 
       
+      setLearningLevel(prev => prev+1) 
+
       
 
       
@@ -590,6 +616,30 @@ const HomeScreen = (props) => {
   }
   {/* <SafeAreaView style ={styles.webContainer}>
       <View style ={styles.webContent}>  */}
+
+  const nextGameSetLevel = () => {
+    if (gameSetLevel < Object.keys(spoofGameSets[selectedGame]).length) {
+      if (auth.currentUser) {
+              set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame), {
+                gameSetLevel: gameSetLevel+1
+              }).catch(error =>alert(error.message));        
+            }
+
+      setGameSetLevel(previous => previous+1)
+      // Update user -> game -> level: gameSetLevel      
+      
+      
+      
+      setGameComplete(false)
+      setLearningLevel(1)
+      return
+    } else {
+      setGameSetComplete(true)
+    }
+  }
+
+
+
   const openModal = () => {
     setModalVisible(true)
   }
@@ -598,11 +648,12 @@ const HomeScreen = (props) => {
    
     <View>
       <Toast ref={toast} />
-      <View style={{padding: 10}}></View>
+      <View style={{padding: 15}}></View>
+      <Text style={{fontSize: 13, alignContent: 'flex-end'}} >  LEVEL {gameSetLevel+1} </Text>
       <Text style={{fontSize: 20}}> {instructionText} </Text>
       <View style={{padding: 10}}></View>
       <View style={{flexDirection: 'row'}} >
-      <View style={{ flex: 1, width: 20, height: 200, backgroundColor: 'green' }}/>
+      <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/>
 
       
 
@@ -617,23 +668,10 @@ const HomeScreen = (props) => {
           transition={1000}
         />
       </TouchableHighlight>
-      
-      <TouchableHighlight onPress={()=> handlePicSelection(4)}>
-        <Image 
-          source={{uri:`${gallery[3]}`,}}
-          style={styles.imageContainer}
-          placeholder={blurhash}
-          contentFit="cover"
-          transition={1000}
-        />        
-      </TouchableHighlight>
 
-      </View>
-
-      <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection(2)}>
+      <TouchableHighlight onPress={()=> handlePicSelection(3)}>
       <Image 
-        source={{uri:`${gallery[1]}`,}}
+        source={{uri:`${gallery[2]}`,}}
         style={styles.imageContainer}
         placeholder={blurhash}
         contentFit="cover"
@@ -649,16 +687,31 @@ const HomeScreen = (props) => {
         transition={1000}
       />
       </TouchableHighlight>
+      
+
       </View>
+
       <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection(3)}>
+
+
+      <TouchableHighlight onPress={()=> handlePicSelection(2)}>
       <Image 
-        source={{uri:`${gallery[2]}`,}}
+        source={{uri:`${gallery[1]}`,}}
         style={styles.imageContainer}
         placeholder={blurhash}
         contentFit="cover"
         transition={1000}
       />
+      </TouchableHighlight>
+
+      <TouchableHighlight onPress={()=> handlePicSelection(4)}>
+        <Image 
+          source={{uri:`${gallery[3]}`,}}
+          style={styles.imageContainer}
+          placeholder={blurhash}
+          contentFit="cover"
+          transition={1000}
+        />        
       </TouchableHighlight>
       <TouchableHighlight onPress={()=> handlePicSelection(6)}>
       <Image 
@@ -669,16 +722,27 @@ const HomeScreen = (props) => {
         transition={1000}
       />
       </TouchableHighlight>
-      </View>
+      
 
-      <View style={{ flex: 1, width: 20, height: 200, backgroundColor: 'green' }}/>
+
+      </View>
+      {/* <View style={{flexDirection: 'column'}}>
+
+      </View> */}
+
+      <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/>
     </View>
     {/* <View padding={70} ></View> */}
-    <View padding={50} style={{flexDirection: 'row'}} /* for the progress bar */ >
-      <Text>Progress: </Text>
-      <Progress.Bar progress={progressCalculate()}  width={200} height={20}/>
+    <View padding={0}  style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}} /* for the progress bar */ >
+      <TouchableOpacity  padding={50}  style={styles.button} onPress={openModal} >
+            <Text style={styles.buttonText}>Hint</Text>
+      </TouchableOpacity>
+      {/* <Text marginTop={20}>Progress: </Text> */}
       
-      
+      {/* <View padding={10}></View> */}
+      {(gameComplete)?<TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
+            <Text style={styles.buttonText}>Next Level</Text>
+      </TouchableOpacity>:<Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>}
     </View>
     
 
@@ -703,9 +767,7 @@ const HomeScreen = (props) => {
       style={styles.input}>
       </TextInput>  */}
 
-      <TouchableOpacity style={styles.button} onPress={openModal} >
-            <Text style={styles.buttonText}>Hint</Text>
-      </TouchableOpacity>
+      
 
      {/* <TouchableOpacity style={styles.button} onPress={pickImage} >
         <Text style={styles.buttonText}>Choose File</Text>
@@ -717,13 +779,13 @@ const HomeScreen = (props) => {
         <Text style={styles.buttonText}>Upload</Text>
       </TouchableOpacity> */}
 
-      {/* <TouchableOpacity style={styles.button} onPress={handleSelectionScreen}>
-        <Text style={styles.buttonText}>Back to Game Selection</Text>
-      </TouchableOpacity> */}
-
-      <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-        <Text style={styles.buttonText}>Sign out</Text>
+      <TouchableOpacity style={styles.button} onPress={handleSelectionScreen}>
+        <Text style={styles.buttonText}>Back</Text>
       </TouchableOpacity>
+
+      {/* <TouchableOpacity style={styles.button} onPress={handleSignOut}>
+        <Text style={styles.buttonText}>Sign Out</Text>
+      </TouchableOpacity> */}
 
 
 
@@ -848,8 +910,8 @@ const styles = StyleSheet.create({
         // backgroundColor: '#123456',
         // justifyContent: 'center',
         // alignItems: 'center',
-        width:100,
-        height:100,
+        width:150,
+        height:150,
         borderRadius:20,
         
         // resizeMode: 'contain',
@@ -876,8 +938,8 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
     },
     button: {
-        backgroundColor: '#0782F9',
-        width: '60%',
+        backgroundColor: 'rgb(13, 1, 117)',
+        width: '40%',
         padding: 10,
         borderRadius: 10,
         alignItems: 'center',

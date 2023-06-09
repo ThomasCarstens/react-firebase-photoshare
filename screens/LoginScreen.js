@@ -84,8 +84,8 @@ const LoginScreen = () => {
 
             <TouchableOpacity
                 onPress={handleAnonUser}
-                style={[styles.button, styles.buttonOutline]} >
-                 <Text style={styles.buttonOutlineText}> Try without an account </Text>   
+                style={[styles.buttonRed, styles.buttonOutlineRed]}>
+                 <Text style={styles.buttonOutlineTextRed} > Try without an account </Text>   
             </TouchableOpacity>
             
         </View>
@@ -151,7 +151,21 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         
     },
+    buttonRed: {
+        backgroundColor: '#0782F9',
+        width: '100%',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
 
+    buttonOutlineRed: {
+        backgroundColor: 'white', 
+        marginTop: 5,
+        borderColor: 'rgb(207, 107, 107)',
+        borderWidth: 2,
+        
+    },
     buttonText: {
         color: 'white',
         fontWeight: '700', 
@@ -163,7 +177,11 @@ const styles = StyleSheet.create({
         fontWeight: '700', 
         fontSize: 16,
     },
-
+    buttonOutlineTextRed: {
+        color: 'rgb(207, 107, 107)',
+        fontWeight: '700', 
+        fontSize: 16,
+    },
     // WEB VIEW
     webContainer: {
         flex: 1,
