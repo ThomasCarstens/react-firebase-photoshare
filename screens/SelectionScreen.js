@@ -1,4 +1,4 @@
-import { Image, ImageBackground, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Button, Image, ImageBackground, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useRef } from 'react'
 import {useState, useEffect} from 'react'
 import { auth, firebase } from '../firebase'
@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-web';
 import Toast from 'react-native-fast-toast';
 import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import { storage, database } from '../firebase'
-
+import { Linking } from 'react-native';
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
@@ -34,7 +34,7 @@ const SelectionScreen = ({ navigation }) => {
       onValue(userDataRef, (snapshot) => {
             const data = snapshot.val();
             if (data){
-              console.log('profile pic now is:', data)
+              console.log('User Data is now:', data)
               setUserData(data)
             // setGameSetLevel(data.gameSetLevel)
             }
@@ -58,10 +58,21 @@ const SelectionScreen = ({ navigation }) => {
       
       <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{width: '102%', left: '-2%',  height: '120%', top: '-5%'}}>
       <Toast ref={toast} marginBottom={200} />
-      <ScrollView contentContainerStyle= {styles.gameRow}>
+
+      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+      <Text  style={{color: '#b6dbd8', }} marginTop={315} marginLeft={20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
+        {'Send suggestions \n to the team'} 
+      </Text>
+      
+      {/* <Text marginTop={200} marginLeft={100} onPress={() => Linking.openURL('http://google.com')}>dfsfsd ddddd
+
+      </Text> */}
+
+
+      <ScrollView  contentContainerStyle= {styles.gameRow}>
       
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Dogs' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Dogs', level: userData['Dogs']['gameSetLevel'] })}>
           <ImageBackground source={require('../assets/triceratops_skull.jpg')} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>
             <Text style ={styles.gameText}> {'Dogs'} </Text>
@@ -69,7 +80,7 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity>      
 
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Cheeses' })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Cheeses', level: userData['Cheeses']['gameSetLevel'] })}>
           <ImageBackground source={require('../assets/triceratops_skull.jpg')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Cheeses'} </Text>
@@ -77,7 +88,7 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity>          
   
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Africa' })} >
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Africa' , level: userData['Africa']['gameSetLevel']})} >
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Africa'} </Text>
@@ -184,7 +195,7 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity> 
   
       </ScrollView>
-      
+      </View>
   
       </ImageBackground>
    
@@ -265,7 +276,7 @@ var styles = StyleSheet.create({
   
     gameRow: {
       top: '5%',
-      left: '50%',
+      left: '20%',
       width: '70%',
       height: '130%', 
       flexDirection : 'row', 
