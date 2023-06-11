@@ -10,17 +10,39 @@ import Orientation, { LANDSCAPE_LEFT, OrientationLocker } from 'react-native-ori
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { SafeAreaView } from 'react-native-web';
 import Toast from 'react-native-fast-toast';
+import { ref as ref_d, set, get, onValue } from 'firebase/database'
+import { storage, database } from '../firebase'
+
+
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
 const SelectionScreen = ({ navigation }) => {
     // Orientation.lockToLandscape();
     const toast = useRef(null);
+    const [userData, setUserData] = useState()
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
     let thumbnailStyle = webView?(styles.imageStyleWeb):(styles.imageStyleMobile)
     if (!webView){
       ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
     } 
 
+    // Query All User Data here.
+    useEffect(()=>{
+     if (auth.currentUser) {
+      const userDataRef = ref_d(database, auth.currentUser.email.split('.')[0] );
+
+      onValue(userDataRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data){
+              console.log('profile pic now is:', data)
+              setUserData(data)
+            // setGameSetLevel(data.gameSetLevel)
+            }
+            
+          })
+    } 
+    }, [])
+    
     const plsCreateAccount = () => {
       toast.current.show('Create an account to unlock this course ! ', { type: "success" });
     }
@@ -29,10 +51,10 @@ const SelectionScreen = ({ navigation }) => {
       toast.current.show('Course released soon ! ', { type: "success" });
     }
 
-{/* <SafeAreaView style={{...styles.webContainer}}> 
-             <View style={{...styles.webContent}}>     */}
+//  <SafeAreaView style={{...styles.webContainer}}> 
+//              <View style={{...styles.webContent}}>    
     return (
-      
+       
       
       <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{width: '102%', left: '-2%',  height: '120%', top: '-5%'}}>
       <Toast ref={toast} marginBottom={200} />
@@ -63,11 +85,11 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity>
   
         {/* "CREATURES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Animal tracks', level: userData['Animal tracks']['gameSetLevel'] })}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Creatures'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
+            <Text style ={styles.gameText}> {'Animal tracks'} </Text>
+            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
           </ImageBackground>  
         </TouchableOpacity>        
   

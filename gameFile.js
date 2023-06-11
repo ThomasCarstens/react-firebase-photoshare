@@ -4,6 +4,7 @@ const spoofGameSets = {
     "Africa": ["Africa_country_identification", "Africa_country_of_location"],
     "Dogs": ["Dogs", "Spaniels"],
     "Cheeses": ["Cheeses"],
+    "Animal tracks": ["Footprints of species", "Animal gait from tracks"],
 };
 
 var spoofOutcomeImages = {
@@ -29,9 +30,15 @@ var spoofOutcomeImages = {
     "Africa_country_of_location": {
         1: require("./assets/context/Africa_country_identification/africa-flag_map.jpg"),
     },
+    "Animal gait from tracks": {
+        1: "https://firebasestorage.googleapis.com/v0/b/fir-auth-31f82.appspot.com/o/Animal%20gait%20from%20tracks%2F_instructions%2Fslide_16.jpg?alt=media&token=fc9ff496-ce60-4a1b-8196-08a137ae1aa3&_gl=1*1f96ncl*_ga*NTE5OTA5MzMxLjE2ODQ1ODUyMTA.*_ga_CW55HF8NVT*MTY4NjQ5MTM2NS41MS4xLjE2ODY0OTIxMDYuMC4wLjA.",
+    }, // TBD | DATABASE CALL.
+    "Footprints of species": {
+        1: "https://firebasestorage.googleapis.com/v0/b/fir-auth-31f82.appspot.com/o/Footprints%20of%20species%2F_instructions%2Finstructions.jpg?alt=media&token=05d3a99e-6304-46f5-9b5e-a318d815fb14&_gl=1*eqx4hx*_ga*NTE5OTA5MzMxLjE2ODQ1ODUyMTA.*_ga_CW55HF8NVT*MTY4NjQ5MTM2NS41MS4xLjE2ODY0OTIwMjUuMC4wLjA.",
+    },
 };
 
-for (i=1; i<56; i++){
+for (let i=1; i<56; i++){
     spoofOutcomeImages["Africa_country_identification"][i] = require("./assets/context/Africa_country_identification/africa-flag_map.jpg")
     spoofOutcomeImages["Africa_country_of_location"][i] = require("./assets/context/Africa_country_identification/africa-flag_map.jpg")
 };
@@ -75,6 +82,20 @@ const spoofInstructions = {
         4: 'Now Libya',//vs. Welsh Springer.
         5: 'Finally: Algeria',//vs. Welsh Springer.
         6: 'Test your knowledge: find the American water s.', //vs ['Field Spaniel', 'Boykin spaniel']
+        // 5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
+        },    
+    "Animal gait from tracks": {
+        1: 'First, let\'s identify waddlers.',//vs. Algeria
+        2: 'Then leapers and hoppers.', // vs. Boykin(3)
+        3: 'Now for zig zaggers.',//vs. Welsh Springer.
+        4: 'That was the easier stage. Are you ready for the next level?', //vs ['Field Spaniel', 'Boykin spaniel']
+        // 5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
+        },    
+    "Footprints of species": {
+        1: 'First, let\'s look for bear tracks.',//vs. Dog
+        2: 'Can you identify the lion tracks?', // vs. Dog
+        3: 'Now for finding the Dog tracks.',//vs. Bear and Lion
+        4: 'Are you ready for the next level?', //vs ['Field Spaniel', 'Boykin spaniel']
         // 5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
         },    
 };
@@ -123,7 +144,19 @@ const spoofCorrectTag = {
         4: 'Libya',
         5: 'Algeria',
         6: ''
-    },   
+    },  
+    "Animal gait from tracks": {
+        1: 'Waddlers',
+        2: 'LeapersHoppers', 
+        3: 'Zigzaggers',
+        4: '', 
+        },    
+    "Footprints of species": {
+        1: 'Bear',//vs. Dog
+        2: 'Lion', // vs. Dog
+        3: 'Dog',//vs. Bear and Lion
+        4: '', 
+        },     
 };
 
 const spoofIncorrectTag = {
@@ -162,6 +195,18 @@ const spoofIncorrectTag = {
         4: ['Tunisia', 'Algeria'],
         5: ['']
     },
+    "Animal gait from tracks": {
+        1: ['LeapersHoppers'],
+        2: ['Zigzaggers'], 
+        3: ['Waddlers', 'LeapersHoppers'],
+        4: [''], 
+        },    
+    "Footprints of species": {
+        1: ['Dog'],//vs. Dog
+        2: ['Dog'], // vs. Dog
+        3: ['Bear', 'Lion'],//vs. Bear and Lion
+        4: '', 
+        },     
 }
 
 export {spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}

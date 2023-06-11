@@ -45,7 +45,7 @@ const LoginScreen = () => {
         navigation.replace("Selection")
     }
 {/* <SafeAreaView style={{...styles.webContainer}}> 
-            <View style={{...styles.webContent}}>    */}
+            <View style={{...styles.webContent}}>     */}
     return (
     
 
@@ -90,10 +90,10 @@ const LoginScreen = () => {
             
         </View>
     </KeyboardAvoidingView>
-    
+
   )
 //   </View>
-//          </SafeAreaView>
+//          </SafeAreaView>    
 }
 
 export default LoginScreen
