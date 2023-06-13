@@ -1,4 +1,4 @@
-import { Button, Image, ImageBackground, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Button, Image, ImageBackground, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useRef } from 'react'
 import {useState, useEffect} from 'react'
 import { auth, firebase } from '../firebase'
@@ -13,6 +13,7 @@ import Toast from 'react-native-fast-toast';
 import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import { storage, database } from '../firebase'
 import { Linking } from 'react-native';
+import { getDownloadURL, ref } from 'firebase/storage'
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
@@ -20,14 +21,19 @@ const SelectionScreen = ({ navigation }) => {
     // Orientation.lockToLandscape();
     const toast = useRef(null);
     const [userData, setUserData] = useState()
+    const [gameName, setGameName] = useState()
+    const [modalVisible, setModalVisible] = useState(false)
+    const [outcomeImage, setOutcomeImage] = useState()
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
     let thumbnailStyle = webView?(styles.imageStyleWeb):(styles.imageStyleMobile)
     if (!webView){
       ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
     } 
 
-    // Query All User Data here.
+    
     useEffect(()=>{
+
+     // Query All User Data here.
      if (auth.currentUser) {
       const userDataRef = ref_d(database, auth.currentUser.email.split('.')[0] );
 
@@ -36,11 +42,31 @@ const SelectionScreen = ({ navigation }) => {
             if (data){
               console.log('User Data is now:', data)
               setUserData(data)
-            // setGameSetLevel(data.gameSetLevel)
             }
             
           })
     } 
+
+    // Query Instructions here.
+
+
+    
+    const getImage = async() => {
+        
+        const reference = ref(storage, 'Animal tracks'+'/_outcomes/1.jpg');
+        await getDownloadURL(reference).then((x)=> {
+            console.log('downloadable1? : ', x)
+            setOutcomeImage(x);
+        })
+        if (url==undefined) {
+            console.log('Error on one.')
+        }
+    }
+    
+    getImage()
+
+
+
     }, [])
     
     const plsCreateAccount = () => {
@@ -72,7 +98,8 @@ const SelectionScreen = ({ navigation }) => {
       <ScrollView  contentContainerStyle= {styles.gameRow}>
       
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Dogs', level: userData['Dogs']['gameSetLevel'] })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', 
+        { name: 'Dogs', level: (auth.currentUser)?userData['Dogs']['gameSetLevel']:0 })}>
           <ImageBackground source={require('../assets/triceratops_skull.jpg')} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>
             <Text style ={styles.gameText}> {'Dogs'} </Text>
@@ -80,7 +107,8 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity>      
 
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Cheeses', level: userData['Cheeses']['gameSetLevel'] })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', 
+        { name: 'Cheeses', level: (auth.currentUser)?userData['Cheeses']['gameSetLevel']:0 })}>
           <ImageBackground source={require('../assets/triceratops_skull.jpg')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Cheeses'} </Text>
@@ -88,7 +116,8 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity>          
   
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Africa' , level: userData['Africa']['gameSetLevel']})} >
+        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', 
+        { name: 'Africa' , level: (auth.currentUser)?userData['Africa']['gameSetLevel']:0 })} >
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Africa'} </Text>
@@ -96,7 +125,9 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity>
   
         {/* "CREATURES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', { name: 'Animal tracks', level: userData['Animal tracks']['gameSetLevel'] })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {
+          setGameName('Animal tracks')
+          setModalVisible(true)}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Animal tracks'} </Text>
@@ -197,6 +228,74 @@ const SelectionScreen = ({ navigation }) => {
       </ScrollView>
       </View>
   
+
+      {/* MODAL IF modalVisible */}
+      <Modal
+      animationType="slide"
+      transparent={true}
+      // backgroundColor='rgba(22, 160, 133, 0.8)'
+      visible={modalVisible} //instead of on state change modalVisible
+      onRequestClose={() => {
+        Alert.alert("Modal has been closed.");
+        setModalVisible(!modalVisible);
+      }}
+      >
+
+    {/* SAFE AREA !! */}
+     {/* <SafeAreaView style ={styles.webContainer}>
+        <View style ={styles.webContent}>    */}
+      <View backgroundColor='rgba(46, 204, 113, 0.8)'>
+
+          
+            <View style={styles.modalRow}>
+
+              <TouchableOpacity
+                style={styles.gameSelection}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+
+                  // TBD | OUTCOMES VISUAL
+                }}>
+                <Text color="red">{"In this game, you learn to:"}</Text> 
+      
+              </TouchableOpacity>
+
+              <Image source={{outcomeImage}} style={{height:370, width:330, marginLeft:15}}></Image>
+
+
+              <TouchableOpacity
+                style={styles.gameSelection}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  navigation.navigate('Home', { 
+                    name: 'Animal tracks', 
+                    level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                    data: (auth.currentUser)?userData:0 })
+                }}>
+                  <Text style={{fontWeight:"bold"}}> {"\n START GAME"} </Text>
+              </TouchableOpacity>  
+
+              
+
+              <TouchableOpacity
+                style={styles.gameSelection}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}>
+                  <Text style={{fontWeight:"bold"}}> {"\n BACK"} </Text>
+              </TouchableOpacity>  
+              
+
+            {/* </View> */}
+
+          </View>
+      </View>
+      {/* </View>
+
+     </SafeAreaView>  */}
+      </Modal>
+
+
       </ImageBackground>
    
   )

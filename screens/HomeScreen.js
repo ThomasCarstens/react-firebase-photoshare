@@ -28,6 +28,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 
 const HomeScreen = (props) => {
   const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
+  const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
 
   // Screen title.
@@ -121,14 +122,14 @@ const HomeScreen = (props) => {
   // Game parameters.
   useEffect(() => {
     
-    console.log('reloaded the gallery')
+    
     // At end of 1 game
     if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
       setGallery([]) // At the start to remove prior gameframes 
       setGameComplete(true)
       let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
       setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
-      
+
       
       return
     }
@@ -497,10 +498,13 @@ const HomeScreen = (props) => {
 
   const handlePicSelection = ( picNb ) => {
     // Also removed gallery for good measure
-    if (gameComplete){
-      toast.current.show("Game Complete! Next level?", { type: "error" });
+    
+    if (gameComplete||gameSetComplete){
+      toast.current.show("Game Complete!", { type: "error" });
       return
     }
+
+
 
     setLoading(false)
     /* Spoof Memo (now removed): we're just using the gallery indexes (picNb)
@@ -516,9 +520,10 @@ const HomeScreen = (props) => {
     console.log('TAGS\n', galleryTags, picNb-1)
     let randomInt = Math.floor(Math.random() * gallery.length) ;
     console.log('randomInt', randomInt)
-    if (galleryTags[picNb-1]?.includes(correctTag)) {  
-    // New image... from onlineGallery  
 
+    // CASE: Picture correctly selected.
+    if (galleryTags[picNb-1]?.includes(correctTag)) {  
+    // REMOVE Picture 
       setGallery(prevState => {
           
           let newState = [...prevState]
@@ -531,10 +536,11 @@ const HomeScreen = (props) => {
           newState.splice(picNb-1, 1);                   
           return newState})
       setCorrectClickCount(prevState=> prevState+1)
-      // toast.current.show("Yes", { type: "failure" });
+
+
 
     } else {
-      // 
+      // DO NOTHING.
       setGallery(prevState => {
 
 
@@ -595,6 +601,9 @@ const HomeScreen = (props) => {
     // || ((correctLeftInGallery.length == 0 ) && !loading)
     // if ((averageCorrectRate > 0.8) ){
     console.log('level if 0: ', correctLeftInGallery.length)
+
+    
+    // END OF GAME
     if (correctLeftInGallery.length == 0){
       setLoading(true)
       // Next level when 80% correct rate OR no more correctLeftInGallery  
@@ -603,18 +612,12 @@ const HomeScreen = (props) => {
       setSuccessRate(prev => (prev+averageCorrectRate)/2) // will be reset once per game.
       console.log('successRate: ', successRate)
       console.log('Level Up.')
-
+      // On last game of gameSet --- set gameSetComplete == true
+      if (gameSetLevel+1 < Object.keys(spoofGameSets[selectedGame]).length) {
+        setGameSetComplete(true)
+      }
       // Learning Level changes the gallery + instructions
-      
       setLearningLevel(prev => prev+1) 
-
-      
-
-      
-      
-
-      
-      
     }
     
     console.log("correct ones in gallery: ", correctLeftInGallery)
@@ -630,30 +633,27 @@ const HomeScreen = (props) => {
       <View style ={styles.webContent}>  */}
 
   const nextGameSetLevel = () => {
-    if (gameSetLevel < Object.keys(spoofGameSets[selectedGame]).length) {
+    if (gameSetLevel+1 < Object.keys(spoofGameSets[selectedGame]).length) {
       if (auth.currentUser) {
           let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
+          // Update user -> game -> level: gameSetLevel  
           set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame), {
             gameSetLevel: gameSetLevel+1,
-
           }).catch(error =>alert(error.message));        
+          // Update user -> game -> accuracy -> level: gameSetLevel  
           set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame+'/accuracy'), {
             [gameSetLevel]: averageCorrectRate,
 
           }).catch(error =>alert(error.message));    
         }
 
-
       setGameSetLevel(previous => previous+1)
-      // Update user -> game -> level: gameSetLevel      
-      
-      
-      
-      setGameComplete(false)
+      setGameSetComplete(false)
       setLearningLevel(1)
       return
     } else {
       setGameSetComplete(true)
+      console.log('TRUE: Game Set Complete.')
     }
   }
 
@@ -670,7 +670,7 @@ const HomeScreen = (props) => {
     <View>
       <Toast ref={toast} />
       <View style={{padding: 15}}></View>
-      <Text style={{fontSize: 13, alignContent: 'flex-end'}} >  LEVEL {gameSetLevel+1} </Text>
+      <Text style={{fontSize: 13, alignContent: 'flex-end'}} >  GAME {gameSetLevel+1} </Text>
       <Text style={{fontSize: 20}}> {instructionText} </Text>
       <View style={{padding: 10}}></View>
       <View style={{flexDirection: 'row'}} >
@@ -761,9 +761,10 @@ const HomeScreen = (props) => {
       {/* <Text marginTop={20}>Progress: </Text> */}
       
       {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
-      {(gameComplete)?<TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
+      {(gameComplete&&(!gameSetComplete))?<TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
             <Text style={styles.buttonText}>Next Level</Text>
-      </TouchableOpacity>:<Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>}
+      </TouchableOpacity>:(gameSetComplete)?<TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={navigation.replace('Scores', { lastscore: 99.99, data:  (auth.currentUser)?userData:0 })}>
+            <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>: <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>}
     </View>
     
 
@@ -972,6 +973,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 20,
     },
+    buttonRainbox: {
+      backgroundColor: '#e66465',
+      width: '40%',
+      padding: 10,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginTop: 20,
+  },
     selectButton: {
         borderRadius: 5,
         width: 150,
