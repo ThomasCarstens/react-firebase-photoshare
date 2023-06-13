@@ -747,24 +747,31 @@ const HomeScreen = (props) => {
 
 
       </View>
-      {/* <View style={{flexDirection: 'column'}}>
 
-      </View> */}
 
-      <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/>
-    </View>
-    {/* <View padding={70} ></View> */}
-    <View padding={0}  style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}} /* for the progress bar */ >
+      <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/></View>
+
+      <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
+
       <TouchableOpacity  padding={50}  style={styles.button} onPress={openModal} >
             <Text style={styles.buttonText}>Hint</Text>
       </TouchableOpacity>
-      {/* <Text marginTop={20}>Progress: </Text> */}
       
       {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
-      {(gameComplete&&(!gameSetComplete))?<TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
-            <Text style={styles.buttonText}>Next Level</Text>
-      </TouchableOpacity>:(gameSetComplete)?<TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={navigation.replace('Scores', { lastscore: 99.99, data:  (auth.currentUser)?userData:0 })}>
-            <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>: <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>}
+
+      {(gameComplete&&(!gameSetComplete))?
+        <TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
+              <Text style={styles.buttonText}>Next Level</Text>
+        </TouchableOpacity>
+      :(gameSetComplete)?
+      <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={navigation.replace('Scores', { 
+        lastscore: 99.99, 
+        data:  (auth.currentUser)?userData:0 })}>
+            <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
+      : /*else if in game*/
+      <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>
+      }
+
     </View>
     
 
@@ -781,7 +788,11 @@ const HomeScreen = (props) => {
 
 
     <View style={styles.container}>
-      {/* <Text>Email: {auth.currentUser?.email}</Text> */}
+
+      
+      {/* KEEP THIS STUFF
+      
+      <Text>Email: {auth.currentUser?.email}</Text> */}
       
       {/* <TextInput
       onChangeText={onChangeCustomMetadataInput}

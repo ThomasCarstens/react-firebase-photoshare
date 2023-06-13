@@ -14,6 +14,7 @@ import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import { storage, database } from '../firebase'
 import { Linking } from 'react-native';
 import { getDownloadURL, ref } from 'firebase/storage'
+import { SearchBar } from 'react-native-elements'
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
@@ -23,7 +24,9 @@ const SelectionScreen = ({ navigation }) => {
     const [userData, setUserData] = useState()
     const [gameName, setGameName] = useState()
     const [modalVisible, setModalVisible] = useState(false)
+    const [thumbnailImage, setThumbnailImage] = useState()
     const [outcomeImage, setOutcomeImage] = useState()
+    const [searchValue, setSearchValue] = useState()
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
     let thumbnailStyle = webView?(styles.imageStyleWeb):(styles.imageStyleMobile)
     if (!webView){
@@ -53,19 +56,32 @@ const SelectionScreen = ({ navigation }) => {
     
     const getImage = async() => {
         
-        const reference = ref(storage, 'Animal tracks'+'/_outcomes/1.jpg');
+        const reference = ref(storage, "Dogs"+'/_outcomes/3.png');
         await getDownloadURL(reference).then((x)=> {
             console.log('downloadable1? : ', x)
             setOutcomeImage(x);
         })
-        if (url==undefined) {
+        if (outcomeImage==undefined) {
             console.log('Error on one.')
         }
     }
     
     getImage()
 
-
+    const getThumbnailImage = async() => {
+        
+      const reference = ref(storage, 'Cheeses'+'/_thumbnail/cheese.jpg');
+      await getDownloadURL(reference).then((x)=> {
+          console.log('downloadable1? : ', x)
+          setThumbnailImage(x);
+      })
+      if (outcomeImage==undefined) {
+          console.log('Error on one.')
+      }
+    }
+  
+    getThumbnailImage()
+    
 
     }, [])
     
@@ -77,15 +93,29 @@ const SelectionScreen = ({ navigation }) => {
       toast.current.show('Course released soon ! ', { type: "success" });
     }
 
+    const updateSearch = () => {
+      toast.current.show('Search is off ! ', { type: "success" });
+    }
 //  <SafeAreaView style={{...styles.webContainer}}> 
 //              <View style={{...styles.webContent}}>    
     return (
        
       
       <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{width: '102%', left: '-2%',  height: '120%', top: '-5%'}}>
-      <Toast ref={toast} marginBottom={200} />
+      <Toast ref={toast}  />
+      
+      <View style={{flex: 1, flexDirection:"column"}}>
+        
+        
+        {/* <SearchBar
+        placeholder="What will you learn today?"
+        onChangeText={updateSearch}
+        value={searchValue}
+      /> */}
+      
 
       <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+        
       <Text  style={{color: '#b6dbd8', }} marginTop={315} marginLeft={20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
         {'Send suggestions \n to the team'} 
       </Text>
@@ -96,11 +126,12 @@ const SelectionScreen = ({ navigation }) => {
 
 
       <ScrollView  contentContainerStyle= {styles.gameRow}>
-      
+        {/* <Image source={{outcomeImage}} style={{height:170, width:130}}></Image> */}
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', 
-        { name: 'Dogs', level: (auth.currentUser)?userData['Dogs']['gameSetLevel']:0 })}>
-          <ImageBackground source={require('../assets/triceratops_skull.jpg')} 
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {
+          setGameName('Dogs')
+          setModalVisible(true)}}>
+          <ImageBackground source={require('../assets/thumbnails/dogs.png')} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>
             <Text style ={styles.gameText}> {'Dogs'} </Text>
           </ImageBackground>     
@@ -109,7 +140,7 @@ const SelectionScreen = ({ navigation }) => {
         {/* "BONES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', 
         { name: 'Cheeses', level: (auth.currentUser)?userData['Cheeses']['gameSetLevel']:0 })}>
-          <ImageBackground source={require('../assets/triceratops_skull.jpg')} 
+          <ImageBackground source={{uri:`${thumbnailImage}`}} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Cheeses'} </Text>
           </ImageBackground>
@@ -118,7 +149,7 @@ const SelectionScreen = ({ navigation }) => {
         {/* "BONES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', 
         { name: 'Africa' , level: (auth.currentUser)?userData['Africa']['gameSetLevel']:0 })} >
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
+          <ImageBackground source={require('../assets/thumbnails/africa.jpg')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Africa'} </Text>
           </ImageBackground>    
@@ -128,7 +159,7 @@ const SelectionScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Animal tracks')
           setModalVisible(true)}}>
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
+          <ImageBackground source={require('../assets/thumbnails/tracks.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Animal tracks'} </Text>
             {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
@@ -146,9 +177,9 @@ const SelectionScreen = ({ navigation }) => {
   
         {/* "REPTILES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/crab.jpg')} 
+          <ImageBackground source={require('../assets/thumbnails/berries.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Reptiles'} </Text>
+            <Text style ={styles.gameText}> {'Berries'} </Text>
             {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground> 
         </TouchableOpacity>   
@@ -227,7 +258,7 @@ const SelectionScreen = ({ navigation }) => {
   
       </ScrollView>
       </View>
-  
+      </View>
 
       {/* MODAL IF modalVisible */}
       <Modal
@@ -244,52 +275,90 @@ const SelectionScreen = ({ navigation }) => {
     {/* SAFE AREA !! */}
      {/* <SafeAreaView style ={styles.webContainer}>
         <View style ={styles.webContent}>    */}
-      <View backgroundColor='rgba(46, 204, 113, 0.8)'>
 
+<View backgroundColor='rgba(46, 204, 113, 0.8)'>
+          {/* <View style={{ flexDirection:"row"}}> */}
+            {/* <View padding={400} ></View> */}
           
             <View style={styles.modalRow}>
 
+            <View flexDirection='column' marginBottom={3300}>
+              {(auth.currentUser)?
               <TouchableOpacity
+                    style={styles.gameSelection}
+
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      navigation.navigate('Home', { 
+                        name: gameName, 
+                        level: userData['Animal tracks']['gameSetLevel'], 
+                        data: userData })
+                    }}>
+
+                      <Text style={{fontWeight:"bold"}}> {"\n CONTINUE GAME"} </Text>
+                  </TouchableOpacity>  
+:<View></View>}
+                  <TouchableOpacity
+                    style={styles.gameSelection}
+
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      navigation.navigate('Home', { 
+                        name: gameName, 
+                        level: 0, 
+                        data: 0 })
+                    }}>
+
+                      <Text style={{fontWeight:"bold"}}> {"\n START FROM BEGINNING"} </Text>
+                  </TouchableOpacity>  
+            
+            
+                  
+                
+                  <TouchableOpacity
+                    style={styles.gameSelection}
+
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      navigation.navigate('Score', { 
+                        name: 'Animal tracks', 
+                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        data: (auth.currentUser)?userData:0 })
+                    }}>
+
+                      <Text style={{fontWeight:"bold"}}> {"\n RANKING"} </Text>
+                  </TouchableOpacity>  
+                
+                  <TouchableOpacity
+                    style={styles.gameSelection}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}>
+                      <Text style={{fontWeight:"bold"}}> {"\n BACK"} </Text>
+                  </TouchableOpacity>  
+            </View>
+            
+
+              {/* <TouchableOpacity
                 style={styles.gameSelection}
                 onPress={() => {
                   setModalVisible(!modalVisible);
 
-                  // TBD | OUTCOMES VISUAL
+                  navigation.navigate('Selection')
                 }}>
-                <Text color="red">{"In this game, you learn to:"}</Text> 
       
-              </TouchableOpacity>
+                <Text> {"\n EXIT TO GAME SELECTION"} </Text>
+              </TouchableOpacity> */}
+              <Image source={{uri:`${outcomeImage}`}} style={{height:300, width:500, marginLeft:20}}></Image>
 
-              <Image source={{outcomeImage}} style={{height:370, width:330, marginLeft:15}}></Image>
 
-
-              <TouchableOpacity
-                style={styles.gameSelection}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                  navigation.navigate('Home', { 
-                    name: 'Animal tracks', 
-                    level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
-                    data: (auth.currentUser)?userData:0 })
-                }}>
-                  <Text style={{fontWeight:"bold"}}> {"\n START GAME"} </Text>
-              </TouchableOpacity>  
-
-              
-
-              <TouchableOpacity
-                style={styles.gameSelection}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                }}>
-                  <Text style={{fontWeight:"bold"}}> {"\n BACK"} </Text>
-              </TouchableOpacity>  
               
 
             {/* </View> */}
 
           </View>
       </View>
+
       {/* </View>
 
      </SafeAreaView>  */}
@@ -327,6 +396,55 @@ const SelectionScreen = ({ navigation }) => {
 //   }
 
 
+      
+{/* <View backgroundColor='rgba(46, 204, 113, 0.8)'>
+
+          
+<View style={styles.modalRow}>
+
+  <TouchableOpacity
+    style={styles.gameSelection}
+    onPress={() => {
+      setModalVisible(!modalVisible);
+
+      // TBD | OUTCOMES VISUAL
+    }}>
+    <Text color="red">{"In this game, you learn to:"}</Text> 
+
+  </TouchableOpacity>
+
+  
+
+
+  <TouchableOpacity
+    style={styles.gameSelection}
+    onPress={() => {
+      setModalVisible(!modalVisible);
+      navigation.navigate('Home', { 
+        name: 'Animal tracks', 
+        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+        data: (auth.currentUser)?userData:0 })
+    }}>
+      <Text style={{fontWeight:"bold"}}> {"\n START GAME"} </Text>
+  </TouchableOpacity>  
+
+  
+
+  <TouchableOpacity
+    style={styles.gameSelection}
+    onPress={() => {
+      setModalVisible(!modalVisible);
+    }}>
+      <Text style={{fontWeight:"bold"}}> {"\n BACK"} </Text>
+  </TouchableOpacity>  
+
+  
+  <Image source={{outcomeImage}} style={{height:2000, width:3030, marginLeft:15}}></Image>
+
+{/* </View> */}
+
+// </View>
+// </View> */}
 
 export default SelectionScreen
 // this is an issue. Inside(...) is for android and SelectionScreen is for web.
@@ -354,11 +472,13 @@ var styles = StyleSheet.create({
 
     gameSelection: {
       left: '0%',
-      top: '5%',
+      top: '20%',
       // justifyContent: "flex-start",
-      // alignItems: 'center',
-      width: 140,
-      height: 150,
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      alignContent: 'space-around',
+      width: 170,
+      height: 90,
       backgroundColor:'rgba(144, 144, 0, 0.8)',
       // justifyContent: 'space-evenly',
       borderRadius: 50,
@@ -367,10 +487,12 @@ var styles = StyleSheet.create({
   
     gameText: {
     //   fontFamily:"Cochin", 
-      fontSize:20,
+      fontSize:13,
       top:'25%',
-      color: 'white',
-      textAlign: 'center'
+      color: 'black',
+      backgroundColor: 'rgba(255, 255, 255, 0.6)', 
+      textAlign: 'center',
+      textAlignVertical: 'center'
     },
   
     gameRow: {
@@ -384,10 +506,10 @@ var styles = StyleSheet.create({
     },
   
     modalRow: {
-      top: '-70%',
-      width: '600%',
+      top: '0%',
+      width: '100%',
       height: '100%', 
-      flexDirection : 'column', 
+      flexDirection : 'row', 
       justifyContent: 'space-evenly',
     },
   
@@ -548,7 +670,7 @@ var styles = StyleSheet.create({
       width:60,
       height: 60,
       marginLeft: 40,
-      marginTop:30
+      
     },
     // END OF WEB VIEW.
   })
