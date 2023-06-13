@@ -4,12 +4,17 @@ import {useState, useEffect} from 'react'
 import { auth, firebase } from '../firebase'
 import { useNavigation } from '@react-navigation/core'
 import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigation = useNavigation()
-
+    const value = AsyncStorage.getItem('@TestUser:key');
+    if (value !== null){
+      // We have data!!
+      navigation.replace("Selection")
+    }
     useEffect(() => {
 
         const unsubscribe = auth.onAuthStateChanged(user=> {
@@ -30,12 +35,13 @@ const LoginScreen = () => {
           }).catch(error => alert(error.message))
     }
 
-    const handleLogin = () => {
+    const  handleLogin = () => {
 
         signInWithEmailAndPassword(auth,email, password)
         .then(userCredentials => {
             const user = userCredentials.user;
             console.log('logged in with:', user.email);
+            AsyncStorage.setItem('@TestUser:key', auth.currentUser);
         
         }).catch(error => alert(error.message))            
             

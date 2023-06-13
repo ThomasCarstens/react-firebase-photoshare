@@ -13,8 +13,10 @@ import Toast from 'react-native-fast-toast';
 import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import { storage, database } from '../firebase'
 import { Linking } from 'react-native';
-import { getDownloadURL, ref } from 'firebase/storage'
+import { getDownloadURL, list, ref } from 'firebase/storage'
 import { SearchBar } from 'react-native-elements'
+import { spoofGameSets } from '../gameFile'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
@@ -24,15 +26,20 @@ const SelectionScreen = ({ navigation }) => {
     const [userData, setUserData] = useState()
     const [gameName, setGameName] = useState()
     const [modalVisible, setModalVisible] = useState(false)
-    const [thumbnailImage, setThumbnailImage] = useState()
-    const [outcomeImage, setOutcomeImage] = useState()
+    const [thumbnailImage, setThumbnailImage] = useState([])
+    const [outcomeImage, setOutcomeImage] = useState([])
     const [searchValue, setSearchValue] = useState()
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
     let thumbnailStyle = webView?(styles.imageStyleWeb):(styles.imageStyleMobile)
     if (!webView){
       ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
     } 
-
+    const accountUser = AsyncStorage.getItem('@TestUser:key');
+    console.log('accountuser: ', accountUser)
+    // if (auth !== null){
+    //   // We have data!!
+    //   console.log(auth);
+    // }
     
     useEffect(()=>{
 
@@ -48,43 +55,81 @@ const SelectionScreen = ({ navigation }) => {
             }
             
           })
-    } 
+      } 
 
-    // Query Instructions here.
-
+    // Query Outcome and Hints here.
 
     
-    const getImage = async() => {
-        
-        const reference = ref(storage, "Dogs"+'/_outcomes/3.png');
-        await getDownloadURL(reference).then((x)=> {
-            console.log('downloadable1? : ', x)
-            setOutcomeImage(x);
+    const getOutcomeImages = async() => {
+        let gameKeyList = Object.keys(spoofGameSets)
+        for (let j=0;j<gameKeyList.length; j++){
+          // for (let i=0;i<gameKeyList[j].length; i++) {
+            const outcomesReference = ref(storage, gameKeyList[j]+'/_outcomes/');
+            // spoofGameSets[gameKeyList[j]][i]
+            await list(outcomesReference)
+            .then((res) => {
+              res.items.forEach((itemRef) => {
+            
+            getDownloadURL(itemRef).then((x)=> {
+              console.log(gameKeyList[j], ' : ', x)
+                setOutcomeImage(previous => [...previous, x]);
+            })
+            if (outcomeImage==undefined) {
+                console.log('Error on one.')
+            }
+
+          })
+
         })
-        if (outcomeImage==undefined) {
-            console.log('Error on one.')
+
+          // }
         }
-    }
-    
-    getImage()
+        }
+          
+       
+    getOutcomeImages()
 
     const getThumbnailImage = async() => {
-        
-      const reference = ref(storage, 'Cheeses'+'/_thumbnail/cheese.jpg');
-      await getDownloadURL(reference).then((x)=> {
-          console.log('downloadable1? : ', x)
-          setThumbnailImage(x);
+      let gameKeyList = Object.keys(spoofGameSets)
+      for (let j=0;j<gameKeyList.length; j++){
+        // for (let i=0;i<gameKeyList[j].length; i++) {
+          const thumbReference = ref(storage, gameKeyList[j]+'/_thumbnail/');
+          // spoofGameSets[gameKeyList[j]][i]
+          await list(thumbReference)
+          .then((res) => {
+            res.items.forEach((itemRef) => {
+          
+          getDownloadURL(itemRef).then((x)=> {
+            console.log(gameKeyList[j], ' : ', x)
+            setThumbnailImage(previous => [...previous, x]);
+          })
+          if (thumbnailImage==undefined) {
+              console.log('Error on one.')
+          }
+
+        })
+
       })
-      if (outcomeImage==undefined) {
-          console.log('Error on one.')
+
+        // }
       }
-    }
+      }
   
     getThumbnailImage()
     
 
     }, [])
-    
+
+
+    const handleSignOut = () => {
+      AsyncStorage.clear()
+      auth
+          .signOut()
+          .then(()=> {
+              navigation.replace("Login")
+          }).catch(error =>alert(error.message))
+    }
+
     const plsCreateAccount = () => {
       toast.current.show('Create an account to unlock this course ! ', { type: "success" });
     }
@@ -106,19 +151,35 @@ const SelectionScreen = ({ navigation }) => {
       
       <View style={{flex: 1, flexDirection:"column"}}>
         
-        
-        {/* <SearchBar
-        placeholder="What will you learn today?"
-        onChangeText={updateSearch}
-        value={searchValue}
-      /> */}
+      <View style={{flex: 1, flexDirection:"row", alignContent:'space-between'}}> 
+<TouchableOpacity style={styles.button} onPress={handleSignOut}>
+              <Text style={styles.buttonText}>Sign Out</Text>
+      </TouchableOpacity>
+      <View style={{flex:1}}></View>
+      <SearchBar
+                  placeholder="What will you learn today?"
+                  onChangeText={updateSearch}
+                  value={searchValue}
+                  style={{flex:1}}
+                />
       
 
-      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-        
+      
+
+
+      
+      
+      
+      </View>
+      <View style={{flex: 6, flexDirection: 'row', justifyContent: 'center'}}>
+      
+
+
       <Text  style={{color: '#b6dbd8', }} marginTop={315} marginLeft={20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
         {'Send suggestions \n to the team'} 
       </Text>
+
+      
       
       {/* <Text marginTop={200} marginLeft={100} onPress={() => Linking.openURL('http://google.com')}>dfsfsd ddddd
 
@@ -131,7 +192,7 @@ const SelectionScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Dogs')
           setModalVisible(true)}}>
-          <ImageBackground source={require('../assets/thumbnails/dogs.png')} 
+          <ImageBackground source={{uri:`${thumbnailImage[0]}`}} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>
             <Text style ={styles.gameText}> {'Dogs'} </Text>
           </ImageBackground>     
@@ -140,7 +201,7 @@ const SelectionScreen = ({ navigation }) => {
         {/* "BONES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', 
         { name: 'Cheeses', level: (auth.currentUser)?userData['Cheeses']['gameSetLevel']:0 })}>
-          <ImageBackground source={{uri:`${thumbnailImage}`}} 
+          <ImageBackground source={{uri:`${thumbnailImage[1]}`}} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Cheeses'} </Text>
           </ImageBackground>
@@ -149,7 +210,7 @@ const SelectionScreen = ({ navigation }) => {
         {/* "BONES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', 
         { name: 'Africa' , level: (auth.currentUser)?userData['Africa']['gameSetLevel']:0 })} >
-          <ImageBackground source={require('../assets/thumbnails/africa.jpg')} 
+          <ImageBackground source={{uri:`${thumbnailImage[2]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Africa'} </Text>
           </ImageBackground>    
@@ -159,7 +220,7 @@ const SelectionScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Animal tracks')
           setModalVisible(true)}}>
-          <ImageBackground source={require('../assets/thumbnails/tracks.png')} 
+          <ImageBackground source={{uri:`${thumbnailImage[3]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Animal tracks'} </Text>
             {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
@@ -186,7 +247,7 @@ const SelectionScreen = ({ navigation }) => {
   
         {/* "ENGINES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
+          <ImageBackground source={{uri:`${outcomeImage[0]}`}} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Engines'} </Text>
             {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
@@ -338,7 +399,7 @@ const SelectionScreen = ({ navigation }) => {
                   </TouchableOpacity>  
             </View>
             
-
+            
               {/* <TouchableOpacity
                 style={styles.gameSelection}
                 onPress={() => {
@@ -349,9 +410,9 @@ const SelectionScreen = ({ navigation }) => {
       
                 <Text> {"\n EXIT TO GAME SELECTION"} </Text>
               </TouchableOpacity> */}
-              <Image source={{uri:`${outcomeImage}`}} style={{height:300, width:500, marginLeft:20}}></Image>
-
-
+              {/* <Image source={{uri:`${outcomeImage[0]}`}} style={{height:300, width:500, marginLeft:20}}></Image> */}
+            
+            
               
 
             {/* </View> */}
@@ -672,5 +733,18 @@ var styles = StyleSheet.create({
       marginLeft: 40,
       
     },
+    button: {
+      flex:1,
+      backgroundColor: '#0782F9',
+      width: '100%',
+      padding: 15,
+      borderRadius: 10,
+      alignItems: 'center',
+  },
+  buttonText: {
+      color: 'white',
+      fontWeight: '700', 
+      fontSize: 16,
+  },
     // END OF WEB VIEW.
   })

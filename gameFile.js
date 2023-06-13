@@ -1,9 +1,10 @@
 
 
 const spoofGameSets = {
-    "Africa": ["Africa_country_identification", "Africa_country_of_location"],
+    
     "Dogs": ["Dogs", "Spaniels"],
     "Cheeses": ["Cheeses"],
+    "Africa": ["Africa_country_identification", "Africa_country_of_location"],
     "Animal tracks": ["Footprints of species", "Animal gait from tracks"],
 };
 
