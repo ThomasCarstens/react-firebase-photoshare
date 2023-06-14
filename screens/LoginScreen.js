@@ -10,13 +10,14 @@ const LoginScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigation = useNavigation()
-    const userLoggedIn = AsyncStorage.getItem('@TestUser:key');
+    const userLoggedIn = (auth.currentUser)
     if (userLoggedIn !== null){
       // We have data!!
       navigation.replace("Selection")
       return
     }
     useEffect(() => {
+        console.log('Login finds key: ', userLoggedIn)
 
         const unsubscribe = auth.onAuthStateChanged(user=> {
             if (user) {

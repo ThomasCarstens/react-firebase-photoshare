@@ -171,20 +171,21 @@ const SelectionScreen = ({ navigation }) => {
 
     const handleSignOut = async () => {
       // await AsyncStorage.clear()
-      await clearAsyncStorage().then(()=>{
-        const userLoggedIn = AsyncStorage.getItem('@TestUser:key');
-        console.log('################# aaaand')
-        if (userLoggedIn !== null){
-          // We have data!!
-          console.log('################# that worked')
-          return
-        }
+      
         auth
           .signOut()
           .then(()=> {
+            // clearAsyncStorage().then(()=>{
+            //   const userLoggedIn = AsyncStorage.getItem('@TestUser:key');
+            //   console.log('################# aaaand')
+            //   if (userLoggedIn !== null){
+            //     // We have data!!
+            //     console.log('################# that worked')
+            //     return
+            //   }
               navigation.replace("Login")
               
-          }).catch(error =>alert(error.message))
+          // }).catch(error =>alert(error.message))
       })
       
     }
@@ -193,7 +194,9 @@ const SelectionScreen = ({ navigation }) => {
     }
     const handleLogin = async () => {
       // await AsyncStorage.clear()
-      navigation.replace('Login')
+      AsyncStorage.getAllKeys().then(data => console.log('AsyncStorage is ', data));
+      clearAsyncStorage().then(()=>{
+      navigation.replace('Login')})
     }
 
     const plsCreateAccount = () => {
@@ -248,7 +251,9 @@ const SelectionScreen = ({ navigation }) => {
         {'Send suggestions \n to the team'} 
       </Text>
       <View padding={20}></View>
-      <TouchableOpacity style={styles.button} onPress={(auth.currentUser)?handleSignOut:handleLogin}>
+      {/* <TouchableOpacity style={styles.button} onPress={handleLogin}> <!--(auth.currentUser)?handleSignOut: */}
+      
+      <TouchableOpacity style={styles.button} onPress={(auth.currentUser)?handleSignOut:handleLogin}> 
               <Text style={styles.buttonText}>{(auth.currentUser)?"Sign Out":"Login"}</Text>
       </TouchableOpacity>
       </View>
