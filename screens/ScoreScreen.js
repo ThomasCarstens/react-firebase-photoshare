@@ -1,16 +1,20 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DataTable } from 'react-native-paper';
-  
+import * as ScreenOrientation from 'expo-screen-orientation';
+
 const TableExample = (props) => {
   const navigation = useNavigation();
-
+  const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
   const lastscore = props.route.params?.lastscore  
   const data = props.route.params?.data  
 
-  const spoofAccuracy = data['Animal tracks']['accuracy'][0]
+  const spoofAccuracy = data?data['Animal tracks']['accuracy'][0]:"Sign In"
   console.log(spoofAccuracy)
-
+  if (!webView){
+    ScreenOrientation.lockAsync(2); //PROFILE
+  } 
   
   return (
     <View>

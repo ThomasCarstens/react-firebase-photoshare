@@ -15,7 +15,7 @@ import { storage, database } from '../firebase'
 import { Linking } from 'react-native';
 import { getDownloadURL, list, ref } from 'firebase/storage'
 import { SearchBar } from 'react-native-elements'
-import { spoofGameSets } from '../gameFile'
+import { spoofGameHashtags, spoofGameSets } from '../gameFile'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
@@ -27,15 +27,18 @@ const SelectionScreen = ({ navigation }) => {
     const [gameName, setGameName] = useState()
     const [modalVisible, setModalVisible] = useState(false)
     const [thumbnailImage, setThumbnailImage] = useState([])
-    const [outcomeImage, setOutcomeImage] = useState([])
+    const [outcomeImage, setOutcomeImage] = useState({})
+    const [hintImages, setHintImages] = useState([])
     const [searchValue, setSearchValue] = useState()
+    const [searchResult, setSearchResult] = useState([])
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
     let thumbnailStyle = webView?(styles.imageStyleWeb):(styles.imageStyleMobile)
     if (!webView){
       ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
     } 
-    const accountUser = AsyncStorage.getItem('@TestUser:key');
-    console.log('accountuser: ', accountUser)
+    
+    const userLoggedIn = AsyncStorage.getItem('@TestUser:key');
+    console.log('accountuser: ', userLoggedIn)
     // if (auth !== null){
     //   // We have data!!
     //   console.log(auth);
@@ -44,18 +47,18 @@ const SelectionScreen = ({ navigation }) => {
     useEffect(()=>{
 
      // Query All User Data here.
-     if (auth.currentUser) {
-      const userDataRef = ref_d(database, auth.currentUser.email.split('.')[0] );
+    //  if (auth.currentUser) {
+    //   const userDataRef = ref_d(database, auth.currentUser.email.split('.')[0] );
 
-      onValue(userDataRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data){
-              console.log('User Data is now:', data)
-              setUserData(data)
-            }
+    //   onValue(userDataRef, (snapshot) => {
+    //         const data = snapshot.val();
+    //         if (data){
+    //           console.log('User Data is now:', data)
+    //           setUserData(data)
+    //         }
             
-          })
-      } 
+    //       })
+    //   } 
 
     // Query Outcome and Hints here.
 
@@ -72,7 +75,9 @@ const SelectionScreen = ({ navigation }) => {
             
             getDownloadURL(itemRef).then((x)=> {
               console.log(gameKeyList[j], ' : ', x)
-                setOutcomeImage(previous => [...previous, x]);
+                setOutcomeImage(previous => {
+                  previous[gameKeyList[j]]=x
+                  return previous});
             })
             if (outcomeImage==undefined) {
                 console.log('Error on one.')
@@ -85,7 +90,7 @@ const SelectionScreen = ({ navigation }) => {
           // }
         }
         }
-          
+
        
     getOutcomeImages()
 
@@ -120,14 +125,75 @@ const SelectionScreen = ({ navigation }) => {
 
     }, [])
 
+    // On Game click, load the next page (Hints)
+    useEffect(()=>{
 
-    const handleSignOut = () => {
-      AsyncStorage.clear()
-      auth
+      // Query All User Data here.
+      if (auth.currentUser) {
+       const userDataRef = ref_d(database, auth.currentUser.email.split('.')[0] );
+ 
+       onValue(userDataRef, (snapshot) => {
+             const data = snapshot.val();
+             if (data){
+               console.log('User Data is now:', data)
+               setUserData(data)
+             }
+             
+           })
+       } 
+     // Query Outcome and Hints here.
+
+     const getHintImages = async() => {
+
+         // for (let i=0;i<gameKeyList[j].length; i++) {
+           const hintReference = ref(storage, gameName+'/_hints/');
+           // spoofGameSets[gameKeyList[j]][i]
+           await list(hintReference)
+           .then((res) => {
+             res.items.forEach((itemRef) => {
+           getDownloadURL(itemRef).then((x)=> {
+             setHintImages(previous => [...previous, x]);
+           })
+           if (hintImages==undefined) {
+               console.log('Error on one.')
+           }
+ 
+         })
+ 
+       })
+
+       }
+   
+       getHintImages()
+     
+ 
+     }, [gameName])
+
+    const handleSignOut = async () => {
+      // await AsyncStorage.clear()
+      await clearAsyncStorage().then(()=>{
+        const userLoggedIn = AsyncStorage.getItem('@TestUser:key');
+        console.log('################# aaaand')
+        if (userLoggedIn !== null){
+          // We have data!!
+          console.log('################# that worked')
+          return
+        }
+        auth
           .signOut()
           .then(()=> {
               navigation.replace("Login")
+              
           }).catch(error =>alert(error.message))
+      })
+      
+    }
+    const clearAsyncStorage = async() => {
+      AsyncStorage.clear();
+    }
+    const handleLogin = async () => {
+      // await AsyncStorage.clear()
+      navigation.replace('Login')
     }
 
     const plsCreateAccount = () => {
@@ -138,8 +204,16 @@ const SelectionScreen = ({ navigation }) => {
       toast.current.show('Course released soon ! ', { type: "success" });
     }
 
-    const updateSearch = () => {
+    const updateSearch = (search) => {
       toast.current.show('Search is off ! ', { type: "success" });
+      setSearchValue(search)
+      // Searchbar functionality
+      for (const [key, value] of Object.entries(spoofGameHashtags)) {
+        if (value.toLowerCase().split(" ").includes(searchValue.toLowerCase())) {
+          setSearchResult(prev=> [...prev, key])
+          console.log(key)
+        }
+      }
     }
 //  <SafeAreaView style={{...styles.webContainer}}> 
 //              <View style={{...styles.webContent}}>    
@@ -150,18 +224,13 @@ const SelectionScreen = ({ navigation }) => {
       <Toast ref={toast}  />
       
       <View style={{flex: 1, flexDirection:"column"}}>
-        
-      <View style={{flex: 1, flexDirection:"row", alignContent:'space-between'}}> 
+      
+      {/* <View style={{flex: 1, flexDirection:"row", alignContent:'space-between'}}> 
 <TouchableOpacity style={styles.button} onPress={handleSignOut}>
               <Text style={styles.buttonText}>Sign Out</Text>
       </TouchableOpacity>
-      <View style={{flex:1}}></View>
-      <SearchBar
-                  placeholder="What will you learn today?"
-                  onChangeText={updateSearch}
-                  value={searchValue}
-                  style={{flex:1}}
-                />
+      <View style={{flex:2}}></View>
+      
       
 
       
@@ -170,23 +239,36 @@ const SelectionScreen = ({ navigation }) => {
       
       
       
-      </View>
+      </View> */}
       <View style={{flex: 6, flexDirection: 'row', justifyContent: 'center'}}>
       
+      <View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
 
-
-      <Text  style={{color: '#b6dbd8', }} marginTop={315} marginLeft={20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
+      <Text  style={{color: '#b6dbd8'}} marginTop={220} marginLeft={20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
         {'Send suggestions \n to the team'} 
       </Text>
-
-      
-      
+      <View padding={20}></View>
+      <TouchableOpacity style={styles.button} onPress={(auth.currentUser)?handleSignOut:handleLogin}>
+              <Text style={styles.buttonText}>{(auth.currentUser)?"Sign Out":"Login"}</Text>
+      </TouchableOpacity>
+      </View>
       {/* <Text marginTop={200} marginLeft={100} onPress={() => Linking.openURL('http://google.com')}>dfsfsd ddddd
 
       </Text> */}
+    <View style={{flexDirection: 'column'}}>
+      <View padding={20}></View>
+    <SearchBar
+              placeholder="What will you learn today?"
+              inputStyle={{backgroundColor: 'white'}}
+              containerStyle={{backgroundColor: 'white', borderColor: 'black', borderWidth: 70, borderRadius: 10}}
+              // placeholderTextColor={'#000000'}
+              onChangeText={updateSearch}
+              value={searchValue}
 
-
+            />
       <ScrollView  contentContainerStyle= {styles.gameRow}>
+
+      
         {/* <Image source={{outcomeImage}} style={{height:170, width:130}}></Image> */}
         {/* "BONES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
@@ -199,8 +281,9 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity>      
 
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', 
-        { name: 'Cheeses', level: (auth.currentUser)?userData['Cheeses']['gameSetLevel']:0 })}>
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {
+          setGameName('Cheeses')
+          setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[1]}`}} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Cheeses'} </Text>
@@ -208,8 +291,9 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity>          
   
         {/* "BONES" BUTTON */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => navigation.navigate('Home', 
-        { name: 'Africa' , level: (auth.currentUser)?userData['Africa']['gameSetLevel']:0 })} >
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {
+          setGameName('Africa')
+          setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[2]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Africa'} </Text>
@@ -320,6 +404,7 @@ const SelectionScreen = ({ navigation }) => {
       </ScrollView>
       </View>
       </View>
+      </View>
 
       {/* MODAL IF modalVisible */}
       <Modal
@@ -352,6 +437,7 @@ const SelectionScreen = ({ navigation }) => {
                       setModalVisible(!modalVisible);
                       navigation.navigate('Home', { 
                         name: gameName, 
+                        hint: hintImages, 
                         level: userData['Animal tracks']['gameSetLevel'], 
                         data: userData })
                     }}>
@@ -366,6 +452,7 @@ const SelectionScreen = ({ navigation }) => {
                       setModalVisible(!modalVisible);
                       navigation.navigate('Home', { 
                         name: gameName, 
+                        hint: hintImages, 
                         level: 0, 
                         data: 0 })
                     }}>
@@ -382,7 +469,8 @@ const SelectionScreen = ({ navigation }) => {
                     onPress={() => {
                       setModalVisible(!modalVisible);
                       navigation.navigate('Score', { 
-                        name: 'Animal tracks', 
+                        name: 'Animal tracks',
+                        hint: hintImages, 
                         level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
                         data: (auth.currentUser)?userData:0 })
                     }}>
@@ -410,7 +498,7 @@ const SelectionScreen = ({ navigation }) => {
       
                 <Text> {"\n EXIT TO GAME SELECTION"} </Text>
               </TouchableOpacity> */}
-              {/* <Image source={{uri:`${outcomeImage[0]}`}} style={{height:300, width:500, marginLeft:20}}></Image> */}
+              <Image source={{uri:`${outcomeImage[gameName]}`}} style={{height:300, width:500, marginLeft:-10}}></Image>
             
             
               

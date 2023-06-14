@@ -10,16 +10,19 @@ const LoginScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigation = useNavigation()
-    const value = AsyncStorage.getItem('@TestUser:key');
-    if (value !== null){
+    const userLoggedIn = AsyncStorage.getItem('@TestUser:key');
+    if (userLoggedIn !== null){
       // We have data!!
       navigation.replace("Selection")
+      return
     }
     useEffect(() => {
 
         const unsubscribe = auth.onAuthStateChanged(user=> {
             if (user) {
+                // AsyncStorage.setItem('@TestUser:key', auth.currentUser);
                 navigation.replace("Selection")
+                
             }
         })
         return unsubscribe
@@ -41,7 +44,7 @@ const LoginScreen = () => {
         .then(userCredentials => {
             const user = userCredentials.user;
             console.log('logged in with:', user.email);
-            AsyncStorage.setItem('@TestUser:key', auth.currentUser);
+            
         
         }).catch(error => alert(error.message))            
             

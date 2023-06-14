@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight, TextInput, StatusBar, Modal, Platform } from 'react-native'
+import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight, TextInput, StatusBar, Modal, Platform, Linking } from 'react-native'
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 // import { Image } from 'expo-image';
 import { auth, storage, database } from '../firebase'
@@ -29,7 +29,8 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 const HomeScreen = (props) => {
   const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
-  const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
+  const hint = props.route.params.hint
+  const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:3)
 
   // Screen title.
   useEffect(() => {
@@ -40,14 +41,15 @@ const HomeScreen = (props) => {
     if (!webView){
       ScreenOrientation.lockAsync(2); //LANDSCAPE_LEFT
     } 
-    // const A = ref(storage, "Footprints of species" + '/'+"Bear"+'/');
-    // const B = ref(storage, "Footprints of species" + '/'+"Lion"+'/');
-    // const C = ref(storage, "Footprints of species" + '/'+"Dog"+'/');
-    // // const D = ref(storage, "Cheeses" + '/'+"Libya"+'/');
-    // labelBatch(A, "Bear")
-    // labelBatch(B, "Lion")
-    // labelBatch(C, "Dog")
-    // // labelBatch(D, "Libya")
+    /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
+    // const A = ref(storage, "Terriers" + '/' + "Bull Terrier" + '/');
+    // const B = ref(storage, "Terriers" + '/' + "Boston Terrier" + '/');
+    // const C = ref(storage, "Terriers" + '/' + "American Staffordshire Terrier" + '/');
+    // const D = ref(storage, "Terriers" + '/' + "Staffordshire Bull Terrier" + '/');
+    // labelBatch(A, "Bull Terrier");
+    // labelBatch(B, "Boston Terrier");
+    // labelBatch(C, "American Staffordshire Terrier");
+    // labelBatch(D, "Staffordshire Bull Terrier");
     // const E = ref(storage, "Africa_country_of_location" + '/'+"Morocco"+'/');
     // const F = ref(storage, "Africa_country_of_location" + '/'+"Algeria"+'/');
     // const G = ref(storage, "Africa_country_of_location" + '/'+"Tunisia"+'/');
@@ -110,7 +112,7 @@ const HomeScreen = (props) => {
   const [instructionText, setInstructionText] = useState(spoofInstructions[gameName][learningLevel])
   const [correctTag, setCorrectTag] = useState(spoofCorrectTag[gameName][learningLevel])
   const [sort, setSort] = useState(false)
-  const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
+  // const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
   const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofInstructions[gameName]).pop()))
   const [gameComplete, setGameComplete] = useState(false)
   const [gameSetComplete, setGameSetComplete] = useState(false)
@@ -138,7 +140,7 @@ const HomeScreen = (props) => {
     setInstructionText(spoofInstructions[gameName][learningLevel]); //TBD. Database.
     setCorrectTag(spoofCorrectTag[gameName][learningLevel])
     setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
-    setOutcomeImage(spoofOutcomeImages[gameName][learningLevel])
+    // setOutcomeImage(spoofOutcomeImages[gameName][learningLevel])
     setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[gameName]).pop()) )
     
   }, [learningLevel, gameSetLevel])
@@ -209,10 +211,11 @@ const HomeScreen = (props) => {
     // TBD | according to gameName
     await list(ref)
     .then((res) => {
+      const randomDatabaseImageIndex = Math.floor(Math.random() * ((res.items).length)-upperLimit);
       
       // .
       // sliced to 10 correct tags
-      res.items.slice(0, upperLimit).forEach((itemRef) => {
+      res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
       
 
                         getDownloadURL(itemRef).then((y)=> {
@@ -612,8 +615,9 @@ const HomeScreen = (props) => {
       setSuccessRate(prev => (prev+averageCorrectRate)/2) // will be reset once per game.
       console.log('successRate: ', successRate)
       console.log('Level Up.')
+
       // On last game of gameSet --- set gameSetComplete == true
-      if (gameSetLevel+1 < Object.keys(spoofGameSets[selectedGame]).length) {
+      if (gameSetLevel+1 >= Object.keys(spoofGameSets[selectedGame]).length) {
         setGameSetComplete(true)
       }
       // Learning Level changes the gallery + instructions
@@ -648,11 +652,12 @@ const HomeScreen = (props) => {
         }
 
       setGameSetLevel(previous => previous+1)
-      setGameSetComplete(false)
+      // setGameSetComplete(false)
       setLearningLevel(1)
+      setModalVisible(true)
       return
     } else {
-      setGameSetComplete(true)
+      // setGameSetComplete(true)
       console.log('TRUE: Game Set Complete.')
     }
   }
@@ -759,16 +764,16 @@ const HomeScreen = (props) => {
       
       {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
 
-      {(gameComplete&&(!gameSetComplete))?
+      {(gameComplete&&(!gameSetComplete))? //if between games
         <TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
               <Text style={styles.buttonText}>Next Level</Text>
         </TouchableOpacity>
-      :(gameSetComplete)?
-      <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={navigation.replace('Scores', { 
+      :(gameSetComplete)? //if at end of game set
+      <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={navigation.replace('Score', { 
         lastscore: 99.99, 
         data:  (auth.currentUser)?userData:0 })}>
             <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
-      : /*else if in game*/
+      : /*else if game is not complete*/
       <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>
       }
 
@@ -851,12 +856,9 @@ const HomeScreen = (props) => {
 
               <TouchableOpacity
                 style={styles.gameSelection}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-
-                  // TBD | OUTCOMES VISUAL
-                }}>
-                <Text color="red">{"In this game, you learn to:"}</Text> 
+                onPress={() =>Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}
+                >
+                <Text color="red">{"No hint was supplied. Click here if you think it's a mistake and you want to signal it."}</Text> 
       
               </TouchableOpacity>
 
@@ -870,14 +872,15 @@ const HomeScreen = (props) => {
       
                 <Text> {"\n EXIT TO GAME SELECTION"} </Text>
               </TouchableOpacity> */}
-              <Image source={{outcomeImage}} style={{height:370, width:330, marginLeft:15, marginBottom:-650}}></Image>
+              <Image source={{uri: `${hint[gameSetLevel]}`}} style={{height:200, width:330, marginLeft:15, marginBottom:-700}}></Image>
 
               <TouchableOpacity
                 style={styles.gameSelection}
                 onPress={() => {
                   setModalVisible(!modalVisible);
+                  console.log(hint)
                 }}>
-                  <Text style={{fontWeight:"bold"}}> {"\n BACK TO GAME"} </Text>
+                  <Text style={{fontWeight:"bold"}}> {"\n GOT IT"} </Text>
               </TouchableOpacity>  
               
 

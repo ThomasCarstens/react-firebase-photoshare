@@ -1,11 +1,16 @@
 
 
 const spoofGameSets = {
-    
-    "Dogs": ["Dogs", "Spaniels"],
+    "Dogs": ["Hounds", "Dogs", "Spaniels", "Terriers" ],
     "Cheeses": ["Cheeses"],
     "Africa": ["Africa_country_identification", "Africa_country_of_location"],
     "Animal tracks": ["Footprints of species", "Animal gait from tracks"],
+};
+const spoofGameHashtags = {
+    "Dogs": "Dogs - Spaniel - Boxer - Mastiff - Beagle - Terriers",
+    "Cheeses": "Cheeses",
+    "Africa": "Africa_country_identification - Africa_country_of_location",
+    "Animal tracks": "Footprints of species - Animal gait from tracks",
 };
 
 var spoofOutcomeImages = {
@@ -14,14 +19,12 @@ var spoofOutcomeImages = {
         2: require("./assets/context/Dogs/boxer_bullmastiff.png"),
         3: require("./assets/context/Dogs/mastiff_bullmastiff_table.png"),
     },
-
     "Cheeses": {
         1: require("./assets/context/Cheeses/_instructions/1.png"),
         2: require("./assets/context/Cheeses/_instructions/2.png"),
         3: require("./assets/context/Cheeses/_instructions/3.png"),        
         4: require("./assets/context/Cheeses/_instructions/4.png"),
     },
-
     "Africa": {
         1: require("./assets/context/Africa_country_identification/africa-flag_map.jpg"),
     },
@@ -50,7 +53,7 @@ const spoofInstructions = {
         1: 'Level 1: Find all the Boxers.',
         2: 'Level 2: Find the Bullmastiffs',
         3: 'Level 3: Where is the English Mastiff?',
-        4: 'Test: Find the bullmastiffs until there are none left.',
+        4: 'Nice work, ready for the next level?',
         // 5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
     },
     "Cheeses": {
@@ -99,6 +102,20 @@ const spoofInstructions = {
         4: 'Are you ready for the next level?', //vs ['Field Spaniel', 'Boykin spaniel']
         // 5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
         },    
+    "Hounds": {
+        1: 'First, let\'s find the Basset Hounds.',
+        2: 'We now look at the Beagles.',
+        3: 'Can you tell which is the Bloodhound?',
+        4: 'Test your knowledge: find the American Foxhound.',
+        5: 'Done with the Hounds. '
+        },
+    "Terriers": {
+        1: 'First, let\'s find the Bull Terriers.',
+        2: 'We now look at the Boston Terriers.',
+        3: 'Can you tell which is the American Staffordshire Terrier?',
+        4: 'Test your knowledge: find the Staffordshire Bull Terrier.',
+        5: 'Nice work! Ready for the next level?',
+        },
 };
 
 // const spoofInstructions = {
@@ -158,6 +175,20 @@ const spoofCorrectTag = {
         3: 'Dog',//vs. Bear and Lion
         4: '', 
         },     
+    'Hounds': {
+        1: 'Basset Hound',
+        2: 'Beagle',
+        3: 'Bloodhound',
+        4: 'American Foxhound',
+        5: ''
+        },
+    'Terriers': {
+            1: 'Bull Terrier',
+            2: 'Boston Terrier',
+            3: 'American Staffordshire Terrier',
+            4: 'Staffordshire Bull Terrier',
+            5: ''
+            }
 };
 
 const spoofIncorrectTag = {
@@ -208,6 +239,20 @@ const spoofIncorrectTag = {
         3: ['Bear', 'Lion'],//vs. Bear and Lion
         4: '', 
         },     
+    'Hounds': {
+        1: ['Beagle', 'Bloodhound', 'American Foxhound'],
+        2: ['Basset Hound', 'Bloodhound', 'American Foxhound'],
+        3: ['Basset Hound', 'Beagle', 'American Foxhound'],
+        4: ['Basset Hound', 'Beagle', 'Bloodhound'],
+        5: ['']
+        },
+    'Terriers': {
+        1: ['Boston Terrier', 'American Staffordshire Terrier', 'Staffordshire Bull Terrier'],
+        2: ['Bull Terrier', 'American Staffordshire Terrier', 'Staffordshire Bull Terrier'],
+        3: ['Bull Terrier', 'Boston Terrier', 'Staffordshire Bull Terrier'],
+        4: ['Bull Terrier', 'Boston Terrier', 'American Staffordshire Terrier'],
+        5: ['']
+        }
 }
 
-export {spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}
+export {spoofGameSets, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}

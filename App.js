@@ -24,7 +24,7 @@ function App() {
         <Stack.Screen options={{headerShown: false}} name="Login" component={LoginScreen} />
         <Stack.Screen options={{headerShown: false}} name="Selection" component={SelectionScreen} />
         <Stack.Screen options={{headerShown: false}} name="Home" component={HomeScreen} />
-        <Stack.Screen options={{headerShown: false}} name="Scores" component={ScoreScreen} />
+        <Stack.Screen options={{headerShown: false}} name="Score" component={ScoreScreen} />
         
         
         
