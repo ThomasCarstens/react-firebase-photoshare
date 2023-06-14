@@ -13,6 +13,7 @@ const spoofGameHashtags = {
     "Animal tracks": "Footprints of species - Animal gait from tracks",
 };
 
+// DEPRECATED | DATABASE CALL.
 var spoofOutcomeImages = {
     "Dogs": {
         1: require("./assets/context/Dogs/all3.png"),
@@ -36,7 +37,7 @@ var spoofOutcomeImages = {
     },
     "Animal gait from tracks": {
         1: "https://firebasestorage.googleapis.com/v0/b/fir-auth-31f82.appspot.com/o/Animal%20gait%20from%20tracks%2F_instructions%2Fslide_16.jpg?alt=media&token=fc9ff496-ce60-4a1b-8196-08a137ae1aa3&_gl=1*1f96ncl*_ga*NTE5OTA5MzMxLjE2ODQ1ODUyMTA.*_ga_CW55HF8NVT*MTY4NjQ5MTM2NS41MS4xLjE2ODY0OTIxMDYuMC4wLjA.",
-    }, // TBD | DATABASE CALL.
+    }, 
     "Footprints of species": {
         1: "https://firebasestorage.googleapis.com/v0/b/fir-auth-31f82.appspot.com/o/Footprints%20of%20species%2F_instructions%2Finstructions.jpg?alt=media&token=05d3a99e-6304-46f5-9b5e-a318d815fb14&_gl=1*eqx4hx*_ga*NTE5OTA5MzMxLjE2ODQ1ODUyMTA.*_ga_CW55HF8NVT*MTY4NjQ5MTM2NS41MS4xLjE2ODY0OTIwMjUuMC4wLjA.",
     },

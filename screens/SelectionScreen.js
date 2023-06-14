@@ -473,8 +473,8 @@ const SelectionScreen = ({ navigation }) => {
 
                     onPress={() => {
                       setModalVisible(!modalVisible);
-                      navigation.navigate('Score', { 
-                        name: 'Animal tracks',
+                      navigation.navigate('Score', { // The population average can be computed by cloud functions
+                        name: gameName,
                         hint: hintImages, 
                         level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
                         data: (auth.currentUser)?userData:0 })

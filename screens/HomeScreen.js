@@ -30,7 +30,7 @@ const HomeScreen = (props) => {
   const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params.hint
-  const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:3)
+  const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:1)
 
   // Screen title.
   useEffect(() => {
@@ -38,9 +38,7 @@ const HomeScreen = (props) => {
       title: gameName+' Game',
     });
 
-    if (!webView){
-      ScreenOrientation.lockAsync(2); //LANDSCAPE_LEFT
-    } 
+    
     /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
     // const A = ref(storage, "Terriers" + '/' + "Bull Terrier" + '/');
     // const B = ref(storage, "Terriers" + '/' + "Boston Terrier" + '/');
@@ -119,7 +117,9 @@ const HomeScreen = (props) => {
   const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
   
-
+  if (!webView){
+    ScreenOrientation.lockAsync(2); //LANDSCAPE_LEFT
+  } 
   
   // Game parameters.
   useEffect(() => {
@@ -521,8 +521,7 @@ const HomeScreen = (props) => {
       
   // The real memo is now image-based. Like a tag.
     console.log('TAGS\n', galleryTags, picNb-1)
-    let randomInt = Math.floor(Math.random() * gallery.length) ;
-    console.log('randomInt', randomInt)
+
 
     // CASE: Picture correctly selected.
     if (galleryTags[picNb-1]?.includes(correctTag)) {  
@@ -538,7 +537,7 @@ const HomeScreen = (props) => {
 
           newState.splice(picNb-1, 1);                   
           return newState})
-      setCorrectClickCount(prevState=> prevState+1)
+      setCorrectClickCount(prevClicks=> prevClicks+1)
 
 
 
@@ -610,15 +609,13 @@ const HomeScreen = (props) => {
     if (correctLeftInGallery.length == 0){
       setLoading(true)
       // Next level when 80% correct rate OR no more correctLeftInGallery  
-      setCorrectClickCount(0)  //reset (avoid loop)
-      setIncorrectClickCount(0)
-      setSuccessRate(prev => (prev+averageCorrectRate)/2) // will be reset once per game.
-      console.log('successRate: ', successRate)
-      console.log('Level Up.')
+
+      
 
       // On last game of gameSet --- set gameSetComplete == true
       if (gameSetLevel+1 >= Object.keys(spoofGameSets[selectedGame]).length) {
         setGameSetComplete(true)
+        // #RECORD_ACCURACY
       }
       // Learning Level changes the gallery + instructions
       setLearningLevel(prev => prev+1) 
@@ -640,18 +637,26 @@ const HomeScreen = (props) => {
     if (gameSetLevel+1 < Object.keys(spoofGameSets[selectedGame]).length) {
       if (auth.currentUser) {
           let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
+          setSuccessRate(prev => (prev+averageCorrectRate)/2) // will be reset once per game.
+          const currentDate = new Date();
+          const timestamp = currentDate.getTime(); 
           // Update user -> game -> level: gameSetLevel  
           set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame), {
             gameSetLevel: gameSetLevel+1,
           }).catch(error =>alert(error.message));        
           // Update user -> game -> accuracy -> level: gameSetLevel  
-          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame+'/accuracy'), {
-            [gameSetLevel]: averageCorrectRate,
+          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame+'/accuracy/'+gameSetLevel), {
+            [timestamp]: averageCorrectRate,
 
           }).catch(error =>alert(error.message));    
         }
-
+      
+      console.log('successRate: ', successRate)
+      console.log('Level Up.')
+      setCorrectClickCount(0)  //reset (avoid loop)
+      setIncorrectClickCount(0)
       setGameSetLevel(previous => previous+1)
+      setGameComplete(false)// only place to do so
       // setGameSetComplete(false)
       setLearningLevel(1)
       setModalVisible(true)
@@ -660,6 +665,8 @@ const HomeScreen = (props) => {
       // setGameSetComplete(true)
       console.log('TRUE: Game Set Complete.')
     }
+
+
   }
 
 
