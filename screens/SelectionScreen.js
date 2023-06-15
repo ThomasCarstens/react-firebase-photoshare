@@ -221,7 +221,7 @@ const SelectionScreen = ({ navigation }) => {
 //  <SafeAreaView style={{...styles.webContainer}}> 
 //              <View style={{...styles.webContent}}>    
     return (
-       
+        
       
       <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{width: '102%', left: '-2%',  height: '120%', top: '-5%'}}>
       <Toast ref={toast}  />
@@ -245,7 +245,7 @@ const SelectionScreen = ({ navigation }) => {
       </View> */}
       <View style={{flex: 6, flexDirection: 'row', justifyContent: 'center'}}>
       
-      <View style={{flex: 6, flexDirection: 'column', justifyContent: 'center'}}>
+      <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
 
       <Text  style={{color: '#b6dbd8'}} marginTop={220} marginLeft={20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
         {'Send suggestions \n to the team'} 
@@ -260,7 +260,7 @@ const SelectionScreen = ({ navigation }) => {
       {/* <Text marginTop={200} marginLeft={100} onPress={() => Linking.openURL('http://google.com')}>dfsfsd ddddd
 
       </Text> */}
-    <View style={{flexDirection: 'column'}}>
+    <View style={{flex: 6, flexDirection: 'column'}}>
       <View padding={20}></View>
     <SearchBar
               placeholder="What will you learn today?"
@@ -520,7 +520,7 @@ const SelectionScreen = ({ navigation }) => {
 
 
       </ImageBackground>
-   
+
   )
        {/* </View>
          </SafeAreaView>  */}
@@ -650,12 +650,12 @@ var styles = StyleSheet.create({
     },
   
     gameRow: {
-      top: '5%',
-      left: '20%',
-      width: '70%',
-      height: '130%', 
+      top: '1%',
+      left: '10%',
+      width: '80%',
+      height: '200%', 
       flexDirection : 'row', 
-      justifyContent: 'space-evenly',
+      justifyContent: 'space-between',
       flexWrap: "wrap"
     },
   

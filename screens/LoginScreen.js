@@ -57,7 +57,7 @@ const LoginScreen = () => {
 {/* <SafeAreaView style={{...styles.webContainer}}> 
             <View style={{...styles.webContent}}>     */}
     return (
-    
+
 
     <KeyboardAvoidingView
         style={styles.container}

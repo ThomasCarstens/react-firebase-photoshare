@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { spoofGameSets } from '../gameFile';
@@ -41,8 +41,11 @@ const TableExample = (props) => {
   if (!webView){
     ScreenOrientation.lockAsync(2); //PROFILE
   } 
-  
+    // <SafeAreaView style={{...styles.webContainer}}> 
+    //         <View style={{...styles.webContent}}>     
   return (
+  
+
     <View>
         <View padding={40}></View>
         <Text style={{fontSize:50, marginLeft:30}}> Score</Text>
@@ -108,8 +111,12 @@ const TableExample = (props) => {
       
       </View>
     </View>
+
     
   );
+    // </View>
+    // </SafeAreaView>    
+
 };
   
 export default TableExample;
@@ -135,5 +142,16 @@ const styles = StyleSheet.create({
     backgroundColor:'rgba(102, 140, 190, 1)',
     borderRadius: 50
   },
-
+    // WEB VIEW
+    webContainer: {
+      flex: 1,
+      marginBottom: 200,
+      alignItems: "center",
+      justifyContent: "center", 
+    },
+    webContent: {
+      width: "100%",
+      maxWidth: 400,
+      maxHeight: 1000,
+    },
 });

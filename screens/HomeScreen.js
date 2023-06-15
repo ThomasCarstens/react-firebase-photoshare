@@ -42,11 +42,11 @@ const HomeScreen = (props) => {
     /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
     // const A = ref(storage, "Terriers" + '/' + "Bull Terrier" + '/');
     // const B = ref(storage, "Terriers" + '/' + "Boston Terrier" + '/');
-    // const C = ref(storage, "Terriers" + '/' + "American Staffordshire Terrier" + '/');
+    const C = ref(storage, "Spaniels" + '/' + "American water spaniel" + '/');
     // const D = ref(storage, "Terriers" + '/' + "Staffordshire Bull Terrier" + '/');
     // labelBatch(A, "Bull Terrier");
     // labelBatch(B, "Boston Terrier");
-    // labelBatch(C, "American Staffordshire Terrier");
+    labelBatch(C, "American water spaniel");
     // labelBatch(D, "Staffordshire Bull Terrier");
     // const E = ref(storage, "Africa_country_of_location" + '/'+"Morocco"+'/');
     // const F = ref(storage, "Africa_country_of_location" + '/'+"Algeria"+'/');
@@ -678,7 +678,7 @@ const HomeScreen = (props) => {
              <View style={{...styles.webContent}}>  */}
   return (
     
-    
+
     <View>
       <Toast ref={toast} />
       <View style={{padding: 15}}></View>
@@ -900,7 +900,7 @@ const HomeScreen = (props) => {
      </SafeAreaView>  */}
       </Modal>
     </View>
-     
+ 
   )
 // </View>
 // </SafeAreaView>  
