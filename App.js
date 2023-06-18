@@ -7,7 +7,7 @@ import HomeScreen from './screens/HomeScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SelectionScreen from './screens/SelectionScreen';
 import ScoreScreen from './screens/ScoreScreen';
-
+import SequenceScreen from './screens/SequenceScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +24,7 @@ function App() {
         <Stack.Screen options={{headerShown: false}} name="Login" component={LoginScreen} />
         <Stack.Screen options={{headerShown: false}} name="Selection" component={SelectionScreen} />
         <Stack.Screen options={{headerShown: false}} name="Home" component={HomeScreen} />
+        <Stack.Screen options={{headerShown: false}} name="Sequence" component={SequenceScreen} />
         <Stack.Screen options={{headerShown: false}} name="Score" component={ScoreScreen} />
         
         

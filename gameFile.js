@@ -6,6 +6,7 @@ const spoofGameSets = {
     "Africa": ["Africa_id", "Africa_country_of_location"],
     "Animal tracks": ["Footprints of species", "Animal gait from tracks"],
     "Knots": ["One rope"],
+    "History": ["Historical eras"]
 };
 const spoofGameHashtags = {
     "Dogs": "Dogs - Spaniel - Boxer - Mastiff - Beagle - Terriers",
@@ -126,6 +127,10 @@ const spoofInstructions = {
         3: "Level 3: Identify the Figure-8 Loop.",
         4: "Level 4: Can you find the Figure-8 Knot?",
         5: "Game complete!"
+    },
+    "Historical eras": {
+        1: "Order paintings from most ancient to most recent.",
+        2: "Game complete!"
     }
 };
 
@@ -200,6 +205,11 @@ const spoofCorrectTag = {
         4: "Figure-8 Knot",
         5: ""
         },
+    "Historical eras": {
+        1: ["19th", "20th", "21st"],
+        2: [""]
+    }
+
 };
 
 const spoofIncorrectTag = {

@@ -25,6 +25,7 @@ const SelectionScreen = ({ navigation }) => {
     const toast = useRef(null);
     const [userData, setUserData] = useState()
     const [gameName, setGameName] = useState()
+    const [gameType, setGameType] = useState()
     const [modalVisible, setModalVisible] = useState(false)
     const [thumbnailImage, setThumbnailImage] = useState([])
     const [outcomeImage, setOutcomeImage] = useState({})
@@ -277,6 +278,7 @@ const SelectionScreen = ({ navigation }) => {
         {/* <Image source={{outcomeImage}} style={{height:170, width:130}}></Image> */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Dogs')
+          setGameType('Home')
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[0]}`}} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>
@@ -286,6 +288,7 @@ const SelectionScreen = ({ navigation }) => {
 
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Cheeses')
+          setGameType('Home')
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[1]}`}} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -295,6 +298,7 @@ const SelectionScreen = ({ navigation }) => {
   
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Africa')
+          setGameType('Home')
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[2]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -304,6 +308,7 @@ const SelectionScreen = ({ navigation }) => {
   
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Animal tracks')
+          setGameType('Home')
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[3]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -314,6 +319,7 @@ const SelectionScreen = ({ navigation }) => {
 
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Knots')
+          setGameType('Home')
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[4]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -321,6 +327,17 @@ const SelectionScreen = ({ navigation }) => {
             {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
           </ImageBackground>  
         </TouchableOpacity>        
+
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {
+          setGameName('History')
+          setGameType('Sequence')
+          setModalVisible(true)}}>
+          <ImageBackground source={{uri:`${thumbnailImage[5]}`}}
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
+            <Text style ={styles.gameText}> {'Timelines'} </Text>
+            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
+          </ImageBackground>  
+        </TouchableOpacity>    
 
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/crab.jpg')} 
@@ -436,7 +453,7 @@ const SelectionScreen = ({ navigation }) => {
 
                     onPress={() => {
                       setModalVisible(!modalVisible);
-                      navigation.navigate('Home', { 
+                      navigation.navigate(gameType, { 
                         name: gameName, 
                         hint: hintImages, 
                         level: userData['Animal tracks']['gameSetLevel'], 
@@ -452,7 +469,7 @@ const SelectionScreen = ({ navigation }) => {
                     onPress={() => {
                       setModalVisible(!modalVisible);
                       
-                      navigation.navigate('Home', { 
+                      navigation.navigate(gameType, { 
                         name: gameName, 
                         hint: hintImages, 
                         level: 0, 
