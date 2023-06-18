@@ -37,8 +37,8 @@ const SelectionScreen = ({ navigation }) => {
       ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
     } 
     
-    const userLoggedIn = AsyncStorage.getItem('@TestUser:key');
-    console.log('accountuser: ', userLoggedIn)
+    // const userLoggedIn = AsyncStorage.getItem('@TestUser:key');
+    // console.log('accountuser: ', userLoggedIn)
     // if (auth !== null){
     //   // We have data!!
     //   console.log(auth);
@@ -275,7 +275,6 @@ const SelectionScreen = ({ navigation }) => {
 
       
         {/* <Image source={{outcomeImage}} style={{height:170, width:130}}></Image> */}
-        {/* "BONES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Dogs')
           setModalVisible(true)}}>
@@ -285,7 +284,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>     
         </TouchableOpacity>      
 
-        {/* "BONES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Cheeses')
           setModalVisible(true)}}>
@@ -295,7 +293,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>
         </TouchableOpacity>          
   
-        {/* "BONES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Africa')
           setModalVisible(true)}}>
@@ -305,7 +302,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>    
         </TouchableOpacity>
   
-        {/* "CREATURES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Animal tracks')
           setModalVisible(true)}}>
@@ -315,8 +311,17 @@ const SelectionScreen = ({ navigation }) => {
             {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
           </ImageBackground>  
         </TouchableOpacity>        
-  
-        {/* "CRABS" BUTTON */}
+
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {
+          setGameName('Knots')
+          setModalVisible(true)}}>
+          <ImageBackground source={{uri:`${thumbnailImage[4]}`}}
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
+            <Text style ={styles.gameText}> {'Knots'} </Text>
+            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
+          </ImageBackground>  
+        </TouchableOpacity>        
+
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/crab.jpg')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -325,7 +330,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>  
         </TouchableOpacity>     
   
-        {/* "REPTILES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/thumbnails/berries.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -334,7 +338,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground> 
         </TouchableOpacity>   
   
-        {/* "ENGINES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={{uri:`${outcomeImage[0]}`}} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -343,7 +346,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>
         </TouchableOpacity>  
   
-        {/* "CARS" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -352,7 +354,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>
         </TouchableOpacity>  
   
-        {/* "TURTLES" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -361,7 +362,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>
         </TouchableOpacity>  
   
-        {/* "WEAPONRY" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}> 
@@ -370,7 +370,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>
         </TouchableOpacity>    
   
-        {/* "FLOWERS" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen02.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -379,7 +378,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>
         </TouchableOpacity>    
   
-        {/* "FLOWERS" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile}  imageStyle={styles.imageStyleMobile}>
@@ -388,7 +386,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>
         </TouchableOpacity>    
   
-        {/* "FLOWERS" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -397,7 +394,6 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>
         </TouchableOpacity>    
   
-        {/* "FLOWERS" BUTTON */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
@@ -455,6 +451,7 @@ const SelectionScreen = ({ navigation }) => {
 
                     onPress={() => {
                       setModalVisible(!modalVisible);
+                      
                       navigation.navigate('Home', { 
                         name: gameName, 
                         hint: hintImages, 

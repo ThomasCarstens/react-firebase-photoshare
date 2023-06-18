@@ -3,14 +3,16 @@
 const spoofGameSets = {
     "Dogs": ["Hounds", "Dogs", "Spaniels", "Terriers" ],
     "Cheeses": ["Cheeses"],
-    "Africa": ["Africa_country_identification", "Africa_country_of_location"],
+    "Africa": ["Africa_id", "Africa_country_of_location"],
     "Animal tracks": ["Footprints of species", "Animal gait from tracks"],
+    "Knots": ["One rope", "Two ropes"],
 };
 const spoofGameHashtags = {
     "Dogs": "Dogs - Spaniel - Boxer - Mastiff - Beagle - Terriers",
     "Cheeses": "Cheeses",
-    "Africa": "Africa_country_identification - Africa_country_of_location",
+    "Africa": "Africa_id - Africa_country_of_location",
     "Animal tracks": "Footprints of species - Animal gait from tracks",
+    "Knots": "One rope - Two ropes",
 };
 
 // DEPRECATED | DATABASE CALL.
@@ -29,7 +31,7 @@ var spoofOutcomeImages = {
     "Africa": {
         1: require("./assets/context/Africa_country_identification/africa-flag_map.jpg"),
     },
-    "Africa_country_identification": {
+    "Africa_id": {
         1: require("./assets/context/Africa_country_identification/africa-flag_map.jpg"),
     },
     "Africa_country_of_location": {
@@ -41,12 +43,13 @@ var spoofOutcomeImages = {
     "Footprints of species": {
         1: "https://firebasestorage.googleapis.com/v0/b/fir-auth-31f82.appspot.com/o/Footprints%20of%20species%2F_instructions%2Finstructions.jpg?alt=media&token=05d3a99e-6304-46f5-9b5e-a318d815fb14&_gl=1*eqx4hx*_ga*NTE5OTA5MzMxLjE2ODQ1ODUyMTA.*_ga_CW55HF8NVT*MTY4NjQ5MTM2NS41MS4xLjE2ODY0OTIwMjUuMC4wLjA.",
     },
+
 };
 
-for (let i=1; i<56; i++){
-    spoofOutcomeImages["Africa_country_identification"][i] = require("./assets/context/Africa_country_identification/africa-flag_map.jpg")
-    spoofOutcomeImages["Africa_country_of_location"][i] = require("./assets/context/Africa_country_identification/africa-flag_map.jpg")
-};
+// for (let i=1; i<56; i++){
+//     spoofOutcomeImages["Africa_country_identification"][i] = require("./assets/context/Africa_country_identification/africa-flag_map.jpg")
+//     spoofOutcomeImages["Africa_country_of_location"][i] = require("./assets/context/Africa_country_identification/africa-flag_map.jpg")
+// };
 
 // DONE | each storage folder is linked to an instruction + correct tag
 const spoofInstructions = {
@@ -71,7 +74,7 @@ const spoofInstructions = {
         4: 'Test your knowledge: find the American water s.', //vs ['Field Spaniel', 'Boykin spaniel']
         // 5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
         },    
-    "Africa_country_identification": {
+    "Africa_id": {
         1: 'First, let\'s identify Morocco.',//vs. Algeria
         2: 'Then Tunisia.', // vs. Boykin(3)
         3: 'Now Algeria',//vs. Welsh Springer.
@@ -117,6 +120,13 @@ const spoofInstructions = {
         4: 'Test your knowledge: find the Staffordshire Bull Terrier.',
         5: 'Nice work! Ready for the next level?',
         },
+    "One rope": {
+        1: "Level 1: Find the Overhand Knot.",
+        2: "Level 2: Locate the Slip Knot.",
+        3: "Level 3: Identify the Figure-8 Loop.",
+        4: "Level 4: Can you find the Figure-8 Knot?",
+        5: "Game complete!"
+    }
 };
 
 // const spoofInstructions = {
@@ -148,7 +158,7 @@ const spoofCorrectTag = {
         4: 'American water spaniel',
         5: 'Results:'
     },
-    'Africa_country_identification': {
+    'Africa_id': {
         1: 'Morocco',
         2: 'Tunisia',
         3: 'Algeria',
@@ -184,12 +194,19 @@ const spoofCorrectTag = {
         5: ''
         },
     'Terriers': {
-            1: 'Bull Terrier',
-            2: 'Boston Terrier',
-            3: 'American Staffordshire Terrier',
-            4: 'Staffordshire Bull Terrier',
-            5: ''
-            }
+        1: 'Bull Terrier',
+        2: 'Boston Terrier',
+        3: 'American Staffordshire Terrier',
+        4: 'Staffordshire Bull Terrier',
+        5: ''
+        },
+    "One rope": {        
+        1: "Overhand Knot",
+        2: "Slip Knot",
+        3: "Figure-8 Loop",
+        4: "Figure-8 Knot",
+        5: ""
+        },
 };
 
 const spoofIncorrectTag = {
@@ -214,12 +231,13 @@ const spoofIncorrectTag = {
         4: ['Field Spaniel', 'Boykin spaniel'],
         5: ['']
     },
-    'Africa_country_identification': {
+    'Africa_id': {
         1: ['Algeria'],
         2: ['Morocco', 'Algeria'],
         3: ['Tunisia', 'Morocco'],
         4: ['Tunisia', 'Algeria'],
-        5: ['']
+        5: ['Tunisia', 'Morocco'],
+        6: ['']
     },
     'Africa_country_of_location': {
         1: ['Algeria'],
@@ -253,6 +271,13 @@ const spoofIncorrectTag = {
         3: ['Bull Terrier', 'Boston Terrier', 'Staffordshire Bull Terrier'],
         4: ['Bull Terrier', 'Boston Terrier', 'American Staffordshire Terrier'],
         5: ['']
+        },
+    "One rope": {
+        1: ["Slip Knot", "Figure-8 Loop", "Figure-8 Knot"],
+        2: ["Overhand Knot", "Figure-8 Loop", "Figure-8 Knot"],
+        3: ["Overhand Knot", "Slip Knot", "Figure-8 Knot"],
+        4: ["Overhand Knot", "Slip Knot", "Figure-8 Loop"],
+        5: [""]
         }
 }
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight, TextInput, StatusBar, Modal, Platform, Linking } from 'react-native'
+import { StyleSheet, Image, Text, TouchableOpacity, View, TouchableHighlight, TextInput, StatusBar, Modal, Platform, Linking, Dimensions } from 'react-native'
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 // import { Image } from 'expo-image';
 import { auth, storage, database } from '../firebase'
@@ -28,9 +28,10 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 
 const HomeScreen = (props) => {
   const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
+  const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params.hint
-  const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:1)
+  const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
 
   // Screen title.
   useEffect(() => {
@@ -40,14 +41,16 @@ const HomeScreen = (props) => {
 
     
     /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-    // const A = ref(storage, "Terriers" + '/' + "Bull Terrier" + '/');
-    // const B = ref(storage, "Terriers" + '/' + "Boston Terrier" + '/');
-    const C = ref(storage, "Spaniels" + '/' + "American water spaniel" + '/');
-    // const D = ref(storage, "Terriers" + '/' + "Staffordshire Bull Terrier" + '/');
-    // labelBatch(A, "Bull Terrier");
-    // labelBatch(B, "Boston Terrier");
-    labelBatch(C, "American water spaniel");
-    // labelBatch(D, "Staffordshire Bull Terrier");
+    // const A = ref(storage, "Africa_country_of_location/Algeria/");
+    // const B = ref(storage, "Africa_country_of_location/Tunisia/");
+    // const C = ref(storage, "Africa_country_of_location/Libya/");
+    // const D = ref(storage, "Africa_country_of_location/Morocco/");
+    
+    // labelBatch(A, "Algeria");
+    // labelBatch(B, "Tunisia");
+    // labelBatch(C, "Libya");
+    // labelBatch(D, "Morocco");
+    
     // const E = ref(storage, "Africa_country_of_location" + '/'+"Morocco"+'/');
     // const F = ref(storage, "Africa_country_of_location" + '/'+"Algeria"+'/');
     // const G = ref(storage, "Africa_country_of_location" + '/'+"Tunisia"+'/');
@@ -87,7 +90,7 @@ const HomeScreen = (props) => {
   const [loading, setLoading] = useState(true)
   const [correctClickCount, setCorrectClickCount] = useState(0)
   const [incorrectClickCount, setIncorrectClickCount] = useState(0)
-  const [learningLevel, setLearningLevel] = useState(1) // TBD | Keep user game level
+  const [learningLevel, setLearningLevel] = useState(1) // TBD | Keep user game level | Dictionary starts at 1.
   const [successRate, setSuccessRate] = useState(1)
   const [modalVisible, setModalVisible] = useState(true)
 
@@ -152,6 +155,7 @@ const HomeScreen = (props) => {
   // Images from different sources.
   useEffect(()=> {
     const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
+    console.log('incorrectListRef: ', gameName , '/',incorrectTag,'/')
     const incorrectListRef = ref(storage, gameName + '/'+incorrectTag[0]+'/');
     if (incorrectTag.length>1){
       var incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
@@ -166,7 +170,7 @@ const HomeScreen = (props) => {
     
       getImagesFromRef(incorrectListRef).then(()=>{
 
-        getImagesFromRef(correctListRef, 5).then(()=> {
+        getImagesFromRef(correctListRef, 1).then(()=> {
           if (incorrectListRef2){
             getImagesFromRef(incorrectListRef2)
           }
@@ -207,15 +211,18 @@ const HomeScreen = (props) => {
 
   // TBD | UpperLimit on different game types.
 
-  const getImagesFromRef = async(ref, upperLimit=3) => {
+  const getImagesFromRef = async(ref, upperLimit=5) => {
     // TBD | according to gameName
     await list(ref)
     .then((res) => {
-      const randomDatabaseImageIndex = Math.floor(Math.random() * ((res.items).length)-upperLimit);
+      console.log('nb of items: ', ((res.items).length))
+      range_per_length = (((res.items).length)-upperLimit > 0)? upperLimit : 0; // take a range of x to x+upperLimit AS LONG AS x+upperLimit<length ELSE x=0 and upperLimit=length
+      upperLimit = (range_per_length==0)?((res.items).length):upperLimit;
+      const randomDatabaseImageIndex = Math.floor(Math.random() * (range_per_length));
       
       // .
       // sliced to 10 correct tags
-      res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
+      res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+slicelength).forEach((itemRef) => {
       
 
                         getDownloadURL(itemRef).then((y)=> {
@@ -400,8 +407,7 @@ const HomeScreen = (props) => {
   //           setUrl(x);
   //       })
   //       if (url==undefined) {
-  //           console.log('Error on one.')
-  //       }
+  //           console.log('Error on Africa_country_of_location //       }
   //   }
     
   //   // getImage()
@@ -415,8 +421,7 @@ const HomeScreen = (props) => {
   //   // Find all the prefixes and items.
     
   //     // console.log(categoryURLs) // empty
-  //     // setOnlineGallery(newOne)
-  //   }, [])  
+  //     // setOnlineGallery(neAfrica_id/   }, [])  
   
   console.log('LENGTH: ', onlineGallery.length)
 
@@ -429,9 +434,7 @@ const HomeScreen = (props) => {
   }
 
 
-  // console.log('hey' ,newOne)
-  // setOnlineGallery(newOne)
-  // console.log('oooh', categoryURLs)
+  // console.log('hey' ,neAfrica_id/ setOnlineGallery(neAfrica_id/ console.log('oooh', categoryURLs)
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -517,7 +520,7 @@ const HomeScreen = (props) => {
        if (spoofMemo[gameName].includes(picNb)) {
     */
 
-  // DONE | gameName is associated to the Selection Screen.
+  // DAfrica_idmeName is associated to the Selection Screen.
       
   // The real memo is now image-based. Like a tag.
     console.log('TAGS\n', galleryTags, picNb-1)
@@ -548,7 +551,7 @@ const HomeScreen = (props) => {
 
         // galleryContents = onlineGallery
 
-        // mixing up (not done well bc tags no longer aligned)
+        // mixing up (not dAfrica_id bc tags no longer aligned)
         // galleryContents.sort( () => .5 - Math.random() );
 
         
@@ -621,7 +624,7 @@ const HomeScreen = (props) => {
       setLearningLevel(prev => prev+1) 
     }
     
-    console.log("correct ones in gallery: ", correctLeftInGallery)
+    console.log("correct Africa_idgallery: ", correctLeftInGallery)
     // correct images that are yet-unclicked from the 6 in view.
     // average correct click rate over correct+incorrect clicks -- it's 0 if correct is 0.
 
@@ -855,45 +858,41 @@ const HomeScreen = (props) => {
     {/* SAFE AREA !! */}
      {/* <SafeAreaView style ={styles.webContainer}>
         <View style ={styles.webContent}>    */}
-      <View backgroundColor='rgba(46, 204, 113, 0.8)'>
-          {/* <View style={{ flexDirection:"row"}}> */}
-            {/* <View padding={400} ></View> */}
-          
+
+        
+
+      <View  style={(webView)?backgroundColor= 'rgb(46, 204, 113)':backgroundColor='rgba(46, 204, 113, 0.8)'}> 
+          {/* Is a hint supplied? //*/}
+          {(hint[gameSetLevel])?
+           <Image source={{uri: `${hint[gameSetLevel]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?-300:15, marginBottom:-150}}></Image>
+            : // else: signal button
+
+            <View></View>
+          // <TouchableOpacity
+          //       style={{...styles.gameSelection, marginBottom:200}}
+          //       onPress={() =>Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}
+          //       >
+          //       <Text color="red">{"No hint was supplied. Click here if you think it's a mistake and you want to signal it."}</Text> 
+          //     </TouchableOpacity>
+        }
+
             <View style={styles.modalRow}>
 
-              <TouchableOpacity
-                style={styles.gameSelection}
-                onPress={() =>Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}
-                >
-                <Text color="red">{"No hint was supplied. Click here if you think it's a mistake and you want to signal it."}</Text> 
-      
-              </TouchableOpacity>
-
-              {/* <TouchableOpacity
-                style={styles.gameSelection}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-
-                  navigation.navigate('Selection')
-                }}>
-      
-                <Text> {"\n EXIT TO GAME SELECTION"} </Text>
-              </TouchableOpacity> */}
-              <Image source={{uri: `${hint[gameSetLevel]}`}} style={{height:200, width:330, marginLeft:15, marginBottom:-700}}></Image>
+              
+              
 
               <TouchableOpacity
-                style={styles.gameSelection}
+                style={{...styles.gameSelection, marginBottom:100}}
                 onPress={() => {
                   setModalVisible(!modalVisible);
                   console.log(hint)
                 }}>
-                  <Text style={{fontWeight:"bold"}}> {"\n GOT IT"} </Text>
+                  <Text style={{fontWeight:"bold"}}> {"\n OK"} </Text>
               </TouchableOpacity>  
+
               
-
-            {/* </View> */}
-
-          </View>
+            </View>
+      {/* </View> */}
       </View>
       {/* </View>
 
@@ -1072,8 +1071,8 @@ const styles = StyleSheet.create({
       top: '57%',
       justifyContent: "flex-start",
       alignItems: 'center',
-      width: 200,
-      height: 50,
+      width: 300,
+      height: 100,
       marginTop:160,
       // backgroundColor:'rgba(144, 144, 0, 0.8)',
       backgroundColor:'rgba(102, 140, 190, 1)',
