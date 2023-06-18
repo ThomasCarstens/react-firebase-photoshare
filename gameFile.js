@@ -5,7 +5,7 @@ const spoofGameSets = {
     "Cheeses": ["Cheeses"],
     "Africa": ["Africa_id", "Africa_country_of_location"],
     "Animal tracks": ["Footprints of species", "Animal gait from tracks"],
-    "Knots": ["One rope", "Two ropes"],
+    "Knots": ["One rope"],
 };
 const spoofGameHashtags = {
     "Dogs": "Dogs - Spaniel - Boxer - Mastiff - Beagle - Terriers",
@@ -89,7 +89,7 @@ const spoofInstructions = {
         3: 'Now Algeria',//vs. Welsh Springer.
         4: 'Now Libya',//vs. Welsh Springer.
         5: 'Finally: Algeria',//vs. Welsh Springer.
-        6: 'Test your knowledge: find the American water s.', //vs ['Field Spaniel', 'Boykin spaniel']
+        6: 'Game complete!', //vs ['Field Spaniel', 'Boykin spaniel']
         // 5: 'Game complete: '+ (100*successRate).toFixed(0)+ ' % success rate.'
         },    
     "Animal gait from tracks": {
@@ -128,13 +128,6 @@ const spoofInstructions = {
         5: "Game complete!"
     }
 };
-
-// const spoofInstructions = {
-//   1: 'Level 1: Dogs: where is the Shiba Inu?',
-//   2: 'Level 2: Nuts: find the walnuts',
-//   3: 'Level 3: Wines: where are the Red Wine Glasses?',
-//   4: 'Game complete.'
-// }
 
 const spoofCorrectTag = {
     'Dogs': {
@@ -244,7 +237,8 @@ const spoofIncorrectTag = {
         2: ['Morocco', 'Algeria'],
         3: ['Tunisia', 'Morocco'],
         4: ['Tunisia', 'Algeria'],
-        5: ['']
+        5: ['Tunisia', 'Morocco'],
+        6: ['']
     },
     "Animal gait from tracks": {
         1: ['LeapersHoppers'],

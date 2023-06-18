@@ -135,7 +135,9 @@ const HomeScreen = (props) => {
       let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
       setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
 
-      
+      if (gameSetLevel+1 == spoofGameSets[selectedGame].length){
+        setGameSetComplete(true)
+      }
       return
     }
     
@@ -170,9 +172,9 @@ const HomeScreen = (props) => {
     
       getImagesFromRef(incorrectListRef).then(()=>{
 
-        getImagesFromRef(correctListRef, 1).then(()=> {
+        getImagesFromRef(correctListRef, 3).then(()=> {
           if (incorrectListRef2){
-            getImagesFromRef(incorrectListRef2)
+            getImagesFromRef(incorrectListRef2, 3)
           }
         })
 
@@ -211,18 +213,18 @@ const HomeScreen = (props) => {
 
   // TBD | UpperLimit on different game types.
 
-  const getImagesFromRef = async(ref, upperLimit=5) => {
+  const getImagesFromRef = async(ref, upperLimit=3) => {
     // TBD | according to gameName
     await list(ref)
     .then((res) => {
       console.log('nb of items: ', ((res.items).length))
-      range_per_length = (((res.items).length)-upperLimit > 0)? upperLimit : 0; // take a range of x to x+upperLimit AS LONG AS x+upperLimit<length ELSE x=0 and upperLimit=length
-      upperLimit = (range_per_length==0)?((res.items).length):upperLimit;
-      const randomDatabaseImageIndex = Math.floor(Math.random() * (range_per_length));
-      
+      let window = (((res.items).length) > 5)? ((res.items).length-upperLimit-1) : 0; 
+      // take a range of x to x+upperLimit AS LONG AS x+upperLimit<length ELSE x=0 and upperLimit=length
+      const randomDatabaseImageIndex = Math.floor(Math.random() * (window));
+      upperLimit = (window==0)?((res.items).length):upperLimit;
       // .
       // sliced to 10 correct tags
-      res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+slicelength).forEach((itemRef) => {
+      res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
       
 
                         getDownloadURL(itemRef).then((y)=> {
@@ -616,12 +618,16 @@ const HomeScreen = (props) => {
       
 
       // On last game of gameSet --- set gameSetComplete == true
-      if (gameSetLevel+1 >= Object.keys(spoofGameSets[selectedGame]).length) {
+      if (gameComplete && (gameSetLevel+1 >= Object.keys(spoofGameSets[selectedGame]).length)){
         setGameSetComplete(true)
         // #RECORD_ACCURACY
+      } else {
+        setLearningLevel(prev => prev+1) 
       }
+      
+
       // Learning Level changes the gallery + instructions
-      setLearningLevel(prev => prev+1) 
+      
     }
     
     console.log("correct Africa_idgallery: ", correctLeftInGallery)
@@ -779,9 +785,16 @@ const HomeScreen = (props) => {
               <Text style={styles.buttonText}>Next Level</Text>
         </TouchableOpacity>
       :(gameSetComplete)? //if at end of game set
-      <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={navigation.replace('Score', { 
-        lastscore: 99.99, 
-        data:  (auth.currentUser)?userData:0 })}>
+      <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={()=>{
+        setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
+        let date_finished = new Date();
+        const finishTimestamp = date_finished.getTime(); 
+        navigation.replace('Score', { 
+        name: selectedGame,
+        lastscore: successRate, 
+        lastdate: finishTimestamp,
+        data:  (auth.currentUser)?userData:0 })
+      }}>
             <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
       : /*else if game is not complete*/
       <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>
@@ -861,7 +874,7 @@ const HomeScreen = (props) => {
 
         
 
-      <View  style={(webView)?backgroundColor= 'rgb(46, 204, 113)':backgroundColor='rgba(46, 204, 113, 0.8)'}> 
+      <View  style={{backgroundColor:(webView)?'rgb(46, 204, 113)':'rgba(46, 204, 113, 0.8)'}}> 
           {/* Is a hint supplied? //*/}
           {(hint[gameSetLevel])?
            <Image source={{uri: `${hint[gameSetLevel]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?-300:15, marginBottom:-150}}></Image>

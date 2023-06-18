@@ -4,13 +4,15 @@ import { Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from
 import { DataTable } from 'react-native-paper';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { spoofGameSets } from '../gameFile';
+import { auth } from '../firebase';
 
 const TableExample = (props) => {
   const navigation = useNavigation();
   const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
+  const loggedIn = auth.currentUser
   const gameName = props.route.params?.name 
   const lastscore = props.route.params?.lastscore  
-  const lastdate = props.route.params?.lastdate  
+  let lastdate = props.route.params?.lastdate  
   const data = props.route.params?.data  
   let latestRecords = [];
   let latestRecordDates = [];
@@ -29,20 +31,55 @@ const TableExample = (props) => {
 
       }
       latestRecords.forEach(item => {overallSuccess += item;});
-    }
+    } 
 
     console.log('RECORDS', latestRecords)
     console.log('DATES', latestRecordDates)
     console.log(spoofAccuracy)
-  }
+  } else {
+      overallSuccess = 100*lastscore
+      timeFinished = new Date(lastdate)
+      formattedDate = timeFinished.getDate()+'/'+(timeFinished.getMonth()+1)+'/'+timeFinished.getFullYear()
+      lastdate = formattedDate
+    }
 
 
 
   if (!webView){
     ScreenOrientation.lockAsync(2); //PROFILE
   } 
-    // <SafeAreaView style={{...styles.webContainer}}> 
-    //         <View style={{...styles.webContent}}>     
+  
+  const TableRowGenerator = () => {
+    rowGenerated = []
+    rowGenerated.push( <DataTable.Header style={styles.tableHeader}>
+    <DataTable.Title>Level</DataTable.Title>
+    <DataTable.Title>Correct Rate</DataTable.Title>
+    <DataTable.Title>Date</DataTable.Title>
+  </DataTable.Header>)
+  
+    for (let i=0; i<spoofGameSets[gameName].length;i++){
+      rowGenerated.push( <DataTable.Row>
+      <DataTable.Cell>{i+1}. {spoofGameSets[gameName][i]}</DataTable.Cell>
+      <DataTable.Cell>{latestRecords[i]?(100*spoofAccuracy['0'][latestRecords[i]]).toFixed(2)+'%':"Sign In"}</DataTable.Cell>
+      <DataTable.Cell>{latestRecordDates[i]?(latestRecordDates[i]):(loggedIn)?"Not attempted":"Sign In"}</DataTable.Cell>
+    </DataTable.Row> )
+      }
+    return(
+      <DataTable style={styles.container}>
+      {rowGenerated}
+        <DataTable.Row>
+            <DataTable.Cell>SCORE</DataTable.Cell>
+            <DataTable.Cell>{overallSuccess}%</DataTable.Cell>
+            <DataTable.Cell>{lastdate}</DataTable.Cell>
+        </DataTable.Row>
+      </DataTable>
+
+       
+    )
+  }
+  
+  // <SafeAreaView style={{...styles.webContainer}}> 
+    //         <View style={{...styles.webContent}}>   
   return (
   
 
@@ -52,8 +89,8 @@ const TableExample = (props) => {
         <Text style={{fontSize:30, marginLeft:30}}> IN {gameName.toUpperCase()} GAME</Text>
         {(!data)?<Text style={{fontSize:20, marginLeft:30}}> (WORKS WITHOUT BUGS WHEN SIGNED IN)</Text>:<View></View>}
         <View padding={30}></View>
-      <DataTable style={styles.container}>
-        <DataTable.Header style={styles.tableHeader}>
+      {/* <DataTable style={styles.container}> */}
+        {/* <DataTable.Header style={styles.tableHeader}>
           <DataTable.Title>Level</DataTable.Title>
           <DataTable.Title>Correct Rate</DataTable.Title>
           <DataTable.Title>Date</DataTable.Title>
@@ -63,35 +100,38 @@ const TableExample = (props) => {
           
           <DataTable.Cell>1. {spoofGameSets[gameName][0]}</DataTable.Cell>
           <DataTable.Cell>{latestRecords[0]?(latestRecords[0]).toFixed(2)+'%':"Sign In"}</DataTable.Cell>
-          <DataTable.Cell>{latestRecordDates[0]?(latestRecordDates[0]):"Not attempted"}</DataTable.Cell>
+          <DataTable.Cell>{latestRecordDates[0]?(latestRecordDates[0]):(loggedIn)?"Not attempted":"Sign In"}</DataTable.Cell>
         </DataTable.Row>
     
         <DataTable.Row>
           
           <DataTable.Cell>2. {spoofGameSets[gameName][1]}</DataTable.Cell>
           <DataTable.Cell>{latestRecords[1]?(100*spoofAccuracy['0'][latestRecords[1]]).toFixed(2)+'%':"Sign In"}</DataTable.Cell>
-          <DataTable.Cell>{latestRecordDates[1]?(latestRecordDates[1]):"Not attempted"}</DataTable.Cell>
+          <DataTable.Cell>{latestRecordDates[1]?(latestRecordDates[1]):(loggedIn)?"Not attempted":"Sign In"}</DataTable.Cell>
         </DataTable.Row>
 
         <DataTable.Row>
           
           <DataTable.Cell>3. {spoofGameSets[gameName][2]}</DataTable.Cell>
           <DataTable.Cell>{latestRecords[2]?(100*spoofAccuracy['0'][latestRecords[2]]).toFixed(2)+'%':"Sign In"}</DataTable.Cell>
-          <DataTable.Cell>{latestRecordDates[2]?(latestRecordDates[2]):"Not attempted"}</DataTable.Cell>
+          <DataTable.Cell>{latestRecordDates[2]?(latestRecordDates[2]):(loggedIn)?"Not attempted":"Sign In"}</DataTable.Cell>
         </DataTable.Row>
 
         <DataTable.Row>
           <DataTable.Cell>4. {spoofGameSets[gameName][3]}</DataTable.Cell>
           <DataTable.Cell>{latestRecords[3]?(100*spoofAccuracy['0'][latestRecords[3]]).toFixed(2)+'%':"Sign In"}</DataTable.Cell>
-          <DataTable.Cell>{latestRecordDates[3]?(latestRecordDates[3]):"Not attempted"}</DataTable.Cell>
-        </DataTable.Row>
+          <DataTable.Cell>{latestRecordDates[3]?(latestRecordDates[3]):(loggedIn)?"Not attempted":"Sign In"}</DataTable.Cell>
+        </DataTable.Row> */}
 
-        <DataTable.Row>
+        <TableRowGenerator></TableRowGenerator>
+
+        {/* <DataTable.Row>
+
           <DataTable.Cell>{gameName.toUpperCase()} GAME</DataTable.Cell>
           <DataTable.Cell>{overallSuccess}%</DataTable.Cell>
           <DataTable.Cell>{lastdate}</DataTable.Cell>
-        </DataTable.Row>
-      </DataTable>
+        </DataTable.Row> */}
+      {/* </DataTable> */}
       <View flexDirection='row'>
 
       {/* <TouchableOpacity
