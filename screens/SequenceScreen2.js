@@ -26,12 +26,11 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 //https://www.wineware.co.uk/glassware/beginners-guide-to-different-types-of-wine-glasses
 
 
-const HomeScreen = (props) => {
+const SequenceScreen2 = (props) => {
   const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params.hint
-  
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
 
   // Screen title.
@@ -39,27 +38,27 @@ const HomeScreen = (props) => {
     navigation.setOptions({
       title: gameName+' Game',
     });
-    console.log('hint is', hint)
+
     
     /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-    // const A = ref(storage, "Africa_country_of_location/Algeria/");
-    // const B = ref(storage, "Africa_country_of_location/Tunisia/");
-    // const C = ref(storage, "Africa_country_of_location/Libya/");
-    // const D = ref(storage, "Africa_country_of_location/Morocco/");
+    // const A = ref(storage, "Historical eras/19th/");
+    // const B = ref(storage, "Historical eras/20th/");
+    // const C = ref(storage, "Historical eras/21st/");
+    // const D = ref(storage, "Historical eras/Morocco/");
     
-    // labelBatch(A, "Algeria");
-    // labelBatch(B, "Tunisia");
-    // labelBatch(C, "Libya");
+    // labelBatch(A, "19th");
+    // labelBatch(B, "20th");
+    // labelBatch(C, "21st");
     // labelBatch(D, "Morocco");
     
-    // const E = ref(storage, "Africa_country_of_location" + '/'+"Morocco"+'/');
-    // const F = ref(storage, "Africa_country_of_location" + '/'+"Algeria"+'/');
-    // const G = ref(storage, "Africa_country_of_location" + '/'+"Tunisia"+'/');
-    // const H = ref(storage, "Africa_country_of_location" + '/'+"Libya"+'/');
+    // const E = ref(storage, "Historical eras" + '/'+"Morocco"+'/');
+    // const F = ref(storage, "Historical eras" + '/'+"19th"+'/');
+    // const G = ref(storage, "Historical eras" + '/'+"20th"+'/');
+    // const H = ref(storage, "Historical eras" + '/'+"21st"+'/');
     // labelBatch(E, "Morocco")
-    // labelBatch(F, "Algeria")
-    // labelBatch(G, "Tunisia")
-    // labelBatch(H, "Libya")
+    // labelBatch(F, "19th")
+    // labelBatch(G, "20th")
+    // labelBatch(H, "21st")
 
 
 
@@ -110,9 +109,10 @@ const HomeScreen = (props) => {
   var gameName = spoofGameSets[selectedGame][gameSetLevel]
   console.log(gameName, "is the game noww.")
   // const [gameName, setGameName ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
-  const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
+  // const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   const [instructionText, setInstructionText] = useState(spoofInstructions[gameName][learningLevel])
   const [correctTag, setCorrectTag] = useState(spoofCorrectTag[gameName][learningLevel])
+  const [sequenceNumber, setSequenceNumber] = useState(0) // with correct tag list.
   const [sort, setSort] = useState(false)
   // const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
   const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofInstructions[gameName]).pop()))
@@ -128,11 +128,10 @@ const HomeScreen = (props) => {
   // Game parameters.
   useEffect(() => {
     
-    setGallery([]) // At the start to remove prior gameframes 
-    setGalleryTags({})
+    
     // At end of 1 game
     if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
-      
+      setGallery([]) // At the start to remove prior gameframes 
       setGameComplete(true)
       let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
       setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
@@ -146,7 +145,7 @@ const HomeScreen = (props) => {
     // Within stages of 1 game
     setInstructionText(spoofInstructions[gameName][learningLevel]); //TBD. Database.
     setCorrectTag(spoofCorrectTag[gameName][learningLevel])
-    setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
+    // setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
     // setOutcomeImage(spoofOutcomeImages[gameName][learningLevel])
     setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[gameName]).pop()) )
     
@@ -158,30 +157,23 @@ const HomeScreen = (props) => {
 
   // Images from different sources.
   useEffect(()=> {
-    const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
-    console.log('incorrectListRef: ', gameName , '/',incorrectTag,'/')
-    const incorrectListRef = ref(storage, gameName + '/'+incorrectTag[0]+'/');
-    if (incorrectTag.length>1){
-      var incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
-    }
+    const correctListRef = ref(storage, gameName + '/'+correctTag[0]+'/');
+    const correctListRef2 = ref(storage, gameName + '/'+correctTag[1]+'/');
+    const correctListRef3 = ref(storage, gameName + '/'+correctTag[2]+'/');
 
     // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
     // reinitialise current gallery 
     setGallery(old => [])
-    // setGalleryTags(old => []) //dict preserves
+    setGalleryTags(old => [])
     // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
     // labelBatch(labelListRef, 'Mastiff')
     
-      getImagesFromRef(incorrectListRef, incorrectTag[0], 3).then(()=>{
-
-        getImagesFromRef(correctListRef, correctTag, 3).then(()=> {
-          // if (incorrectListRef2){
-          //   getImagesFromRef(incorrectListRef2, incorrectTag[1], 3)
-          // }
-
-
-
+      getImagesFromRef(correctListRef, 1).then(()=>{
+        getImagesFromRef(correctListRef2, 1).then(()=> {
+            getImagesFromRef(correctListRef3, 1)
         })
+      })
+        
 
         // if (typeof incorrectTag != Array){
         //   const incorrectListRef = ref(storage, gameName + '/'+incorrectTag+'/');
@@ -194,10 +186,13 @@ const HomeScreen = (props) => {
         //     getImagesFromRef(incorrectListRef2)
         //   })
         // }
-      })     
+      // })     
     // }
+
+    
+    
     // console.log(galleryTags)
-  }, [correctTag, incorrectTag])
+  }, [correctTag])
 
   // useEffect(()=> {
   //   if (gallery.length>5) {
@@ -215,63 +210,115 @@ const HomeScreen = (props) => {
 
   // TBD | UpperLimit on different game types.
 
-  const getImagesFromRef = async(ref, tag, upperLimit=5) => {
+  const getImagesFromRef = async(ref, upperLimit=3) => {
     // TBD | according to gameName
     await list(ref)
     .then((res) => {
-      // console.log('nb of items: ', ((res.items).length))
-      let window = (((res.items).length) > 5)? ((res.items).length-upperLimit-1) : 0; 
+      console.log('nb of items: ', ((res.items).length))
+      let window = (((res.items).length)-upperLimit > 0)? ((res.items).length-upperLimit) : 0; 
       // take a range of x to x+upperLimit AS LONG AS x+upperLimit<length ELSE x=0 and upperLimit=length
       const randomDatabaseImageIndex = Math.floor(Math.random() * (window));
       upperLimit = (window==0)?((res.items).length):upperLimit;
+      
       // .
       // sliced to 10 correct tags
       res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
       
 
                         getDownloadURL(itemRef).then((y)=> {
-                        
-                          getMetadata(itemRef)
-                            .then((metadata) => {
-                              
-                              setGalleryTags(old => {
-                                let tagDict = {...old}
-                                if ((tagDict)&&(Object.keys(tagDict).includes(metadata.customMetadata['tag']))){ // make sure its an array
-                                  old[metadata.customMetadata['tag']].push(y)
-                                  // console.log(galleryTags)
-                                  if (old[metadata.customMetadata['tag']].length == upperLimit){
-                                    setGallery(gallery => {
-                                      let val = [...gallery, ...old[metadata.customMetadata['tag']]] // later find tag from galleryTags[gallery[picNb-1]]
-                                      // simple sort
-                                      if (val.length>6){
-                                        let temp = val[0]
-                                        val[0] = val [3]
-                                        val[3] = temp
-                                        temp = val[2]
-                                        val[2] = val [5]
-                                        val[5] = temp
-                                      }
-                                      return val
-                                    });
-                                  };                                   
-                                } else {
-                                  tagDict[metadata.customMetadata['tag']]=[y]
-                                }
-                                return tagDict
+
+                        // Metadata works... but not efficient for large batches.
+
+                        getMetadata(itemRef)
+                          .then((metadata) => {
+                            
+                            setGalleryTags(old => {
+                              let val = [...old, metadata.customMetadata['tag']]
+                              if (val.length%6==0){
+                                // let randomInt = Math.floor(Math.random() * onlineGallery.length) ;
+  
+                                let temp = val[0]
+                                val[0] = val [3]
+                                val[3] = temp
+  
+                                // randomInt = Math.floor(Math.random() * onlineGallery.length) ;
+                                temp = val[2]
+                                val[2] = val [5]
+                                val[5] = temp
                                 
-                             
-                              });
+                              }
+                              return val
+                                
+                            // Metadata now contains the metadata for 'images/forest.jpg'
+                          })
+                          })
+                          .catch((error) => {
+                            console.log(error)
+                            // Uh-oh, an error occurred!
+                          });
+                          
 
-                            }).catch((error) => { // metadata error
-                              console.log(error)
-                            });
+                          // This was a workaround... but it labelled everything at once. (/!\ DO NOT SPLIT FOR-EACH)
+                          // const metadata = {
+                          //       contentType: 'image/jpeg',
+                          //       customMetadata: {
+                          //         'tag': correctTag
+                          //       }
+                          //     };
+                          // updateMetadata(itemRef, metadata)
+                          // .then((metadata) => {
+                          //   // Updated metadata for 'images/forest.jpg' is returned in the Promise
+                          // }).catch((error) => {
+                          //   // Uh-oh, an error occurred!
+                          // });
 
-                        }).catch((error) => { // download error
-                          console.log('Error in CatList.')
-                          console.log(error)
-                        });
-                    }) //for each index
-      }) // of ref.
+                          // setGalleryTags(old => [...old, correctTag])
+                          setGallery(old => {
+                            let val = [...old, y]
+                            if (val.length%6==0){
+                              // let randomInt = Math.floor(Math.random() * onlineGallery.length) ;
+
+                              let temp = val[0]
+                              val[0] = val [3]
+                              val[3] = temp
+
+                              // randomInt = Math.floor(Math.random() * onlineGallery.length) ;
+                              temp = val[2]
+                              val[2] = val [5]
+                              val[5] = temp
+
+        
+
+                            }
+                            return val
+                          })
+
+                          
+                          // setGallery(old => [...old, y])
+                          
+                          // if (gallery.length > 3) {
+                          //   setSort(true)
+                          // }
+                          // Make sure render is loaded in useEffect (issue with progress bar upon first setGallery)
+                          // setTimeout(() => {
+                          //   console.log("Set as loaded after 1 seconds.");
+                          //   setLoading(false); // Inefficient
+                          // }, 2000);
+                          
+                          
+                      }).catch((error) => {
+                        console.log('Error in CatList.')
+                        console.log(error)
+                    
+                      });
+
+              
+      });
+
+
+
+      })
+
 
   }
 
@@ -288,9 +335,9 @@ const HomeScreen = (props) => {
       
 
                         getDownloadURL(itemRef).then((y)=> {
+                          
 
-                          // This was a workaround... but it labelled everything at once. 
-                          // (/!\ DO NOT SPLIT FOR-EACH)
+                          // This was a workaround... but it labelled everything at once. (/!\ DO NOT SPLIT FOR-EACH)
                           const metadata = {
                                 contentType: 'image/jpeg',
                                 customMetadata: {
@@ -304,15 +351,24 @@ const HomeScreen = (props) => {
                             console.log(error)
                             // Uh-oh, an error occurred!
                           });
-  
+
+                          
+                          
                       }).catch((error) => {
                         console.log('Error in CatList.')
                         console.log(error)
-                      })     
-        })
+                    
+                      });
+
+              
+      });
+
+
+
       })
 
-  };
+
+  }
 
   const getOnlineImages = ( ) => {
 
@@ -336,7 +392,7 @@ const HomeScreen = (props) => {
   // categoryURLs.push("sup")
   const [onlineGallery, setOnlineGallery] = useState([]) 
   const [gallery, setGallery] = useState([null])
-  const [galleryTags, setGalleryTags] = useState({'Test': 'test'})
+  const [galleryTags, setGalleryTags] = useState([])
 
 
   
@@ -351,7 +407,7 @@ const HomeScreen = (props) => {
   //           setUrl(x);
   //       })
   //       if (url==undefined) {
-  //           console.log('Error on Africa_country_of_location //       }
+  //           console.log('Error on Historical eras //       }
   //   }
     
   //   // getImage()
@@ -470,27 +526,30 @@ const HomeScreen = (props) => {
     console.log('TAGS\n', galleryTags, picNb-1)
 
 
-    // CASE: Picture correctly selected.       
-    // if (galleryTags[picNb-1]?.includes(correctTag)) {  
-    if (galleryTags[correctTag]?.includes(gallery[picNb-1])) { // new dict format of tags
+    // CASE: Picture correctly selected.
+    if (galleryTags[picNb-1]?.includes(correctTag[sequenceNumber])) {  
     // REMOVE Picture 
+      setSequenceNumber(previous => previous+1)
+
       setGallery(prevState => {
           
           let newState = [...prevState]
 
-          // setGalleryTags( prevOnline => {
-          //   prevOnline.splice(picNb-1, 1);
-          //   return prevOnline
-          // })
+          setGalleryTags( prevOnline => {
+            // prevOnline.splice(picNb-1, 1);
+            return prevOnline
+          })
 
-          newState.splice(picNb-1, 1);                   
+          // newState.splice(picNb-1, 1);                   
           return newState})
       setCorrectClickCount(prevClicks=> prevClicks+1)
-
+      toast.current.show((1+sequenceNumber)+": "+galleryTags[picNb-1]+".", { type: "success" });
 
 
     } else {
       // DO NOTHING.
+      setSequenceNumber(0)
+
       setGallery(prevState => {
 
 
@@ -503,14 +562,7 @@ const HomeScreen = (props) => {
         return prevState})
 
       setIncorrectClickCount(prevState=> prevState+1)
-
-      for (let i=0; i<incorrectTag.length; i++){
-        if (galleryTags[incorrectTag[i]]?.includes(gallery[picNb-1])){
-          let feedbackTag = incorrectTag[i]
-          toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
-        }
-      }
-      
+      toast.current.show("Start over", { type: "error" });
     }
 
     return images
@@ -550,16 +602,18 @@ const HomeScreen = (props) => {
     let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
 
     var index = 0
-    var visibleGallery = gallery.slice(0,5)
-    var correctLeftInGallery = galleryTags[correctTag].filter((url) => visibleGallery.includes(url) )
+    var correctLeftInGallery = galleryTags.filter((value) => {
+      index++
+      console.log(index)
+      return (value.includes(correctTag) && index<7 )
+    })
     // || ((correctLeftInGallery.length == 0 ) && !loading)
     // if ((averageCorrectRate > 0.8) ){
-    // var  correctLeftInGallery = 2
     console.log('level if 0: ', correctLeftInGallery.length)
 
     
     // END OF GAME
-    if (correctLeftInGallery.length == 0){
+    if (sequenceNumber == correctTag.length){
       setLoading(true)
       // Next level when 80% correct rate OR no more correctLeftInGallery  
 
@@ -578,7 +632,7 @@ const HomeScreen = (props) => {
       
     }
     
-    console.log("correct Africa_idgallery: ", correctLeftInGallery)
+    // console.log("correct Africa_idgallery: ", correctLeftInGallery)
     // correct images that are yet-unclicked from the 6 in view.
     // average correct click rate over correct+incorrect clicks -- it's 0 if correct is 0.
 
@@ -824,8 +878,8 @@ const HomeScreen = (props) => {
 
       <View  style={{backgroundColor:(webView)?'rgb(46, 204, 113)':'rgba(46, 204, 113, 0.8)'}}> 
           {/* Is a hint supplied? //*/}
-          {(hint[(gameSetLevel+1).toString()])?
-           <Image source={{uri: `${hint[(gameSetLevel+1).toString()]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?300:15, marginBottom:-150}}></Image>
+          {(hint[gameSetLevel])?
+           <Image source={{uri: `${hint[gameSetLevel]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?-300:15, marginBottom:-150}}></Image>
             : // else: signal button
 
             <View></View>
@@ -866,7 +920,7 @@ const HomeScreen = (props) => {
 // </SafeAreaView>  
 }
 
-export default HomeScreen
+export default SequenceScreen2
 
 
 const styles = StyleSheet.create({

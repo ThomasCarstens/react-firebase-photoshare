@@ -29,7 +29,7 @@ const SelectionScreen = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [thumbnailImage, setThumbnailImage] = useState([])
     const [outcomeImage, setOutcomeImage] = useState({})
-    const [hintImages, setHintImages] = useState([])
+    const [hintImages, setHintImages] = useState({})
     const [searchValue, setSearchValue] = useState()
     const [searchResult, setSearchResult] = useState([])
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
@@ -153,7 +153,14 @@ const SelectionScreen = ({ navigation }) => {
            .then((res) => {
              res.items.forEach((itemRef) => {
            getDownloadURL(itemRef).then((x)=> {
-             setHintImages(previous => [...previous, x]);
+            let getHintNb = x.split('.jpg')[0]
+            let index = getHintNb.charAt(getHintNb.length-1)
+            console.log('hint', index)
+             setHintImages(previous => {
+              dictHints = {...previous}
+              dictHints[index] = x
+              return dictHints
+             });
            })
            if (hintImages==undefined) {
                console.log('Error on one.')
@@ -248,13 +255,13 @@ const SelectionScreen = ({ navigation }) => {
       
       <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
 
-      <Text  style={{color: '#b6dbd8'}} marginTop={220} marginLeft={20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
+      <Text  style={{color: '#b6dbd8'}} marginTop={220} marginLeft={(webView)?200:20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
         {'Send suggestions \n to the team'} 
       </Text>
       <View padding={20}></View>
       {/* <TouchableOpacity style={styles.button} onPress={handleLogin}> <!--(auth.currentUser)?handleSignOut: */}
       
-      <TouchableOpacity style={styles.button} onPress={(auth.currentUser)?handleSignOut:handleLogin}> 
+      <TouchableOpacity style={{...styles.button, marginLeft:(webView)?15:1}} onPress={(auth.currentUser)?handleSignOut:handleLogin}> 
               <Text style={styles.buttonText}>{(auth.currentUser)?"Sign Out":"Login"}</Text>
       </TouchableOpacity>
       </View>
@@ -262,7 +269,7 @@ const SelectionScreen = ({ navigation }) => {
 
       </Text> */}
     <View style={{flex: 6, flexDirection: 'column'}}>
-      <View padding={20}></View>
+      <View padding={(webView)?100:20} marginTop={(webView)?200:2}></View>
     <SearchBar
               placeholder="What will you learn today?"
               inputStyle={{backgroundColor: 'white'}}
@@ -468,7 +475,7 @@ const SelectionScreen = ({ navigation }) => {
 
                     onPress={() => {
                       setModalVisible(!modalVisible);
-                      
+                      console.log(hintImages)
                       navigation.navigate(gameType, { 
                         name: gameName, 
                         hint: hintImages, 
@@ -666,10 +673,10 @@ var styles = StyleSheet.create({
     gameRow: {
       top: '1%',
       left: '10%',
-      width: '80%',
-      height: '200%', 
+      width: (webView)?'80%':'80%',
+      height: (webView)?'100%':'200%', 
       flexDirection : 'row', 
-      justifyContent: 'space-between',
+      justifyContent: (webView)?'space-evenly':'space-between',
       flexWrap: "wrap"
     },
   
@@ -841,12 +848,13 @@ var styles = StyleSheet.create({
       
     },
     button: {
-      flex:1,
+      flex:(webView)?0:1,
       backgroundColor: '#0782F9',
       width: '100%',
+      height: (webView)?'20%':'100%',
       padding: 15,
       borderRadius: 10,
-      alignItems: 'center',
+      alignItems: (webView)?'center':'center',
   },
   buttonText: {
       color: 'white',

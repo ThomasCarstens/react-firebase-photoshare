@@ -38,8 +38,8 @@ const TableExample = (props) => {
     console.log(spoofAccuracy)
   } else {
       overallSuccess = 100*lastscore
-      timeFinished = new Date(lastdate)
-      formattedDate = timeFinished.getDate()+'/'+(timeFinished.getMonth()+1)+'/'+timeFinished.getFullYear()
+      let timeFinished = new Date(lastdate)
+      let formattedDate = timeFinished.getDate()+'/'+(timeFinished.getMonth()+1)+'/'+timeFinished.getFullYear()
       lastdate = formattedDate
     }
 
@@ -50,7 +50,7 @@ const TableExample = (props) => {
   } 
   
   const TableRowGenerator = () => {
-    rowGenerated = []
+    let rowGenerated = []
     rowGenerated.push( <DataTable.Header style={styles.tableHeader}>
     <DataTable.Title>Level</DataTable.Title>
     <DataTable.Title>Correct Rate</DataTable.Title>
