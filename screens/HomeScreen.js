@@ -127,10 +127,11 @@ const HomeScreen = (props) => {
   // Game parameters.
   useEffect(() => {
     
-    
+    setGallery([]) // At the start to remove prior gameframes 
+    setGalleryTags({})
     // At end of 1 game
     if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
-      setGallery([]) // At the start to remove prior gameframes 
+      
       setGameComplete(true)
       let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
       setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
@@ -166,16 +167,19 @@ const HomeScreen = (props) => {
     // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
     // reinitialise current gallery 
     setGallery(old => [])
-    setGalleryTags(old => [])
+    // setGalleryTags(old => []) //dict preserves
     // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
     // labelBatch(labelListRef, 'Mastiff')
     
-      getImagesFromRef(incorrectListRef).then(()=>{
+      getImagesFromRef(incorrectListRef, incorrectTag[0], 3).then(()=>{
 
-        getImagesFromRef(correctListRef, 3).then(()=> {
-          if (incorrectListRef2){
-            getImagesFromRef(incorrectListRef2, 3)
-          }
+        getImagesFromRef(correctListRef, correctTag, 3).then(()=> {
+          // if (incorrectListRef2){
+          //   getImagesFromRef(incorrectListRef2, incorrectTag[1], 3)
+          // }
+
+
+
         })
 
         // if (typeof incorrectTag != Array){
@@ -191,9 +195,6 @@ const HomeScreen = (props) => {
         // }
       })     
     // }
-
-    
-    
     // console.log(galleryTags)
   }, [correctTag, incorrectTag])
 
@@ -213,11 +214,11 @@ const HomeScreen = (props) => {
 
   // TBD | UpperLimit on different game types.
 
-  const getImagesFromRef = async(ref, upperLimit=3) => {
+  const getImagesFromRef = async(ref, tag, upperLimit=5) => {
     // TBD | according to gameName
     await list(ref)
     .then((res) => {
-      console.log('nb of items: ', ((res.items).length))
+      // console.log('nb of items: ', ((res.items).length))
       let window = (((res.items).length) > 5)? ((res.items).length-upperLimit-1) : 0; 
       // take a range of x to x+upperLimit AS LONG AS x+upperLimit<length ELSE x=0 and upperLimit=length
       const randomDatabaseImageIndex = Math.floor(Math.random() * (window));
@@ -228,99 +229,48 @@ const HomeScreen = (props) => {
       
 
                         getDownloadURL(itemRef).then((y)=> {
-
-                        // Metadata works... but not efficient for large batches.
-
-                        getMetadata(itemRef)
-                          .then((metadata) => {
-                            
-                            setGalleryTags(old => {
-                              let val = [...old, metadata.customMetadata['tag']]
-                              if (val.length%6==0){
-                                // let randomInt = Math.floor(Math.random() * onlineGallery.length) ;
-  
-                                let temp = val[0]
-                                val[0] = val [3]
-                                val[3] = temp
-  
-                                // randomInt = Math.floor(Math.random() * onlineGallery.length) ;
-                                temp = val[2]
-                                val[2] = val [5]
-                                val[5] = temp
+                        
+                          getMetadata(itemRef)
+                            .then((metadata) => {
+                              
+                              setGalleryTags(old => {
+                                tagDict = {...old}
+                                if ((tagDict)&&(Object.keys(tagDict).includes(metadata.customMetadata['tag']))){ // make sure its an array
+                                  old[metadata.customMetadata['tag']].push(y)
+                                  // console.log(galleryTags)
+                                  if (old[metadata.customMetadata['tag']].length == upperLimit){
+                                    setGallery(gallery => {
+                                      let val = [...gallery, ...old[metadata.customMetadata['tag']]] // later find tag from galleryTags[gallery[picNb-1]]
+                                      // simple sort
+                                      if (val.length>6){
+                                        let temp = val[0]
+                                        val[0] = val [3]
+                                        val[3] = temp
+                                        temp = val[2]
+                                        val[2] = val [5]
+                                        val[5] = temp
+                                      }
+                                      return val
+                                    });
+                                  };                                   
+                                } else {
+                                  tagDict[metadata.customMetadata['tag']]=[y]
+                                }
+                                return tagDict
                                 
-                              }
-                              return val
-                                
-                            // Metadata now contains the metadata for 'images/forest.jpg'
-                          })
-                          })
-                          .catch((error) => {
-                            console.log(error)
-                            // Uh-oh, an error occurred!
-                          });
-                          
+                             
+                              });
 
-                          // This was a workaround... but it labelled everything at once. (/!\ DO NOT SPLIT FOR-EACH)
-                          // const metadata = {
-                          //       contentType: 'image/jpeg',
-                          //       customMetadata: {
-                          //         'tag': correctTag
-                          //       }
-                          //     };
-                          // updateMetadata(itemRef, metadata)
-                          // .then((metadata) => {
-                          //   // Updated metadata for 'images/forest.jpg' is returned in the Promise
-                          // }).catch((error) => {
-                          //   // Uh-oh, an error occurred!
-                          // });
+                            }).catch((error) => { // metadata error
+                              console.log(error)
+                            });
 
-                          // setGalleryTags(old => [...old, correctTag])
-                          setGallery(old => {
-                            let val = [...old, y]
-                            if (val.length%6==0){
-                              // let randomInt = Math.floor(Math.random() * onlineGallery.length) ;
-
-                              let temp = val[0]
-                              val[0] = val [3]
-                              val[3] = temp
-
-                              // randomInt = Math.floor(Math.random() * onlineGallery.length) ;
-                              temp = val[2]
-                              val[2] = val [5]
-                              val[5] = temp
-
-        
-
-                            }
-                            return val
-                          })
-
-                          
-                          // setGallery(old => [...old, y])
-                          
-                          // if (gallery.length > 3) {
-                          //   setSort(true)
-                          // }
-                          // Make sure render is loaded in useEffect (issue with progress bar upon first setGallery)
-                          // setTimeout(() => {
-                          //   console.log("Set as loaded after 1 seconds.");
-                          //   setLoading(false); // Inefficient
-                          // }, 2000);
-                          
-                          
-                      }).catch((error) => {
-                        console.log('Error in CatList.')
-                        console.log(error)
-                    
-                      });
-
-              
-      });
-
-
-
-      })
-
+                        }).catch((error) => { // download error
+                          console.log('Error in CatList.')
+                          console.log(error)
+                        });
+                    }) //for each index
+      }) // of ref.
 
   }
 
@@ -337,9 +287,9 @@ const HomeScreen = (props) => {
       
 
                         getDownloadURL(itemRef).then((y)=> {
-                          
 
-                          // This was a workaround... but it labelled everything at once. (/!\ DO NOT SPLIT FOR-EACH)
+                          // This was a workaround... but it labelled everything at once. 
+                          // (/!\ DO NOT SPLIT FOR-EACH)
                           const metadata = {
                                 contentType: 'image/jpeg',
                                 customMetadata: {
@@ -353,24 +303,15 @@ const HomeScreen = (props) => {
                             console.log(error)
                             // Uh-oh, an error occurred!
                           });
-
-                          
-                          
+  
                       }).catch((error) => {
                         console.log('Error in CatList.')
                         console.log(error)
-                    
-                      });
-
-              
-      });
-
-
-
+                      })     
+        })
       })
 
-
-  }
+  };
 
   const getOnlineImages = ( ) => {
 
@@ -394,7 +335,7 @@ const HomeScreen = (props) => {
   // categoryURLs.push("sup")
   const [onlineGallery, setOnlineGallery] = useState([]) 
   const [gallery, setGallery] = useState([null])
-  const [galleryTags, setGalleryTags] = useState([])
+  const [galleryTags, setGalleryTags] = useState({'Test': 'test'})
 
 
   
@@ -528,17 +469,18 @@ const HomeScreen = (props) => {
     console.log('TAGS\n', galleryTags, picNb-1)
 
 
-    // CASE: Picture correctly selected.
-    if (galleryTags[picNb-1]?.includes(correctTag)) {  
+    // CASE: Picture correctly selected.       
+    // if (galleryTags[picNb-1]?.includes(correctTag)) {  
+    if (galleryTags[correctTag]?.includes(gallery[picNb-1])) { // new dict format of tags
     // REMOVE Picture 
       setGallery(prevState => {
           
           let newState = [...prevState]
 
-          setGalleryTags( prevOnline => {
-            prevOnline.splice(picNb-1, 1);
-            return prevOnline
-          })
+          // setGalleryTags( prevOnline => {
+          //   prevOnline.splice(picNb-1, 1);
+          //   return prevOnline
+          // })
 
           newState.splice(picNb-1, 1);                   
           return newState})
@@ -560,7 +502,9 @@ const HomeScreen = (props) => {
         return prevState})
 
       setIncorrectClickCount(prevState=> prevState+1)
-      toast.current.show("That's a "+galleryTags[picNb-1]+".", { type: "error" });
+
+      
+      toast.current.show("That's one of "+incorrectTag+".", { type: "error" });
     }
 
     return images
@@ -600,13 +544,11 @@ const HomeScreen = (props) => {
     let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
 
     var index = 0
-    var correctLeftInGallery = galleryTags.filter((value) => {
-      index++
-      console.log(index)
-      return (value.includes(correctTag) && index<7 )
-    })
+    var visibleGallery = gallery.slice(0,5)
+    var correctLeftInGallery = galleryTags[correctTag].filter((url) => visibleGallery.includes(url) )
     // || ((correctLeftInGallery.length == 0 ) && !loading)
     // if ((averageCorrectRate > 0.8) ){
+    // var  correctLeftInGallery = 2
     console.log('level if 0: ', correctLeftInGallery.length)
 
     
