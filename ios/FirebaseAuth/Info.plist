@@ -25,7 +25,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>io.expo.client</string>
+          <string>io.cognitivegen.cultivate</string>
         </array>
       </dict>
     </array>

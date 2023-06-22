@@ -16,14 +16,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "io.expo.client"
+      "bundleIdentifier": "io.cognitivegen.cultivate"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "io.expo.client"
+      "package": "io.cognitivegen.cultivate"
     },
     "web": {
       "favicon": "./assets/favicon.png"

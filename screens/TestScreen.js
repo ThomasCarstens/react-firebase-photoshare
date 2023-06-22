@@ -42,15 +42,25 @@ const HomeScreen = (props) => {
     console.log('hint is', hint)
     
     /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-    // const A = ref(storage, "Shepherd dogs/Australian Shepherd/");
-    // const B = ref(storage, "Shepherd dogs/Bearded Collie/");
-    // const C = ref(storage, "Shepherd dogs/Border Collie/");
-    // const D = ref(storage, "Shepherd dogs/Old English Sheepdog/");
+    // const A = ref(storage, "Africa_country_of_location/Algeria/");
+    // const B = ref(storage, "Africa_country_of_location/Tunisia/");
+    // const C = ref(storage, "Africa_country_of_location/Libya/");
+    // const D = ref(storage, "Africa_country_of_location/Morocco/");
     
-    // labelBatch(A, "Australian Shepherd");
-    // labelBatch(B, "Bearded Collie");
-    // labelBatch(C, "Border Collie");
-    // labelBatch(D, "Old English Sheepdog");
+    // labelBatch(A, "Algeria");
+    // labelBatch(B, "Tunisia");
+    // labelBatch(C, "Libya");
+    // labelBatch(D, "Morocco");
+    
+    // const E = ref(storage, "Africa_country_of_location" + '/'+"Morocco"+'/');
+    // const F = ref(storage, "Africa_country_of_location" + '/'+"Algeria"+'/');
+    // const G = ref(storage, "Africa_country_of_location" + '/'+"Tunisia"+'/');
+    // const H = ref(storage, "Africa_country_of_location" + '/'+"Libya"+'/');
+    // labelBatch(E, "Morocco")
+    // labelBatch(F, "Algeria")
+    // labelBatch(G, "Tunisia")
+    // labelBatch(H, "Libya")
+
 
 
       
@@ -162,14 +172,12 @@ const HomeScreen = (props) => {
     // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
     // labelBatch(labelListRef, 'Mastiff')
     
-      getImagesFromRef(incorrectListRef, incorrectTag[0], 4).then(()=>{
+      getImagesFromRef(incorrectListRef, incorrectTag[0], 3).then(()=>{
 
-        getImagesFromRef(correctListRef, correctTag, 4).then(()=> {
+        getImagesFromRef(correctListRef, correctTag, 3).then(()=> {
           // if (incorrectListRef2){
-            getImagesFromRef(incorrectListRef2, incorrectTag[1], 4).then(()=> {
-              getImagesFromRef(incorrectListRef2, incorrectTag[2], 4)
-          })
-
+          //   getImagesFromRef(incorrectListRef2, incorrectTag[1], 3)
+          // }
 
 
 
@@ -235,30 +243,13 @@ const HomeScreen = (props) => {
                                     setGallery(gallery => {
                                       let val = [...gallery, ...old[metadata.customMetadata['tag']]] // later find tag from galleryTags[gallery[picNb-1]]
                                       // simple sort
-
-                                      
-                                      if (val.length==12){
-                                        // val.sort( () => .3 - Math.random() );
-                                        // console.log('LENGTH 12')
-                                        // var visibleGallery = val.slice(0, 5)
-                                        // var correctLeftInGallery = tagDict[correctTag].filter((url) => visibleGallery.includes(url) )
-                                        
-                                        do {
-                                          console.log('Shuffling -')
-                                          visibleGallery = val.slice(0, 5)
-                                          correctLeftInGallery = tagDict[correctTag].filter((url) => visibleGallery.includes(url) )
-                                          val.sort( () => .3 - Math.random() );
-                                        } while (correctLeftInGallery < 2)
-                                        
-                                        console.log(correctLeftInGallery)
-                                      
-                                        
-                                        // let temp = val[0]
-                                        // val[0] = val [3]
-                                        // val[3] = temp
-                                        // temp = val[2]
-                                        // val[2] = val [5]
-                                        // val[5] = temp
+                                      if (val.length>6){
+                                        let temp = val[0]
+                                        val[0] = val [3]
+                                        val[3] = temp
+                                        temp = val[2]
+                                        val[2] = val [5]
+                                        val[5] = temp
                                       }
                                       return val
                                     });

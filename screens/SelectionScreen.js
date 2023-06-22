@@ -157,7 +157,7 @@ const SelectionScreen = ({ navigation }) => {
             let index = getHintNb.charAt(getHintNb.length-1)
             console.log('hint', index)
              setHintImages(previous => {
-              dictHints = {...previous}
+              let dictHints = {...previous}
               dictHints[index] = x
               return dictHints
              });

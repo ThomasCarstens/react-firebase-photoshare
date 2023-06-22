@@ -62,7 +62,7 @@ const LoginScreen = () => {
     <KeyboardAvoidingView
         style={styles.container}
         behavior="padding">
-        <Image source={require("../assets/bg/learnFast.png")} style={{height:150, width:300, marginLeft:0, borderRadius: 20}}></Image>
+        <Image source={require("../assets/bg/cultivate.png")} style={{height:150, width:300, marginLeft:0, borderRadius: 20}}></Image>
         <View padding={20}></View>
         <View style={styles.inputContainer}>
             <TextInput

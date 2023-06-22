@@ -1,7 +1,7 @@
 
 
 const spoofGameSets = {
-    "Dogs": ["Hounds", "Dogs", "Spaniels", "Terriers" ],
+    "Dogs": ["Sighthounds", "Shepherd dogs", "Terriers_2", "Hounds", "Dogs", "Spaniels", "Terriers" ],
     "Cheeses": ["Cheeses"],
     "Africa": ["Africa_id", "Africa_country_of_location"],
     "Animal tracks": ["Footprints of species", "Animal gait from tracks"],
@@ -114,6 +114,13 @@ const spoofInstructions = {
         4: 'Test your knowledge: find the American Foxhound.',
         5: 'Done with the Hounds. '
         },
+    "Sighthounds": {
+        1: 'Level 1: Find all the Greyhounds.',
+        2: 'Level 2: Find the Italian Greyhounds.',
+        3: 'Level 3: Where is the Ibizan Hound?',
+        4: 'Nice work! Can you locate the Pharaoh Hound?',
+        5: 'Congratulations! You completed all the levels.',
+        },
     "Terriers": {
         1: 'First, let\'s find the Bull Terriers.',
         2: 'We now look at the Boston Terriers.',
@@ -121,6 +128,21 @@ const spoofInstructions = {
         4: 'Test your knowledge: find the Staffordshire Bull Terrier.',
         5: 'Nice work! Ready for the next level?',
         },
+    "Terriers_2": {
+        1: 'Level 1: Find all the Cairn Terriers.',
+        2: 'Level 2: Find the Silky Terriers.',
+        3: 'Level 3: Where is the Irish Terrier?',
+        4: 'Nice work! Can you locate the Yorkshire Terrier?',
+        5: 'Congratulations! You completed all the levels.',
+        },
+    "Shepherd dogs": {
+        1: 'Level 1: Find all the Australian Shepherds.',
+        2: 'Level 2: Find the Bearded Collies.',
+        3: 'Level 3: Where is the Border Collie?',
+        4: 'Nice work! Can you locate the Old English Sheepdog?',
+        5: 'Congratulations! You completed all the levels.',
+        },
+
     "One rope": {
         1: "Level 1: Find the Overhand Knot.",
         2: "Level 2: Locate the Slip Knot.",
@@ -129,7 +151,7 @@ const spoofInstructions = {
         5: "Game complete!"
     },
     "Historical eras": {
-        1: "Order paintings from most ancient to most recent.",
+        1: "Order inventions from most ancient to most recent.",
         2: "Game complete!"
     }
 };
@@ -191,12 +213,33 @@ const spoofCorrectTag = {
         4: 'American Foxhound',
         5: ''
         },
+    "Sighthounds": {
+        1: "Greyhound",
+        2: "Italian Greyhound",
+        3: "Ibizan Hound",
+        4: "Pharaoh Hound",
+        5: "",
+        },
     'Terriers': {
         1: 'Bull Terrier',
         2: 'Boston Terrier',
         3: 'American Staffordshire Terrier',
         4: 'Staffordshire Bull Terrier',
         5: ''
+        },
+    "Terriers_2": {
+        1: "Cairn Terrier",
+        2: "Silky Terrier",
+        3: "Irish Terrier",
+        4: "Yorkshire Terrier",
+        5: "",
+        },
+    "Shepherd dogs": {
+        1: "Australian Shepherd",
+        2: "Bearded Collie",
+        3: "Border Collie",
+        4: "Old English Sheepdog",
+        5: "",
         },
     "One rope": {        
         1: "Overhand Knot",
@@ -269,12 +312,33 @@ const spoofIncorrectTag = {
         4: ['Basset Hound', 'Beagle', 'Bloodhound'],
         5: ['']
         },
+    "Sighthounds": {
+        1: ["Italian Greyhound", "Ibizan Hound", "Pharaoh Hound"],
+        2: ["Greyhound", "Ibizan Hound", "Pharaoh Hound"],
+        3: ["Greyhound", "Italian Greyhound", "Pharaoh Hound"],
+        4: ["Greyhound", "Italian Greyhound", "Ibizan Hound"],
+        5: [""],
+        },
     'Terriers': {
         1: ['Boston Terrier', 'American Staffordshire Terrier', 'Staffordshire Bull Terrier'],
         2: ['Bull Terrier', 'American Staffordshire Terrier', 'Staffordshire Bull Terrier'],
         3: ['Bull Terrier', 'Boston Terrier', 'Staffordshire Bull Terrier'],
         4: ['Bull Terrier', 'Boston Terrier', 'American Staffordshire Terrier'],
         5: ['']
+        },
+    "Terriers_2": {
+        1: ["Silky Terrier", "Irish Terrier", "Yorkshire Terrier"],
+        2: ["Cairn Terrier", "Irish Terrier", "Yorkshire Terrier"],
+        3: ["Cairn Terrier", "Silky Terrier", "Yorkshire Terrier"],
+        4: ["Cairn Terrier", "Silky Terrier", "Irish Terrier"],
+        5: [""],
+        },
+    "Shepherd dogs": {
+        1: ["Bearded Collie", "Border Collie", "Old English Sheepdog"],
+        2: ["Australian Shepherd", "Border Collie", "Old English Sheepdog"],
+        3: ["Australian Shepherd", "Bearded Collie", "Old English Sheepdog"],
+        4: ["Australian Shepherd", "Bearded Collie", "Border Collie"],
+        5: [""],
         },
     "One rope": {
         1: ["Slip Knot", "Figure-8 Loop", "Figure-8 Knot"],
