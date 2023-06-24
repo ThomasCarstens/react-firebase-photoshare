@@ -26,42 +26,60 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 //https://www.wineware.co.uk/glassware/beginners-guide-to-different-types-of-wine-glasses
 
 
-const HomeScreen = (props) => {
+const TestScreen = (props) => {
+  const totalTestQuestions = 2
   const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params.hint
   
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
-
+  const [incompleteLevels, setIncompleteLevels] = useState({})
+  const [testLevel, setTestLevel] = useState(0)
   // Screen title.
   useEffect(() => {
     navigation.setOptions({
       title: gameName+' Game',
     });
+    setIncompleteLevels(empty=>{
+      baseDict = {}
+      for (let i=0; i<spoofGameSets[selectedGame].length; i++) {
+        baseDict[i]= Object.keys(spoofInstructions[spoofGameSets[selectedGame][i]])
+      }
+      return baseDict
+    })
     console.log('hint is', hint)
     
     /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-    // const A = ref(storage, "Africa_country_of_location/Algeria/");
-    // const B = ref(storage, "Africa_country_of_location/Tunisia/");
-    // const C = ref(storage, "Africa_country_of_location/Libya/");
-    // const D = ref(storage, "Africa_country_of_location/Morocco/");
-    
-    // labelBatch(A, "Algeria");
-    // labelBatch(B, "Tunisia");
-    // labelBatch(C, "Libya");
-    // labelBatch(D, "Morocco");
-    
-    // const E = ref(storage, "Africa_country_of_location" + '/'+"Morocco"+'/');
-    // const F = ref(storage, "Africa_country_of_location" + '/'+"Algeria"+'/');
-    // const G = ref(storage, "Africa_country_of_location" + '/'+"Tunisia"+'/');
-    // const H = ref(storage, "Africa_country_of_location" + '/'+"Libya"+'/');
-    // labelBatch(E, "Morocco")
-    // labelBatch(F, "Algeria")
-    // labelBatch(G, "Tunisia")
-    // labelBatch(H, "Libya")
-
-
+    // let fileName = "One rope applications"
+    // const A = ref(storage, fileName + "/Reef Knot/");
+    // const B = ref(storage, fileName + "/Slip Knot/");
+    // const C = ref(storage, fileName + "/Figure-8 Loop/");
+    // const D = ref(storage, fileName + "/Figure-8 Knot/");
+    // const E = ref(storage, fileName + "/Bowline Knot/");
+    // const F = ref(storage, fileName + "/Overhand Knot/");
+    // labelBatch(A, "Reef Knot");
+    // labelBatch(B, "Slip Knot");
+    // labelBatch(C, "Figure-8 Loop");
+    // labelBatch(D, "Figure-8 Knot");
+    // labelBatch(E, "Bowline Knot");
+    // labelBatch(F, "Overhand Knot");
+    // "One rope applications": {
+    //   1: "Overhand Knot",
+    //   2: "Slip Knot",
+    //   3: "Figure-8 Loop",
+    //   4: "Figure-8 Knot",
+    //   5: "Bowline Knot",
+    //   6: "",
+    // },
+    // "Choose the right knot": {
+    //   1: "Reef Knot",
+    //   2: "Reef Knot",
+    //   3: "Reef Knot",
+    //   4: "Bowline Knot",
+    //   5: "Figure-8 Loop",
+    //   6: "",
+    // },
 
       
      
@@ -130,18 +148,23 @@ const HomeScreen = (props) => {
     
     setGallery([]) // At the start to remove prior gameframes 
     setGalleryTags({})
-    // At end of 1 game
-    if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
-      
-      setGameComplete(true)
-      let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
-      setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
-
-      if (gameSetLevel+1 == spoofGameSets[selectedGame].length){
+    
+    if (testLevel == totalTestQuestions){
         setGameSetComplete(true)
-      }
-      return
+        let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
+        setInstructionText(' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
+
+        return
     }
+    // At end of 1 game
+    // if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
+      
+    //   setGameComplete(true)
+    //   setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
+
+      
+    //   return
+    // }
     
     // Within stages of 1 game
     setInstructionText(spoofInstructions[gameName][learningLevel]); //TBD. Database.
@@ -161,9 +184,14 @@ const HomeScreen = (props) => {
     const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
     console.log('incorrectListRef: ', gameName , '/',incorrectTag,'/')
     const incorrectListRef = ref(storage, gameName + '/'+incorrectTag[0]+'/');
-    if (incorrectTag.length>1){
+    if (incorrectTag[1]){
       var incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
     }
+
+    if (incorrectTag[2]){
+      var incorrectListRef3 = ref(storage, gameName + '/'+incorrectTag[2]+'/');
+    }
+      
 
     // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
     // reinitialise current gallery 
@@ -172,12 +200,16 @@ const HomeScreen = (props) => {
     // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
     // labelBatch(labelListRef, 'Mastiff')
     
-      getImagesFromRef(incorrectListRef, incorrectTag[0], 3).then(()=>{
+    getImagesFromRef(incorrectListRef, incorrectTag[0], 3).then(()=>{
 
-        getImagesFromRef(correctListRef, correctTag, 3).then(()=> {
-          // if (incorrectListRef2){
-          //   getImagesFromRef(incorrectListRef2, incorrectTag[1], 3)
-          // }
+      getImagesFromRef(correctListRef, correctTag, 4).then(()=> {
+        // if (incorrectListRef2){
+          getImagesFromRef(incorrectListRef2, incorrectTag[1], 4).then(()=> {
+            if (incorrectListRef3){
+              getImagesFromRef(incorrectListRef3, incorrectTag[2], 4)
+            }
+          })
+
 
 
 
@@ -199,19 +231,7 @@ const HomeScreen = (props) => {
     // console.log(galleryTags)
   }, [correctTag, incorrectTag])
 
-  // useEffect(()=> {
-  //   if (gallery.length>5) {
-  //     setGallery((prevOrder)=>{
-  //     console.log(prevOrder[0])
-  //     let temp = prevOrder[0]
-  //     prevOrder[0] = prevOrder[3]
-  //     prevOrder[3] = temp
-  //     // [prevOrder[0], prevOrder[3]]=[prevOrder[3], prevOrder[0]]
-  //     return prevOrder
-  //   })
-  //   }
-    
-  // }, [sort])
+
 
   // TBD | UpperLimit on different game types.
 
@@ -220,7 +240,7 @@ const HomeScreen = (props) => {
     await list(ref)
     .then((res) => {
       // console.log('nb of items: ', ((res.items).length))
-      let window = (((res.items).length) > 5)? ((res.items).length-upperLimit-1) : 0; 
+      let window = (((res.items).length) > upperLimit)? ((res.items).length-upperLimit-1) : 0; 
       // take a range of x to x+upperLimit AS LONG AS x+upperLimit<length ELSE x=0 and upperLimit=length
       const randomDatabaseImageIndex = Math.floor(Math.random() * (window));
       upperLimit = (window==0)?((res.items).length):upperLimit;
@@ -236,20 +256,37 @@ const HomeScreen = (props) => {
                               
                               setGalleryTags(old => {
                                 let tagDict = {...old}
-                                if ((tagDict)&&(Object.keys(tagDict).includes(metadata.customMetadata['tag']))){ // make sure its an array
+                                if (Object.keys(tagDict).includes(metadata.customMetadata['tag'])){ // make sure its an array
                                   old[metadata.customMetadata['tag']].push(y)
                                   // console.log(galleryTags)
                                   if (old[metadata.customMetadata['tag']].length == upperLimit){
                                     setGallery(gallery => {
                                       let val = [...gallery, ...old[metadata.customMetadata['tag']]] // later find tag from galleryTags[gallery[picNb-1]]
                                       // simple sort
-                                      if (val.length>6){
-                                        let temp = val[0]
-                                        val[0] = val [3]
-                                        val[3] = temp
-                                        temp = val[2]
-                                        val[2] = val [5]
-                                        val[5] = temp
+
+                                      
+                                      if (val.length==12){
+                                        // val.sort( () => .3 - Math.random() );
+                                        // console.log('LENGTH 12')
+                                        // var visibleGallery = val.slice(0, 5)
+                                        // var correctLeftInGallery = tagDict[correctTag].filter((url) => visibleGallery.includes(url) )
+                                        
+                                        do {
+                                          console.log('Shuffling -')
+                                          visibleGallery = val.slice(0, 5)
+                                          correctLeftInGallery = tagDict[correctTag].filter((url) => visibleGallery.includes(url) )
+                                          val.sort( () => .3 - Math.random() );
+                                        } while (correctLeftInGallery < 2)
+                                        
+                                        console.log(correctLeftInGallery)
+                                      
+                                        
+                                        // let temp = val[0]
+                                        // val[0] = val [3]
+                                        // val[3] = temp
+                                        // temp = val[2]
+                                        // val[2] = val [5]
+                                        // val[5] = temp
                                       }
                                       return val
                                     });
@@ -539,7 +576,9 @@ const HomeScreen = (props) => {
   const handleSelectionScreen = () => {
     navigation.replace("Selection")
   }
-
+  Array.prototype.sample = function(){
+    return this[Math.floor(Math.random()*this.length)];
+  }
   // progress bar - within the level we are at.
   const progressCalculate = () => {
     console.log('is Loaded before progress calculation? ', !loading)
@@ -563,14 +602,31 @@ const HomeScreen = (props) => {
       setLoading(true)
       // Next level when 80% correct rate OR no more correctLeftInGallery  
 
-      
+      setIncompleteLevels(allIncomplete => {
+            let incompleteLevelDict = {...allIncomplete}
+            incompleteLevelDict[gameSetLevel].splice(learningLevel, 1);
+            console.log(Object.keys(spoofGameSets[selectedGame]))
+            let newGameSetLevel = Object.keys(spoofGameSets[selectedGame]).sample()
+            console.log(Object.keys(incompleteLevelDict[newGameSetLevel]))
+            let newLevel = Object.keys(incompleteLevelDict[newGameSetLevel]).sample()
+            setGameSetLevel(newGameSetLevel)
+            setLearningLevel(prev => parseInt(newLevel))
+            setTestLevel(prev=>prev+1)
+            console.log("JUMP: ", newGameSetLevel, '. ', newLevel)
+            return incompleteLevelDict
+            // =  [...incompleteLevelDict[gameSetLevel], prev]
+          })  
 
       // On last game of gameSet --- set gameSetComplete == true
-      if (gameComplete && (gameSetLevel+1 >= Object.keys(spoofGameSets[selectedGame]).length)){
+      if (testLevel+1 >= totalTestQuestions){
         setGameSetComplete(true)
         // #RECORD_ACCURACY
       } else {
-        setLearningLevel(prev => prev+1) 
+        
+
+          
+          
+        
       }
       
 
@@ -866,7 +922,7 @@ const HomeScreen = (props) => {
 // </SafeAreaView>  
 }
 
-export default HomeScreen
+export default TestScreen
 
 
 const styles = StyleSheet.create({

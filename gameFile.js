@@ -5,7 +5,7 @@ const spoofGameSets = {
     "Cheeses": ["Cheeses"],
     "Africa": ["Africa_id", "Africa_country_of_location"],
     "Animal tracks": ["Footprints of species", "Animal gait from tracks"],
-    "Knots": ["One rope"],
+    "Knots": ["One rope applications", "Choose the right knot"],
     "History": ["Historical eras"]
 };
 const spoofGameHashtags = {
@@ -54,6 +54,12 @@ var spoofOutcomeImages = {
 
 // DONE | each storage folder is linked to an instruction + correct tag
 const spoofInstructions = {
+    "DogTest": {
+        1: 'Level 1: Find all the Australian Shepherds.',
+        2: 'We now look at the American Water Spaniel.',
+        3: 'Where is the Border Collie?',
+        4: 'Congratulations! You completed all the levels.',
+        },
     "Dogs": {
         1: 'Level 1: Find all the Boxers.',
         2: 'Level 2: Find the Bullmastiffs',
@@ -142,13 +148,28 @@ const spoofInstructions = {
         4: 'Nice work! Can you locate the Old English Sheepdog?',
         5: 'Congratulations! You completed all the levels.',
         },
-
     "One rope": {
         1: "Level 1: Find the Overhand Knot.",
         2: "Level 2: Locate the Slip Knot.",
         3: "Level 3: Identify the Figure-8 Loop.",
         4: "Level 4: Can you find the Figure-8 Knot?",
         5: "Game complete!"
+    },
+    "One rope applications": {
+        1: "Find the Overhand Knot.",
+        2: "Locate the Slip Knot.",
+        3: "Identify the Figure-8 Loop.",
+        4: "Can you find the Figure-8 Knot?",
+        5: "Can you find the Bowline Knot?",
+        6: "Game complete!"        
+    },
+    "Choose the right knot": {
+        1: "Ribbon for a present.",
+        2: "A head bandage out of a cloth.",
+        3: "Tying flintwood together.",
+        4: "Anchoring around a tree trunk.",
+        5: "Between fishing line and fishing hook.",
+        6: "Game complete!"        
     },
     "Historical eras": {
         1: "Order inventions from most ancient to most recent.",
@@ -157,6 +178,12 @@ const spoofInstructions = {
 };
 
 const spoofCorrectTag = {
+    "DogTest": {
+        1: "Australian Shepherd",
+        2: 'American water spaniel',
+        3: "Border Collie",
+        4: 'Congratulations! You completed all the levels.',
+        },
     'Dogs': {
         1: 'Boxer',
         2: 'Bullmastiff',
@@ -251,11 +278,33 @@ const spoofCorrectTag = {
     "Historical eras": {
         1: ["19th", "20th", "21st"],
         2: [""]
-    }
+    },
+    "One rope applications": {
+        1: "Overhand Knot",
+        2: "Slip Knot",
+        3: "Figure-8 Loop",
+        4: "Figure-8 Knot",
+        5: "Bowline Knot",
+        6: "",
+      },
+      "Choose the right knot": {
+        1: "Reef Knot",
+        2: "Reef Knot",
+        3: "Reef Knot",
+        4: "Bowline Knot",
+        5: "Figure-8 Loop",
+        6: "",
+      },
 
 };
 
 const spoofIncorrectTag = {
+    "DogTest": {
+        1: ["Bearded Collie", "Border Collie", "Old English Sheepdog"],
+        2: ['Boykin spaniel'],
+        3: ["Australian Shepherd", "Bearded Collie", "Old English Sheepdog"],
+        4: 'Congratulations! You completed all the levels.',
+        },
     'Dogs': {
         1: ['Bullmastiff'],
         2: ['Boxer'],
@@ -346,7 +395,23 @@ const spoofIncorrectTag = {
         3: ["Overhand Knot", "Slip Knot", "Figure-8 Knot"],
         4: ["Overhand Knot", "Slip Knot", "Figure-8 Loop"],
         5: [""]
-        }
+        },
+    "One rope applications": {
+        1: ["Slip Knot", "Bowline Knot",  "Figure-8 Loop", "Figure-8 Knot",],
+        2: ["Overhand Knot", "Figure-8 Loop", "Figure-8 Knot", "Bowline Knot"],
+        3: ["Overhand Knot", "Slip Knot", "Figure-8 Knot", "Bowline Knot"],
+        4: ["Overhand Knot", "Slip Knot", "Figure-8 Loop", "Bowline Knot"],
+        5: ["Overhand Knot", "Slip Knot", "Figure-8 Loop", "Figure-8 Knot"],
+        6: [""],
+    },
+    "Choose the right knot": {
+        1: ["Bowline Knot", "Figure-8 Loop"],
+        2: ["Bowline Knot", "Figure-8 Loop"],
+        3: ["Bowline Knot", "Figure-8 Loop"],
+        4: ["Reef Knot", "Figure-8 Loop"],
+        5: ["Reef Knot", "Bowline Knot"],
+        6: []
+        },
 }
 
 export {spoofGameSets, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}

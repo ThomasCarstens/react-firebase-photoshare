@@ -42,16 +42,35 @@ const HomeScreen = (props) => {
     console.log('hint is', hint)
     
     /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-    // const A = ref(storage, "Shepherd dogs/Australian Shepherd/");
-    // const B = ref(storage, "Shepherd dogs/Bearded Collie/");
-    // const C = ref(storage, "Shepherd dogs/Border Collie/");
-    // const D = ref(storage, "Shepherd dogs/Old English Sheepdog/");
-    
-    // labelBatch(A, "Australian Shepherd");
-    // labelBatch(B, "Bearded Collie");
-    // labelBatch(C, "Border Collie");
-    // labelBatch(D, "Old English Sheepdog");
-
+    // let fileName = "One rope applications"
+    // const A = ref(storage, fileName + "/Reef Knot/");
+    // const B = ref(storage, fileName + "/Slip Knot/");
+    // const C = ref(storage, fileName + "/Figure-8 Loop/");
+    // const D = ref(storage, fileName + "/Figure-8 Knot/");
+    // const E = ref(storage, fileName + "/Bowline Knot/");
+    // const F = ref(storage, fileName + "/Overhand Knot/");
+    // labelBatch(A, "Reef Knot");
+    // labelBatch(B, "Slip Knot");
+    // labelBatch(C, "Figure-8 Loop");
+    // labelBatch(D, "Figure-8 Knot");
+    // labelBatch(E, "Bowline Knot");
+    // labelBatch(F, "Overhand Knot");
+    // "One rope applications": {
+    //   1: "Overhand Knot",
+    //   2: "Slip Knot",
+    //   3: "Figure-8 Loop",
+    //   4: "Figure-8 Knot",
+    //   5: "Bowline Knot",
+    //   6: "",
+    // },
+    // "Choose the right knot": {
+    //   1: "Reef Knot",
+    //   2: "Reef Knot",
+    //   3: "Reef Knot",
+    //   4: "Bowline Knot",
+    //   5: "Figure-8 Loop",
+    //   6: "",
+    // },
 
       
      
@@ -153,6 +172,7 @@ const HomeScreen = (props) => {
     const incorrectListRef = ref(storage, gameName + '/'+incorrectTag[0]+'/');
     if (incorrectTag.length>1){
       var incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
+      var incorrectListRef3 = ref(storage, gameName + '/'+incorrectTag[2]+'/');
     }
 
     // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
@@ -162,12 +182,16 @@ const HomeScreen = (props) => {
     // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
     // labelBatch(labelListRef, 'Mastiff')
     
-      getImagesFromRef(incorrectListRef, incorrectTag[0], 4).then(()=>{
+      getImagesFromRef(incorrectListRef, incorrectTag[0], 3).then(()=>{
 
-        getImagesFromRef(correctListRef, correctTag, 4).then(()=> {
+        getImagesFromRef(correctListRef, correctTag, 4)?.then(()=> {
           // if (incorrectListRef2){
-            getImagesFromRef(incorrectListRef2, incorrectTag[1], 4).then(()=> {
-              getImagesFromRef(incorrectListRef2, incorrectTag[2], 4)
+            getImagesFromRef(incorrectListRef2, incorrectTag[1], 4)?.then(()=> {
+              if (incorrectListRef3){
+                getImagesFromRef(incorrectListRef3, incorrectTag[2], 4)
+              }
+              
+              
           })
 
 
@@ -208,11 +232,15 @@ const HomeScreen = (props) => {
   // TBD | UpperLimit on different game types.
 
   const getImagesFromRef = async(ref, tag, upperLimit=5) => {
+    if (ref==undefined){
+      console.log('skipping ref because storage is undefined:', ref)
+      return
+    }
     // TBD | according to gameName
     await list(ref)
     .then((res) => {
       // console.log('nb of items: ', ((res.items).length))
-      let window = (((res.items).length) > 5)? ((res.items).length-upperLimit-1) : 0; 
+      let window = (((res.items).length) > upperLimit)? ((res.items).length-upperLimit-1) : 0; 
       // take a range of x to x+upperLimit AS LONG AS x+upperLimit<length ELSE x=0 and upperLimit=length
       const randomDatabaseImageIndex = Math.floor(Math.random() * (window));
       upperLimit = (window==0)?((res.items).length):upperLimit;
@@ -228,7 +256,7 @@ const HomeScreen = (props) => {
                               
                               setGalleryTags(old => {
                                 let tagDict = {...old}
-                                if ((tagDict)&&(Object.keys(tagDict).includes(metadata.customMetadata['tag']))){ // make sure its an array
+                                if (Object.keys(tagDict).includes(metadata.customMetadata['tag'])){ // make sure its an array
                                   old[metadata.customMetadata['tag']].push(y)
                                   // console.log(galleryTags)
                                   if (old[metadata.customMetadata['tag']].length == upperLimit){
@@ -648,8 +676,30 @@ const HomeScreen = (props) => {
     <View>
       <Toast ref={toast} />
       <View style={{padding: 15}}></View>
-      <Text style={{fontSize: 13, alignContent: 'flex-end'}} >  GAME {gameSetLevel+1} </Text>
-      <Text style={{fontSize: 20}}> {instructionText} </Text>
+      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'flex-start'}}>
+        <TouchableOpacity  onPress={handleSelectionScreen}>
+          <Text style={{...styles.buttonText, color:'black'}}>{"< Back"}</Text>
+        </TouchableOpacity>
+        <Text style={{fontSize: 13, alignContent: 'flex-end', marginLeft: 20}} > 
+        {selectedGame.toUpperCase()}: ({gameSetLevel+1}) {gameName} </Text>
+        
+          
+      </View>
+      <View style={{flexDirection: 'column', alignItems: 'center'}}>
+      
+      <Text style={{fontSize: 20, color:'black'}}> {instructionText} </Text>
+
+      {/* IMAGE ONLY IN HOME SCREEN */}
+      <Image 
+
+          source={{uri:`${galleryTags[correctTag]}`,}}
+          style={{...styles.imageContainer, height:100, width: 100}}
+          placeholder={blurhash}
+          contentFit="cover"
+          transition={1000}
+        />
+        </View>
+      
       <View style={{padding: 10}}></View>
       <View style={{flexDirection: 'row'}} >
       <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/>
@@ -797,9 +847,7 @@ const HomeScreen = (props) => {
         <Text style={styles.buttonText}>Upload</Text>
       </TouchableOpacity> */}
 
-      <TouchableOpacity style={styles.button} onPress={handleSelectionScreen}>
-        <Text style={styles.buttonText}>Back</Text>
-      </TouchableOpacity>
+
 
       {/* <TouchableOpacity style={styles.button} onPress={handleSignOut}>
         <Text style={styles.buttonText}>Sign Out</Text>
