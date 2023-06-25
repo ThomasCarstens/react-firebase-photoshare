@@ -13,7 +13,7 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag} from '../gameFile';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
 // import Toast, { useToast } from 'react-native-toast-notifications';
@@ -111,7 +111,30 @@ const SequenceScreen = (props) => {
   // const [gameName, setGameName ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   // const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   const [instructionText, setInstructionText] = useState(spoofInstructions[gameName][learningLevel])
-  const [correctTag, setCorrectTag] = useState(spoofCorrectTag[gameName][learningLevel])
+
+  // order of correct tags respects the chosen metric.
+  // ie. sort 3 tags by their value in spoofGameMetrics
+  const gameMetric = "Life expectancy"
+  let correctTagList = spoofCorrectTag[gameMetric][learningLevel]
+  console.log('old', correctTagList)
+  let metricList = []
+  let modifiedMetrics = []
+  // 1. Get metrics as array
+  for (let tagId = 0; tagId<correctTagList.length ; tagId++){
+    metricList.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
+    modifiedMetrics.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
+  }
+  console.log(metricList)
+
+  modifiedMetrics.sort()
+  let nextCorrectTagList = []
+  for (let tagId = 0; tagId<correctTagList.length ; tagId++){
+    nextCorrectTagList.push(correctTagList[metricList.indexOf(modifiedMetrics[tagId])]) 
+  }
+  console.log('final', nextCorrectTagList)
+
+  
+  const [correctTag, setCorrectTag] = useState(nextCorrectTagList)
   const [sequenceNumber, setSequenceNumber] = useState(0) // with correct tag list.
   const [sort, setSort] = useState(false)
   // const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
@@ -145,7 +168,7 @@ const SequenceScreen = (props) => {
     
     // Within stages of 1 game
     setInstructionText(spoofInstructions[gameName][learningLevel]); //TBD. Database.
-    setCorrectTag(spoofCorrectTag[gameName][learningLevel])
+    setCorrectTag(nextCorrectTagList)
     // setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
     // setOutcomeImage(spoofOutcomeImages[gameName][learningLevel])
     setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[gameName]).pop()) )

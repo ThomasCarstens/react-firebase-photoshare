@@ -285,7 +285,7 @@ const SelectionScreen = ({ navigation }) => {
         {/* <Image source={{outcomeImage}} style={{height:170, width:130}}></Image> */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Dogs')
-          setGameType('Test')
+          setGameType('Sequence')
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[0]}`}} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>

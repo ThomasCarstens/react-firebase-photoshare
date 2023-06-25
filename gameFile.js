@@ -1,13 +1,61 @@
 
 
 const spoofGameSets = {
-    "Dogs": ["Sighthounds", "Shepherd dogs", "Terriers_2", "Hounds", "Dogs", "Spaniels", "Terriers" ],
-    "Cheeses": ["Cheeses"],
-    "Africa": ["Africa_id", "Africa_country_of_location"],
-    "Animal tracks": ["Footprints of species", "Animal gait from tracks"],
-    "Knots": ["One rope applications", "Choose the right knot"],
-    "History": ["Historical eras"]
+    "Dogs":         ["Sighthounds", "Shepherd dogs", "Terriers_2", "Hounds", "Dogs", "Spaniels", "Terriers" ],
+    "Cheeses":      ["Cheeses"],
+    "Africa":       ["Africa_id", "Africa_country_of_location"],
+    "Animal tracks":["Footprints of species", "Animal gait from tracks"],
+    "Knots":        ["One rope applications", "Choose the right knot"],
+    "History":      ["Historical eras"],
+    "Life expectancy": ['Dogs'],
 };
+
+const spoofGameFolders = {
+    "Vegetables": {
+        "Beans":    ["Bean" ],
+        "Flowers":  ["Broccoli", "Cauliflower"],
+        "Roots":    ["Carrot", "Potato", "Radish"],
+        "Leaf":     ["Cabbage"],
+        "Fruit":    ["Capsicum", "Bitter gourd", "Bottle gourd", "Brinjal", "Cucumber"],        
+    },
+    "Dogs": {
+        "Sighthounds":      ["Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound"],
+        "Shepherd dogs":    ["Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd"],
+        "Terriers":         ["Silky Terrier",       "Irish Terrier",    "Yorkshire Terrier",    "Cairn Terrier"],
+        "Bull Terriers":    ['Boston Terrier',      'American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bull Terrier'],
+        "Hounds":           ['Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound'],
+        "Mastiffs":         ['Boxer',               'Bullmastiff',      'Mastiff'],
+        "Dogs":             ['Boxer',               'Bullmastiff',      'Mastiff'],
+        "Spaniels":         ['Field spaniel',       'Boykin spaniel',   'American water spaniel'],
+    },
+    "Africa": {
+        "North Coast":      ["Tunisia",   "Morocco",     "Algeria",        "Libya"],
+    },    
+    
+};
+
+const spoofGameMetrics = {
+    "Growing cycle": {
+        "Bean": 0, "Broccoli": 0 , "Cauliflower":0 ,
+        "Carrot":0, "Potato":0, "Radish":0,
+        "Cabbage":0,
+        "Capsicum":0, "Bitter gourd":0, "Bottle gourd":0, "Brinjal":0, "Cucumber":0
+    },
+    "Life expectancy": {
+        "Italian Greyhound":1,   "Ibizan Hound":2,     "Pharaoh Hound":3,        "Greyhound":4,
+        "Bearded Collie":4,      "Border Collie":3,    "Old English Sheepdog":2, "Australian Shepherd":1,
+        "Silky Terrier":2,       "Irish Terrier":3,    "Yorkshire Terrier":4,    "Cairn Terrier":5,
+        'Boston Terrier':4,      'American Staffordshire Terrier':5, 'Staffordshire Bull Terrier':5, 'Bull Terrier':5,
+        'Beagle':5,              'Bloodhound':5,       'American Foxhound':5,    'Basset Hound':5,
+        'Boxer':4.1,               'Bullmastiff':5.2,      'Mastiff':1.1,
+        'Field spaniel':5,       'Boykin spaniel':5,   'American water spaniel':5,
+    },
+    "Population (2022)": {
+        "Tunisia":5,   "Morocco":5,     "Algeria":5,        "Libya":5,
+    },    
+    
+};
+
 const spoofGameHashtags = {
     "Dogs": "Dogs - Spaniel - Boxer - Mastiff - Beagle - Terriers",
     "Cheeses": "Cheeses",
@@ -55,6 +103,12 @@ var spoofOutcomeImages = {
 // DONE | each storage folder is linked to an instruction + correct tag
 const spoofInstructions = {
     "DogTest": {
+        1: 'Level 1: Find all the Australian Shepherds.',
+        2: 'We now look at the American Water Spaniel.',
+        3: 'Where is the Border Collie?',
+        4: 'Congratulations! You completed all the levels.',
+        },
+    "Life expectancy": {
         1: 'Level 1: Find all the Australian Shepherds.',
         2: 'We now look at the American Water Spaniel.',
         3: 'Where is the Border Collie?',
@@ -178,6 +232,7 @@ const spoofInstructions = {
 };
 
 const spoofCorrectTag = {
+
     "DogTest": {
         1: "Australian Shepherd",
         2: 'American water spaniel',
@@ -279,6 +334,12 @@ const spoofCorrectTag = {
         1: ["19th", "20th", "21st"],
         2: [""]
     },
+
+    "Life expectancy": {
+        1: ['Boxer', 'Bullmastiff', 'Mastiff'],
+        2: [''],
+
+        },
     "One rope applications": {
         1: "Overhand Knot",
         2: "Slip Knot",
@@ -389,6 +450,10 @@ const spoofIncorrectTag = {
         4: ["Australian Shepherd", "Bearded Collie", "Border Collie"],
         5: [""],
         },
+    "Life expectancy": {
+        1: [''],
+        2: [''],
+        },
     "One rope": {
         1: ["Slip Knot", "Figure-8 Loop", "Figure-8 Knot"],
         2: ["Overhand Knot", "Figure-8 Loop", "Figure-8 Knot"],
@@ -414,4 +479,4 @@ const spoofIncorrectTag = {
         },
 }
 
-export {spoofGameSets, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}
+export {spoofGameSets, spoofGameMetrics, spoofGameFolders, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}

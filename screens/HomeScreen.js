@@ -15,7 +15,7 @@ import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
 import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
-
+import { Audio } from "expo-av"
 // import Toast, { useToast } from 'react-native-toast-notifications';
 // import { Platform } from 'react-native/types';
 // import Toast from 'react-native-fast-toast/lib/typescript/toast';
@@ -32,6 +32,12 @@ const HomeScreen = (props) => {
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params.hint
   
+
+  const sound = new Audio.Sound()
+
+  
+
+  
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
 
   // Screen title.
@@ -40,21 +46,22 @@ const HomeScreen = (props) => {
       title: gameName+' Game',
     });
     console.log('hint is', hint)
-    
+    // getAudioLoaded()
     /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-    // let fileName = "One rope applications"
-    // const A = ref(storage, fileName + "/Reef Knot/");
-    // const B = ref(storage, fileName + "/Slip Knot/");
-    // const C = ref(storage, fileName + "/Figure-8 Loop/");
-    // const D = ref(storage, fileName + "/Figure-8 Knot/");
-    // const E = ref(storage, fileName + "/Bowline Knot/");
-    // const F = ref(storage, fileName + "/Overhand Knot/");
-    // labelBatch(A, "Reef Knot");
-    // labelBatch(B, "Slip Knot");
-    // labelBatch(C, "Figure-8 Loop");
-    // labelBatch(D, "Figure-8 Knot");
-    // labelBatch(E, "Bowline Knot");
-    // labelBatch(F, "Overhand Knot");
+    let fileName = "Vegetables"
+    let subfolders =    ["Bean", "Broccoli", "Cauliflower", "Carrot", "Potato", 
+    "Radish", "Cabbage", "Capsicum", "Bitter Gourd", "Bottle Gourd", "Brinjal", 
+    "Cucumber",
+    "Papaya", "Tomato", "Pumpkin"
+  ]       
+    // for (let index=0; index<subfolders.length; index++){
+    //   const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
+    //   labelBatch(A, subfolders[index]);
+    // }
+      // const A = ref(storage, fileName + "/Bitter Gourd/");
+      // labelBatch(A, "Bitter Gourd");
+      // const A = ref(storage, fileName + "/Bitter Gourd/");
+      // labelBatch(A, "Bitter Gourd");
     // "One rope applications": {
     //   1: "Overhand Knot",
     //   2: "Slip Knot",
@@ -117,6 +124,7 @@ const HomeScreen = (props) => {
   
   
   var gameName = spoofGameSets[selectedGame][gameSetLevel]
+  
   console.log(gameName, "is the game noww.")
   // const [gameName, setGameName ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
@@ -167,13 +175,20 @@ const HomeScreen = (props) => {
 
   // Images from different sources.
   useEffect(()=> {
-    const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
-    console.log('incorrectListRef: ', gameName , '/',incorrectTag,'/')
-    const incorrectListRef = ref(storage, gameName + '/'+incorrectTag[0]+'/');
+    const correctListRef = ref(storage, selectedGame + '/'+correctTag+'/');
+    console.log('incorrectListRef: ', selectedGame , '/',incorrectTag,'/')
+    const incorrectListRef = ref(storage, selectedGame + '/'+incorrectTag[0]+'/');
     if (incorrectTag.length>1){
-      var incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
-      var incorrectListRef3 = ref(storage, gameName + '/'+incorrectTag[2]+'/');
+      var incorrectListRef2 = ref(storage, selectedGame + '/'+incorrectTag[1]+'/');
+      var incorrectListRef3 = ref(storage, selectedGame + '/'+incorrectTag[2]+'/');
     }
+    // const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
+    // console.log('incorrectListRef: ', gameName , '/',incorrectTag,'/')
+    // const incorrectListRef = ref(storage, gameName + '/'+incorrectTag[0]+'/');
+    // if (incorrectTag.length>1){
+    //   var incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
+    //   var incorrectListRef3 = ref(storage, gameName + '/'+incorrectTag[2]+'/');
+    // }
 
     // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
     // reinitialise current gallery 
@@ -231,6 +246,18 @@ const HomeScreen = (props) => {
 
   // TBD | UpperLimit on different game types.
 
+  const getAudioLoaded = async() => {
+    // await sound.setPositionAsync(0);
+    await sound.loadAsync(
+      require('../assets/test_audio/boxer.mp3'),
+      { progressUpdateIntervalMillis: 200 }
+    ).then(async()=> {
+      console.log('sound is loaded.')
+      await sound.playAsync().then(()=>console.log('sound has been played.'))
+    })
+    // 
+  }
+  
   const getImagesFromRef = async(ref, tag, upperLimit=5) => {
     if (ref==undefined){
       console.log('skipping ref because storage is undefined:', ref)
@@ -483,9 +510,17 @@ const HomeScreen = (props) => {
 
   }
 
-  const handlePicSelection = ( picNb ) => {
+  const handlePicSelection = async( picNb ) => {
     // Also removed gallery for good measure
-    
+    // await sound.loadAsync(
+    //   require('../assets/test_audio/boxer.mp3'),
+    //   // { progressUpdateIntervalMillis: 150 }
+    // ).then(()=> {    
+    // await sound.setPositionAsync(0).then(()=>sound.playAsync())
+
+      // console.log('sound is loaded.')
+      
+    // })
     if (gameComplete||gameSetComplete){
       toast.current.show("Game Complete!", { type: "error" });
       return
@@ -666,6 +701,7 @@ const HomeScreen = (props) => {
 
 
   const openModal = () => {
+    
     setModalVisible(true)
   }
 {/* <SafeAreaView style={{...styles.webContainer}}> 

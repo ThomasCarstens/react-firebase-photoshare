@@ -84,11 +84,11 @@ const TableExample = (props) => {
   
 
     <View>
-        <View padding={40}></View>
+        <View padding={20}></View>
         <Text style={{fontSize:50, marginLeft:30}}> Score</Text>
         <Text style={{fontSize:30, marginLeft:30}}> IN {gameName.toUpperCase()} GAME</Text>
-        {(!data)?<Text style={{fontSize:20, marginLeft:30}}> (WORKS WITHOUT BUGS WHEN SIGNED IN)</Text>:<View></View>}
-        <View padding={30}></View>
+        {(!data)?<Text style={{fontSize:20, marginLeft:30}}> (No user data detected)</Text>:<View></View>}
+        <View padding={5}></View>
       {/* <DataTable style={styles.container}> */}
         {/* <DataTable.Header style={styles.tableHeader}>
           <DataTable.Title>Level</DataTable.Title>
@@ -132,7 +132,7 @@ const TableExample = (props) => {
           <DataTable.Cell>{lastdate}</DataTable.Cell>
         </DataTable.Row> */}
       {/* </DataTable> */}
-      <View flexDirection='row'>
+      {/* <View flexDirection='row'> */}
 
       {/* <TouchableOpacity
                 style={styles.gameSelection}
@@ -149,7 +149,7 @@ const TableExample = (props) => {
                   <Text style={{fontWeight:"bold"}}> {"\n CHANGE GAME"} </Text>
       </TouchableOpacity>  
       
-      </View>
+      {/* </View> */}
     </View>
 
     
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 200,
     height: 50,
-    marginTop:50,
+    marginTop:1,
     marginLeft:80,
     // backgroundColor:'rgba(144, 144, 0, 0.8)',
     backgroundColor:'rgba(102, 140, 190, 1)',
