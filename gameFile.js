@@ -7,7 +7,7 @@ const spoofGameSets = {
     "Animal tracks":["Footprints of species", "Animal gait from tracks"],
     "Knots":        ["One rope applications", "Choose the right knot"],
     "History":      ["Historical eras"],
-    "Life expectancy": ['Dogs'],
+    "Life expectancy": ['Dogs', 'Sheperd dogs'],
 };
 
 const spoofGameFolders = {
@@ -44,16 +44,22 @@ const spoofGameMetrics = {
     "Life expectancy": {
         "Italian Greyhound":1,   "Ibizan Hound":2,     "Pharaoh Hound":3,        "Greyhound":4,
         "Bearded Collie":4,      "Border Collie":3,    "Old English Sheepdog":2, "Australian Shepherd":1,
-        "Silky Terrier":2,       "Irish Terrier":3,    "Yorkshire Terrier":4,    "Cairn Terrier":5,
+        "Silky Terrier":2,       "Irish Terrier":3,    "Yorkshire Terrier":4.33,    "Cairn Terrier":5.44,
         'Boston Terrier':4,      'American Staffordshire Terrier':5, 'Staffordshire Bull Terrier':5, 'Bull Terrier':5,
-        'Beagle':5,              'Bloodhound':5,       'American Foxhound':5,    'Basset Hound':5,
+        'Beagle':5,              'Bloodhound':5.1,       'American Foxhound':5.3,    'Basset Hound':5,
         'Boxer':4.1,               'Bullmastiff':5.2,      'Mastiff':1.1,
-        'Field spaniel':5,       'Boykin spaniel':5,   'American water spaniel':5,
+        'Field spaniel':5,       'Boykin spaniel':5,   'American water spaniel':5.5,
     },
     "Population (2022)": {
         "Tunisia":5,   "Morocco":5,     "Algeria":5,        "Libya":5,
     },    
     
+};
+
+const spoofUnits = {
+    "Life expectancy": "years",
+    "Growing cycle": "months",
+    "Population (2022)": "million",
 };
 
 const spoofGameHashtags = {
@@ -109,9 +115,9 @@ const spoofInstructions = {
         4: 'Congratulations! You completed all the levels.',
         },
     "Life expectancy": {
-        1: 'Level 1: Find all the Australian Shepherds.',
-        2: 'We now look at the American Water Spaniel.',
-        3: 'Where is the Border Collie?',
+        1: 'Order by life expectancy.',
+        2: 'Order by life expectancy (2).',
+        3: 'Order by life expectancy (3)',
         4: 'Congratulations! You completed all the levels.',
         },
     "Dogs": {
@@ -337,8 +343,9 @@ const spoofCorrectTag = {
 
     "Life expectancy": {
         1: ['Boxer', 'Bullmastiff', 'Mastiff'],
-        2: [''],
-
+        2: ['Beagle', 'Bloodhound', 'American Foxhound', "Cairn Terrier"],
+        3: ['Yorkshire Terrier',    "Cairn Terrier", 'Boston Terrier'],
+        4: ['American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bloodhound']
         },
     "One rope applications": {
         1: "Overhand Knot",
@@ -453,6 +460,7 @@ const spoofIncorrectTag = {
     "Life expectancy": {
         1: [''],
         2: [''],
+        3: [''],
         },
     "One rope": {
         1: ["Slip Knot", "Figure-8 Loop", "Figure-8 Knot"],
@@ -479,4 +487,4 @@ const spoofIncorrectTag = {
         },
 }
 
-export {spoofGameSets, spoofGameMetrics, spoofGameFolders, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}
+export {spoofGameSets, spoofGameMetrics, spoofUnits, spoofGameFolders, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}

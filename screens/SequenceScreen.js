@@ -13,7 +13,7 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics} from '../gameFile';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics, spoofUnits} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
 // import Toast, { useToast } from 'react-native-toast-notifications';
@@ -32,56 +32,80 @@ const SequenceScreen = (props) => {
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params.hint
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
+  const gameMetric = "Life expectancy"  
+  const [learningLevel, setLearningLevel] = useState(1) // TBD | Keep user game level | Dictionary starts at 1.
 
+  const [correctTag, setCorrectTag] = useState([])
+  const [orderedMetrics, setOrderedMetrics] = useState([])
+  var gameName = "Life expectancy" //spoofGameSets[selectedGame][gameSetLevel]
   // Screen title.
+    const orderTags = () => {
+      let correctTagList = spoofCorrectTag[gameMetric][learningLevel]
+      let metricList = []
+      let modifiedMetrics = []
+      // 1. Get metrics as array
+      for (let tagId = 0; tagId<correctTagList.length ; tagId++){
+        metricList.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
+        modifiedMetrics.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
+      }
+      modifiedMetrics.sort()
+      setOrderedMetrics(modifiedMetrics)
+      var nextCorrectTagList = []
+      for (let tagId = 0; tagId<correctTagList.length ; tagId++){
+        nextCorrectTagList.push(correctTagList[metricList.indexOf(modifiedMetrics[tagId])]) 
+      }
+      setCorrectTag(nextCorrectTagList)
+    }
+
   useEffect(() => {
     navigation.setOptions({
       title: gameName+' Game',
     });
 
-    
-    /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-    // const A = ref(storage, "Africa_country_of_location/Algeria/");
-    // const B = ref(storage, "Africa_country_of_location/Tunisia/");
-    // const C = ref(storage, "Africa_country_of_location/Libya/");
-    // const D = ref(storage, "Africa_country_of_location/Morocco/");
-    
-    // labelBatch(A, "Algeria");
-    // labelBatch(B, "Tunisia");
-    // labelBatch(C, "Libya");
-    // labelBatch(D, "Morocco");
-    
-    // const E = ref(storage, "Africa_country_of_location" + '/'+"Morocco"+'/');
-    // const F = ref(storage, "Africa_country_of_location" + '/'+"Algeria"+'/');
-    // const G = ref(storage, "Africa_country_of_location" + '/'+"Tunisia"+'/');
-    // const H = ref(storage, "Africa_country_of_location" + '/'+"Libya"+'/');
-    // labelBatch(E, "Morocco")
-    // labelBatch(F, "Algeria")
-    // labelBatch(G, "Tunisia")
-    // labelBatch(H, "Libya")
+  // ORDER BY METRIC
 
 
 
-      
-     
-    // } else {
-    //   setGameSetLevel(0)
-    //   // const userLearningLevel = 1 //TBD | Get from database.
-    // }
-
-
+    orderTags()
   }, []);
 
-  
-  
- 
-      
+  // Images from different sources.
+  useEffect(()=> {
+    console.log(selectedGame, 'IS THE FOLDER')
+    const correctListRef = ref(storage, selectedGame + '/'+correctTag[0]+'/');
+    const correctListRef2 = ref(storage, selectedGame + '/'+correctTag[1]+'/');
+    const correctListRef3 = ref(storage, selectedGame + '/'+correctTag[2]+'/');
+    const correctListRef4 = ref(storage, selectedGame + '/'+correctTag[3]+'/');
+    const correctListRef5 = ref(storage, selectedGame + '/'+correctTag[4]+'/');
+    const correctListRef6 = ref(storage, selectedGame + '/'+correctTag[5]+'/');
+        
+
+    // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
+    // reinitialise current gallery 
+    setGallery(old => [])
+    // setGalleryTags(old => {}) //better here
+    // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
+    // labelBatch(labelListRef, 'Mastiff')
+    
+    getImagesFromRef(correctListRef, 1).then(()=>{
+      getImagesFromRef(correctListRef2, 1).then(()=> {
+          getImagesFromRef(correctListRef3, 1).then(()=>{
+              getImagesFromRef(correctListRef4, 1).then(()=>{
+                getImagesFromRef(correctListRef5, 1).then(()=>{
+                  getImagesFromRef(correctListRef6, 1).then(()=>{
+                  })
+                })
+              })
+          })
+      })
+    })
+
+   
+    // }
+    // console.log(galleryTags)
+  }, [correctTag])
 
 
-  
-  // gameName = gameName?gameName:"shiba inu"
-
-  // const toast = useToast()
   const toast = useRef(null);
   const [url, setUrl] = useState();
   const navigation = useNavigation();
@@ -90,55 +114,34 @@ const SequenceScreen = (props) => {
   const [loading, setLoading] = useState(true)
   const [correctClickCount, setCorrectClickCount] = useState(0)
   const [incorrectClickCount, setIncorrectClickCount] = useState(0)
-  const [learningLevel, setLearningLevel] = useState(1) // TBD | Keep user game level | Dictionary starts at 1.
   const [successRate, setSuccessRate] = useState(1)
   const [modalVisible, setModalVisible] = useState(true)
 
   
-  const images = [
-    'https://placeimg.com/640/640/nature',
-    'https://placeimg.com/640/640/people',
-    'https://placeimg.com/640/640/animals',
-    'https://placeimg.com/640/640/beer',
-    'https://placeimg.com/640/640/nature',
-    'https://placeimg.com/640/640/people',
-  ];
+  // const images = [
+  //   'https://placeimg.com/640/640/nature',
+  //   'https://placeimg.com/640/640/people',
+  //   'https://placeimg.com/640/640/animals',
+  //   'https://placeimg.com/640/640/beer',
+  //   'https://placeimg.com/640/640/nature',
+  //   'https://placeimg.com/640/640/people',
+  // ];
     
   
   
-  var gameName = spoofGameSets[selectedGame][gameSetLevel]
+  
   console.log(gameName, "is the game noww.")
   // const [gameName, setGameName ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   // const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
-  const [instructionText, setInstructionText] = useState(spoofInstructions[gameName][learningLevel])
+  const [instructionText, setInstructionText] = useState('Select from smallest to biggest '+gameMetric.toLowerCase()+'.')
 
-  // order of correct tags respects the chosen metric.
-  // ie. sort 3 tags by their value in spoofGameMetrics
-  const gameMetric = "Life expectancy"
-  let correctTagList = spoofCorrectTag[gameMetric][learningLevel]
-  console.log('old', correctTagList)
-  let metricList = []
-  let modifiedMetrics = []
-  // 1. Get metrics as array
-  for (let tagId = 0; tagId<correctTagList.length ; tagId++){
-    metricList.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
-    modifiedMetrics.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
-  }
-  console.log(metricList)
 
-  modifiedMetrics.sort()
-  let nextCorrectTagList = []
-  for (let tagId = 0; tagId<correctTagList.length ; tagId++){
-    nextCorrectTagList.push(correctTagList[metricList.indexOf(modifiedMetrics[tagId])]) 
-  }
-  console.log('final', nextCorrectTagList)
 
   
-  const [correctTag, setCorrectTag] = useState(nextCorrectTagList)
   const [sequenceNumber, setSequenceNumber] = useState(0) // with correct tag list.
   const [sort, setSort] = useState(false)
   // const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
-  const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofInstructions[gameName]).pop()))
+  const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofCorrectTag[gameName]).pop()))
   const [gameComplete, setGameComplete] = useState(false)
   const [gameSetComplete, setGameSetComplete] = useState(false)
   const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
@@ -150,15 +153,15 @@ const SequenceScreen = (props) => {
   
   // Game parameters.
   useEffect(() => {
-    
+    setSequenceNumber(0)
     setGallery([]) // At the start to remove prior gameframes 
     setGalleryTags({})
     // At end of 1 game
-    if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
+    if (learningLevel == Object.keys(spoofCorrectTag[gameName]).length) {
       
       setGameComplete(true)
       let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
-      setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
+      setInstructionText('Level complete.' + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
 
       if (gameSetLevel+1 == spoofGameSets[selectedGame].length){
         setGameSetComplete(true)
@@ -167,11 +170,12 @@ const SequenceScreen = (props) => {
     }
     
     // Within stages of 1 game
-    setInstructionText(spoofInstructions[gameName][learningLevel]); //TBD. Database.
-    setCorrectTag(nextCorrectTagList)
+    // setInstructionText(spoofInstructions[gameName][learningLevel]); //TBD. Database.
+    // setCorrectTag(nextCorrectTagList)
+    orderTags()
     // setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
     // setOutcomeImage(spoofOutcomeImages[gameName][learningLevel])
-    setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[gameName]).pop()) )
+    setProgressInGame ( learningLevel/(Object.keys(spoofCorrectTag[gameName]).pop()) )
     
   }, [learningLevel, gameSetLevel])
 
@@ -179,29 +183,7 @@ const SequenceScreen = (props) => {
     toast.current.show(instructionText, { type: "success" });
   }, [instructionText])
 
-  // Images from different sources.
-  useEffect(()=> {
-    const correctListRef = ref(storage, gameName + '/'+correctTag[0]+'/');
-    const correctListRef2 = ref(storage, gameName + '/'+correctTag[1]+'/');
-    const correctListRef3 = ref(storage, gameName + '/'+correctTag[2]+'/');
 
-    // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
-    // reinitialise current gallery 
-    setGallery(old => [])
-    // setGalleryTags(old => {}) //better here
-    // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
-    // labelBatch(labelListRef, 'Mastiff')
-    
-    getImagesFromRef(correctListRef, 1).then(()=>{
-      getImagesFromRef(correctListRef2, 1).then(()=> {
-          getImagesFromRef(correctListRef3, 1)
-      })
-    })
-
-   
-    // }
-    // console.log(galleryTags)
-  }, [correctTag])
 
   // useEffect(()=> {
   //   if (gallery.length>5) {
@@ -219,19 +201,26 @@ const SequenceScreen = (props) => {
 
   // TBD | UpperLimit on different game types.
 
-  const getImagesFromRef = async(ref, tag, upperLimit=2) => {
+  const getImagesFromRef = async(ref, tag, upperLimit=1) => {
     // TBD | according to gameName
+    if (ref=='undefined'){
+      console.log('ref is undefined')
+    }
     await list(ref)
     .then((res) => {
       // console.log('nb of items: ', ((res.items).length))
-      let window = (((res.items).length) > upperLimit)? ((res.items).length-upperLimit) : 0; 
+      // let window = (((res.items).length) > upperLimit)? ((res.items).length-upperLimit) : 0; 
       // take a range of x to x+upperLimit AS LONG AS x+upperLimit<length ELSE x=0 and upperLimit=length
-      const randomDatabaseImageIndex = Math.floor(Math.random() * (window));
-      upperLimit = (window==0)?((res.items).length):upperLimit;
+      const randomDatabaseImageIndex = Math.floor(Math.random() * ((res.items).length-upperLimit-1) );
+      // console.log(randomDatabaseImageIndex)
+      // upperLimit = (window==0)?(1):upperLimit;
+      // console.log(randomDatabaseImageIndex+upperLimit)
       // .
       // sliced to 10 correct tags
-      res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
       
+      allItems = res.items
+      allItems.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
+
 
                         getDownloadURL(itemRef).then((y)=> {
                         
@@ -241,12 +230,17 @@ const SequenceScreen = (props) => {
                               setGalleryTags(old => {
                                 let tagDict = {...old}
                                 if ((tagDict)&&(Object.keys(tagDict).includes(metadata.customMetadata['tag']))){ // make sure its an array
-                                  tagDict[metadata.customMetadata['tag']].push(y)
-                                  // console.log(galleryTags)
-                                  if (tagDict[metadata.customMetadata['tag']].length == upperLimit){
+                                  tagDict[metadata.customMetadata['tag']].push(y)                     
+                                } else {
+                                  tagDict[metadata.customMetadata['tag']]=[y]
+                                }
+
+                                if (tagDict[metadata.customMetadata['tag']].length == upperLimit){
+                                    console.log("CORRECT LENGTH")
                                     setGallery(gallery => {
                                       let val = [...gallery, ...tagDict[metadata.customMetadata['tag']]] // later find tag from galleryTags[gallery[picNb-1]]
                                       // simple sort
+                                      
                                       if (val.length>6){
                                         let temp = val[0]
                                         val[0] = val [3]
@@ -255,12 +249,10 @@ const SequenceScreen = (props) => {
                                         val[2] = val [5]
                                         val[5] = temp
                                       }
+                                      setLoading(false)
                                       return val
                                     });
-                                  };                                   
-                                } else {
-                                  tagDict[metadata.customMetadata['tag']]=[y]
-                                }
+                                  };              
                                 return tagDict
                                 
                              
@@ -460,7 +452,7 @@ const SequenceScreen = (props) => {
 
 
 
-    setLoading(false)
+    // setLoading(false) // should be here??
     /* Spoof Memo (now removed): we're just using the gallery indexes (picNb)
        let spoofMemo = {'labrador': [2, 3, 6], 
                          'shiba_inu': [1, 4] }
@@ -491,7 +483,7 @@ const SequenceScreen = (props) => {
           // newState.splice(picNb-1, 1);                   
           return newState})
       setCorrectClickCount(prevClicks=> prevClicks+1)
-      toast.current.show((1+sequenceNumber)+": "+correctTag[sequenceNumber]+".", { type: "success" });
+      toast.current.show(correctTag[sequenceNumber]+" ("+orderedMetrics[sequenceNumber] +' '+spoofUnits[gameName]+')', { type: "success" });
 
 
 
@@ -522,7 +514,7 @@ const SequenceScreen = (props) => {
       
     }
 
-    return images
+    // return images
   }
 
   const handleSignOut = () => {
@@ -566,6 +558,7 @@ const SequenceScreen = (props) => {
     // END OF GAME
     if (sequenceNumber == correctTag.length){
       setLoading(true)
+      
       // Next level when 80% correct rate OR no more correctLeftInGallery  
 
       
@@ -577,6 +570,8 @@ const SequenceScreen = (props) => {
       } else {
         setLearningLevel(prev => prev+1) 
       }
+
+      
       
 
       // Learning Level changes the gallery + instructions
