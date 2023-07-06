@@ -13,7 +13,7 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag} from '../gameFile';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Audio } from "expo-av"
 // import Toast, { useToast } from 'react-native-toast-notifications';
@@ -26,13 +26,15 @@ import { Audio } from "expo-av"
 //https://www.wineware.co.uk/glassware/beginners-guide-to-different-types-of-wine-glasses
 
 
-const HomeScreen = (props) => {
-  const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
+const ApplicationScreen = (props) => {
+  const folderName = props.route.params?.name
+  const selectedGame = props.route.params?.applicationName  // TBD | Reinstate with navigation.
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params.hint
-  
-
+  const applicationImage = props.route.params.application
+  console.log('init: ... ', selectedGame)
+  console.log('images ...' ,applicationImage)
   const sound = new Audio.Sound()
 
   
@@ -46,45 +48,6 @@ const HomeScreen = (props) => {
       title: gameName+' Game',
     });
     console.log('hint is', hint)
-    // getAudioLoaded()
-    /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-    let fileName = "Vegetables"
-    let subfolders =    ["Bean", "Broccoli", "Cauliflower", "Carrot", "Potato", 
-    "Radish", "Cabbage", "Capsicum", "Bitter Gourd", "Bottle Gourd", "Brinjal", 
-    "Cucumber",
-    "Papaya", "Tomato", "Pumpkin"
-  ]       
-    // for (let index=0; index<subfolders.length; index++){
-    //   const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
-    //   labelBatch(A, subfolders[index]);
-    // }
-      // const A = ref(storage, fileName + "/Bitter Gourd/");
-      // labelBatch(A, "Bitter Gourd");
-      // const A = ref(storage, fileName + "/Bitter Gourd/");
-      // labelBatch(A, "Bitter Gourd");
-    // "One rope applications": {
-    //   1: "Overhand Knot",
-    //   2: "Slip Knot",
-    //   3: "Figure-8 Loop",
-    //   4: "Figure-8 Knot",
-    //   5: "Bowline Knot",
-    //   6: "",
-    // },
-    // "Choose the right knot": {
-    //   1: "Reef Knot",
-    //   2: "Reef Knot",
-    //   3: "Reef Knot",
-    //   4: "Bowline Knot",
-    //   5: "Figure-8 Loop",
-    //   6: "",
-    // },
-
-      
-     
-    // } else {
-    //   setGameSetLevel(0)
-    //   // const userLearningLevel = 1 //TBD | Get from database.
-    // }
 
 
   }, []);
@@ -111,21 +74,9 @@ const HomeScreen = (props) => {
   const [successRate, setSuccessRate] = useState(1)
   const [modalVisible, setModalVisible] = useState(true)
 
-  
-  const images = [
-    'https://placeimg.com/640/640/nature',
-    'https://placeimg.com/640/640/people',
-    'https://placeimg.com/640/640/animals',
-    'https://placeimg.com/640/640/beer',
-    'https://placeimg.com/640/640/nature',
-    'https://placeimg.com/640/640/people',
-  ];
-    
-  
-  
   var gameName = spoofGameSets[selectedGame][gameSetLevel]
-  
   console.log(gameName, "is the game noww.")
+  
   // const [gameName, setGameName ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   const [instructionText, setInstructionText] = useState(spoofInstructions[gameName][learningLevel])
@@ -150,7 +101,12 @@ const HomeScreen = (props) => {
     // At end of 1 game
     if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
       
-      setGameComplete(true)
+      // setGameComplete(true)
+      // setGameSetComplete(true) //hack
+      nextGameSetLevel()
+      // setGameSetLevel(previous => previous+1)
+      // setGameComplete(false)// only place to do so
+
       let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
       setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
 
@@ -175,12 +131,12 @@ const HomeScreen = (props) => {
 
   // Images from different sources.
   useEffect(()=> {
-    const correctListRef = ref(storage, selectedGame + '/'+correctTag+'/');
-    console.log('incorrectListRef: ', selectedGame , '/',incorrectTag,'/')
-    const incorrectListRef = ref(storage, selectedGame + '/'+incorrectTag[0]+'/');
+    const correctListRef = ref(storage, folderName + '/'+correctTag+'/');
+    console.log('incorrectListRef: ', folderName , '/',incorrectTag,'/')
+    const incorrectListRef = ref(storage, folderName + '/'+incorrectTag[0]+'/');
     if (incorrectTag.length>1){
-      var incorrectListRef2 = ref(storage, selectedGame + '/'+incorrectTag[1]+'/');
-      var incorrectListRef3 = ref(storage, selectedGame + '/'+incorrectTag[2]+'/');
+      var incorrectListRef2 = ref(storage, folderName + '/'+incorrectTag[1]+'/');
+      var incorrectListRef3 = ref(storage, folderName + '/'+incorrectTag[2]+'/');
     }
     // const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
     // console.log('incorrectListRef: ', gameName , '/',incorrectTag,'/')
@@ -292,7 +248,7 @@ const HomeScreen = (props) => {
                                       // simple sort
 
                                       
-                                      if (val.length==12){
+                                      if (val.length>6){
                                         // val.sort( () => .3 - Math.random() );
                                         // console.log('LENGTH 12')
                                         // var visibleGallery = val.slice(0, 5)
@@ -579,13 +535,15 @@ const HomeScreen = (props) => {
       for (let i=0; i<incorrectTag.length; i++){
         if (galleryTags[incorrectTag[i]]?.includes(gallery[picNb-1])){
           let feedbackTag = incorrectTag[i]
-          toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
+          let metricFeedbackTag = spoofGameMetrics[selectedGame][feedbackTag]
+          // toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
+          toast.current.show("Correction: "+metricFeedbackTag+" are not adapted.", { type: "error" });
         }
       }
       
     }
 
-    return images
+    return 
   }
 
   const handleSignOut = () => {
@@ -633,6 +591,7 @@ const HomeScreen = (props) => {
     // END OF GAME
     if (correctLeftInGallery.length == 0){
       setLoading(true)
+      console.log('Empty correct images.')
       // Next level when 80% correct rate OR no more correctLeftInGallery  
 
       
@@ -640,6 +599,7 @@ const HomeScreen = (props) => {
       // On last game of gameSet --- set gameSetComplete == true
       if (gameComplete && (gameSetLevel+1 >= Object.keys(spoofGameSets[selectedGame]).length)){
         setGameSetComplete(true)
+        console.log('gameSetComplete set true.')
         // #RECORD_ACCURACY
       } else {
         setLearningLevel(prev => prev+1) 
@@ -717,8 +677,8 @@ const HomeScreen = (props) => {
           <Text style={{...styles.buttonText, color:'black'}}>{"< Back"}</Text>
         </TouchableOpacity>
         <Text style={{fontSize: 13, alignContent: 'flex-end', marginLeft: 20}} > 
-        {selectedGame.toUpperCase()}: ({gameSetLevel+1}) {gameName} </Text>
-        
+        {selectedGame.toUpperCase()}: ({gameSetLevel+1}/{spoofGameSets[selectedGame].length})  </Text>
+        {/* {gameName} */}
           
       </View>
       <View style={{flexDirection: 'column', alignItems: 'center'}}>
@@ -726,14 +686,14 @@ const HomeScreen = (props) => {
       <Text style={{fontSize: 20, color:'black'}}> {instructionText} </Text>
 
       {/* IMAGE ONLY IN HOME SCREEN */}
-      {/* <Image 
-
-          source={{uri:`${galleryTags[correctTag]}`,}}
-          style={{...styles.imageContainer, height:100, width: 100}}
+      
+      <Image 
+          source={{uri:`${applicationImage[(gameSetLevel+1).toString()]}`,}}
+          style={{...styles.imageContainer, height:200, width: 200}}
           placeholder={blurhash}
           contentFit="cover"
           transition={1000}
-        /> */}
+        />
         </View>
       
       <View style={{padding: 10}}></View>
@@ -823,13 +783,13 @@ const HomeScreen = (props) => {
             <Text style={styles.buttonText}>Hint</Text>
       </TouchableOpacity> */}
       
-      <Image 
+      {/* <Image 
         source={{uri:`${galleryTags[correctTag]}`,}}
         style={{...styles.imageContainer, height:100, width: 100}}
         placeholder={blurhash}
         contentFit="cover"
         transition={1000}
-        />
+        /> */}
       {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
 
       {(gameComplete&&(!gameSetComplete))? //if between games
@@ -968,7 +928,7 @@ const HomeScreen = (props) => {
 // </SafeAreaView>  
 }
 
-export default HomeScreen
+export default ApplicationScreen
 
 
 const styles = StyleSheet.create({

@@ -9,6 +9,7 @@ import SelectionScreen from './screens/SelectionScreen';
 import ScoreScreen from './screens/ScoreScreen';
 import SequenceScreen from './screens/SequenceScreen';
 import TestScreen from './screens/TestScreen';
+import ApplicationScreen from './screens/ApplicationScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,7 +29,7 @@ function App() {
         <Stack.Screen options={{headerShown: false}} name="Sequence" component={SequenceScreen} />
         <Stack.Screen options={{headerShown: false}} name="Score" component={ScoreScreen} />
         <Stack.Screen options={{headerShown: false}} name="Test" component={TestScreen} />
-        
+        <Stack.Screen options={{headerShown: false}} name="Application" component={ApplicationScreen} />  
         
         
         

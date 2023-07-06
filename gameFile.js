@@ -8,6 +8,7 @@ const spoofGameSets = {
     "Knots":        ["One rope applications", "Choose the right knot"],
     "History":      ["Historical eras"],
     "Life expectancy": ['Dogs', 'Sheperd dogs'],
+    "Dog hunting situations": ['Sighthound VS Scenthounds', 'Spaniel VS Others', 'Shepherd Dog VS Others']
 };
 
 const spoofGameFolders = {
@@ -19,8 +20,13 @@ const spoofGameFolders = {
         "Fruit":    ["Capsicum", "Bitter gourd", "Bottle gourd", "Brinjal", "Cucumber"],        
     },
     "Dogs": {
-        "Sighthounds":      ["Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound"],
-        "Shepherd dogs":    ["Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd"],
+        "Sighthound VS Scenthounds":    ["Italian Greyhound",   "Beagle",     "Bloodhound",        "American Foxhound"],
+        "Spaniel VS Others":    ["Boxer",   "Boykin spaniel",     "Silky Terrier",        "Bull Terrier"],
+        "Shepherd Dog VS Others":    ["Boxer",   "Boykin spaniel",     "Border Collie",        "Bloodhound"],
+
+
+        "Sighthounds":                  ["Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound"],
+        "Shepherd dogs":                ["Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd"],
         "Terriers":         ["Silky Terrier",       "Irish Terrier",    "Yorkshire Terrier",    "Cairn Terrier"],
         "Bull Terriers":    ['Boston Terrier',      'American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bull Terrier'],
         "Hounds":           ['Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound'],
@@ -31,8 +37,8 @@ const spoofGameFolders = {
     "Africa": {
         "North Coast":      ["Tunisia",   "Morocco",     "Algeria",        "Libya"],
     },    
-    
 };
+
 
 const spoofGameMetrics = {
     "Growing cycle": {
@@ -41,6 +47,15 @@ const spoofGameMetrics = {
         "Cabbage":0,
         "Capsicum":0, "Bitter gourd":0, "Bottle gourd":0, "Brinjal":0, "Cucumber":0
     },
+    "Dog hunting situations": {
+        "Italian Greyhound":"Sighthounds",   "Ibizan Hound":"Sighthounds",     "Pharaoh Hound":"Sighthounds",        "Greyhound":"Sighthounds",
+        "Bearded Collie":"Shepherd Dogs",      "Border Collie":"Shepherd Dogs",    "Old English Sheepdog":"Shepherd Dogs", "Australian Shepherd":"Shepherd Dogs",
+        "Silky Terrier":"Terriers",       "Irish Terrier":"Terriers",    "Yorkshire Terrier":"Terriers",    "Cairn Terrier":"Terriers",
+        'Boston Terrier':"Bull Terriers",      'American Staffordshire Terrier':"Bull Terriers", 'Staffordshire Bull Terrier':"Bull Terriers", 'Bull Terrier':"Bull Terriers",
+        'Beagle':"Scenthounds",              'Bloodhound':"Scenthounds",       'American Foxhound':"Scenthounds",    'Basset Hound':"Scenthounds",
+        'Boxer':"Mastiffs",               'Bullmastiff':"Mastiffs",      'Mastiff':"Mastiffs",
+        'Field Spaniel':"Spaniels",       'Boykin Spaniel':"Spaniels",   'American Water Spaniel':"Spaniels",
+    },
     "Life expectancy": {
         "Italian Greyhound":1,   "Ibizan Hound":2,     "Pharaoh Hound":3,        "Greyhound":4,
         "Bearded Collie":4,      "Border Collie":3,    "Old English Sheepdog":2, "Australian Shepherd":1,
@@ -48,7 +63,7 @@ const spoofGameMetrics = {
         'Boston Terrier':4,      'American Staffordshire Terrier':5, 'Staffordshire Bull Terrier':5, 'Bull Terrier':5,
         'Beagle':5,              'Bloodhound':5.1,       'American Foxhound':5.3,    'Basset Hound':5,
         'Boxer':4.1,               'Bullmastiff':5.2,      'Mastiff':1.1,
-        'Field spaniel':5,       'Boykin spaniel':5,   'American water spaniel':5.5,
+        'Field Spaniel':5,       'Boykin Spaniel':5,   'American water Spaniel':5.5,
     },
     "Population (2022)": {
         "Tunisia":5,   "Morocco":5,     "Algeria":5,        "Libya":5,
@@ -113,6 +128,11 @@ const spoofInstructions = {
         2: 'We now look at the American Water Spaniel.',
         3: 'Where is the Border Collie?',
         4: 'Congratulations! You completed all the levels.',
+        },
+    "Dog hunting situations": {
+        1: 'Environment 1.',
+        2: 'Environment 2.',
+        3: '',
         },
     "Life expectancy": {
         1: 'Order by life expectancy.',
@@ -234,7 +254,15 @@ const spoofInstructions = {
     "Historical eras": {
         1: "Order inventions from most ancient to most recent.",
         2: "Game complete!"
-    }
+    },
+    "Sighthound VS Scenthounds": {
+        1: 'Italian Greyhound',
+        2: ''
+        },
+    'Spaniel VS Others': {
+        1: 'Boykin spaniel',
+        2: ''   
+    },
 };
 
 const spoofCorrectTag = {
@@ -252,6 +280,14 @@ const spoofCorrectTag = {
         4: 'Bullmastiff',
         5: ''
     },
+    "Sighthound VS Scenthounds": {
+        1: 'Italian Greyhound',
+        2: ''
+        },
+    'Spaniel VS Others': {
+        1: 'Boykin Spaniel',
+        2: ''   
+    },
     'Cheeses': {
         1: 'Rochebaron',
         2: 'Bleu d\'Auvergne',
@@ -260,10 +296,10 @@ const spoofCorrectTag = {
         5: ''
     },
     'Spaniels': {
-        1: 'Boykin spaniel',
-        2: 'American water spaniel',
-        3: 'Field spaniel',
-        4: 'American water spaniel',
+        1: 'Boykin Spaniel',
+        2: 'American Water Spaniel',
+        3: 'Field Spaniel',
+        4: 'American Water Spaniel',
         5: 'Results:'
     },
     'Africa_id': {
@@ -380,6 +416,18 @@ const spoofIncorrectTag = {
         4: ['Mastiff', 'Boxer'],
         5: ['']  
     },
+
+    'Sighthound VS Scenthounds': {
+        1: ['Beagle', 'Bloodhound', 'American Foxhound'],
+        2: ['']   
+        // 3: ["Boxer", "Boykin spaniel",  "Bloodhound"],
+        // 4: ['']
+    },
+
+    'Spaniel VS Others': {
+        1: ["Boxer","Silky Terrier",   "Bull Terrier"],
+        2: ['']   
+    },  
     'Cheeses': {
         1: ['Roquefort'],
         2: ['Rochebaron'],

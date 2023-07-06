@@ -30,6 +30,7 @@ const SelectionScreen = ({ navigation }) => {
     const [thumbnailImage, setThumbnailImage] = useState([])
     const [outcomeImage, setOutcomeImage] = useState({})
     const [hintImages, setHintImages] = useState({})
+    const [applicationImages, setApplicationImages] = useState({})
     const [searchValue, setSearchValue] = useState()
     const [searchResult, setSearchResult] = useState([])
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
@@ -174,7 +175,38 @@ const SelectionScreen = ({ navigation }) => {
    
        getHintImages()
      
- 
+
+       const getApplicationImages = async() => {
+
+        // for (let i=0;i<gameKeyList[j].length; i++) {
+          const applicationReference = ref(storage, gameName+'/_applications/environment/');
+          // spoofGameSets[gameKeyList[j]][i]
+          await list(applicationReference)
+          .then((res) => {
+            console.log('found APPLICATIONS')
+            res.items.forEach((itemRef) => {
+          getDownloadURL(itemRef).then((x)=> {
+           let getHintNb = x.split('.jpg')[0]
+           let index = getHintNb.charAt(getHintNb.length-1)
+           console.log('application', index)
+            setApplicationImages(previous => {
+             let dictHints = {...previous}
+             dictHints[index] = x
+             return dictHints
+            });
+          })
+          if (applicationImages==undefined) {
+              console.log('Error on one.')
+          }
+
+        })
+
+      })
+
+      }
+  
+      getApplicationImages()
+
      }, [gameName])
 
     const handleSignOut = async () => {
@@ -285,7 +317,7 @@ const SelectionScreen = ({ navigation }) => {
         {/* <Image source={{outcomeImage}} style={{height:170, width:130}}></Image> */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Dogs')
-          setGameType('Sequence')
+          setGameType('Application') //Sequence also possible
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[0]}`}} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>
@@ -463,7 +495,7 @@ const SelectionScreen = ({ navigation }) => {
                       navigation.navigate(gameType, { 
                         name: gameName, 
                         hint: hintImages, 
-                        level: userData['Animal tracks']['gameSetLevel'], 
+                        level: userData[gameName]['gameSetLevel'], 
                         data: userData })
                     }}>
 
@@ -486,7 +518,23 @@ const SelectionScreen = ({ navigation }) => {
                       <Text style={{fontWeight:"bold"}}> {"\n START FROM BEGINNING"} </Text>
                   </TouchableOpacity>  
             
-            
+
+                  <TouchableOpacity
+                    style={styles.gameSelection}
+
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      navigation.navigate('Application', { // The population average can be computed by cloud functions
+                        name: gameName,
+                        hint: hintImages, 
+                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        application: applicationImages,
+                        applicationName: "Dog hunting situations",
+                        data: (auth.currentUser)?userData:0 })
+                    }}>
+
+                      <Text style={{fontWeight:"bold"}}> {"\n APPLICATIONS"} </Text>
+                  </TouchableOpacity>              
                   
                 
                   <TouchableOpacity
