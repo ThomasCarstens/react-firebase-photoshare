@@ -27,7 +27,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 
 
 const TestScreen = (props) => {
-  const totalTestQuestions = 2
+  const totalTestQuestions = 5
   const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
@@ -648,23 +648,25 @@ const TestScreen = (props) => {
 
   const nextGameSetLevel = () => {
     if (gameSetLevel+1 < Object.keys(spoofGameSets[selectedGame]).length) {
-      if (auth.currentUser) {
-          let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
-          setSuccessRate(prev => (prev+averageCorrectRate)/2) // will be reset once per game.
-          const currentDate = new Date();
-          const timestamp = currentDate.getTime(); 
-          // Update user -> game -> level: gameSetLevel  
-          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame), {
-            gameSetLevel: gameSetLevel+1,
-          }).catch(error =>alert(error.message));        
-          // Update user -> game -> accuracy -> level: gameSetLevel  
-          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame+'/accuracy/'+gameSetLevel), {
-            [timestamp]: averageCorrectRate,
 
-          }).catch(error =>alert(error.message));    
-        }
+      // TBD | Score from within test ?
+      // if (auth.currentUser) {
+      //     let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
+      //     setSuccessRate(prev => (prev+averageCorrectRate)/2) // will be reset once per game.
+      //     const currentDate = new Date();
+      //     const timestamp = currentDate.getTime(); 
+      //     // Update user -> game -> level: gameSetLevel  
+      //     set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame), {
+      //       gameSetLevel: gameSetLevel+1,
+      //     }).catch(error =>alert(error.message));        
+      //     // Update user -> game -> accuracy -> level: gameSetLevel  
+      //     set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame+'/accuracy/'+gameSetLevel), {
+      //       [timestamp]: averageCorrectRate,
+
+      //     }).catch(error =>alert(error.message));    
+      //   }
       
-      console.log('successRate: ', successRate)
+      console.log('successRate: ', successRate) // TBD | Global Test successRate->db
       console.log('Level Up.')
       setCorrectClickCount(0)  //reset (avoid loop)
       setIncorrectClickCount(0)

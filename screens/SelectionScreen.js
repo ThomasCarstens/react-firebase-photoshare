@@ -317,7 +317,7 @@ const SelectionScreen = ({ navigation }) => {
         {/* <Image source={{outcomeImage}} style={{height:170, width:130}}></Image> */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Dogs')
-          setGameType('Application') //Sequence also possible
+          setGameType('Home') //Sequence also possible
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[0]}`}} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>
@@ -488,7 +488,7 @@ const SelectionScreen = ({ navigation }) => {
             <View flexDirection='column' marginBottom={3300}>
               {(auth.currentUser)?
               <TouchableOpacity
-                    style={styles.gameSelection}
+                    style={styles.gameSelectionModal}
 
                     onPress={() => {
                       setModalVisible(!modalVisible);
@@ -503,7 +503,7 @@ const SelectionScreen = ({ navigation }) => {
                   </TouchableOpacity>  
 :<View></View>}
                   <TouchableOpacity
-                    style={styles.gameSelection}
+                    style={styles.gameSelectionModal}
 
                     onPress={() => {
                       setModalVisible(!modalVisible);
@@ -520,7 +520,7 @@ const SelectionScreen = ({ navigation }) => {
             
 
                   <TouchableOpacity
-                    style={styles.gameSelection}
+                    style={styles.gameSelectionModal}
 
                     onPress={() => {
                       setModalVisible(!modalVisible);
@@ -536,9 +536,23 @@ const SelectionScreen = ({ navigation }) => {
                       <Text style={{fontWeight:"bold"}}> {"\n APPLICATIONS"} </Text>
                   </TouchableOpacity>              
                   
-                
                   <TouchableOpacity
-                    style={styles.gameSelection}
+                    style={styles.gameSelectionModal}
+
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      navigation.navigate('Test', { // The population average can be computed by cloud functions
+                        name: gameName,
+                        hint: hintImages, 
+                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        data: (auth.currentUser)?userData:0 })
+                    }}>
+
+                      <Text style={{fontWeight:"bold"}}> {"\n TEST YOUR KNOWLEDGE"} </Text>
+                  </TouchableOpacity>  
+
+                  <TouchableOpacity
+                    style={styles.gameSelectionModal}
 
                     onPress={() => {
                       setModalVisible(!modalVisible);
@@ -553,7 +567,7 @@ const SelectionScreen = ({ navigation }) => {
                   </TouchableOpacity>  
                 
                   <TouchableOpacity
-                    style={styles.gameSelection}
+                    style={styles.gameSelectionModal}
                     onPress={() => {
                       setModalVisible(!modalVisible);
                     }}>
@@ -707,7 +721,23 @@ var styles = StyleSheet.create({
       borderRadius: 50,
       flexWrap: "wrap"
     },
-  
+
+    gameSelectionModal: {
+      left: '0%',
+      top: '20%',
+      paddingBottom: 10,
+      marginTop: 10,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      alignContent: 'space-around',
+      width: 170,
+      height: 50,
+      backgroundColor:'rgba(144, 144, 0, 0.8)',
+      // justifyContent: 'space-evenly',
+      borderRadius: 50,
+      flexWrap: "wrap"
+    },
+
     gameText: {
     //   fontFamily:"Cochin", 
       fontSize:13,
