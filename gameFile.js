@@ -7,7 +7,8 @@ const spoofGameSets = {
     "Animal tracks":["Footprints of species", "Animal gait from tracks"],
     "Knots":        ["One rope applications", "Choose the right knot"],
     "History":      ["Historical eras"],
-    "Life expectancy": ['Dogs', 'Sheperd dogs'],
+    // "Life expectancy": ['Dogs', 'Sheperd dogs'],
+    "Life expectancy": ['BigSmall1', 'BigSmall2', 'BigSmall3'],
     "Dog hunting situations": ['Sighthound VS Scenthounds', 'Spaniel VS Others', 'Shepherd Dog VS Others']
 };
 
@@ -23,6 +24,9 @@ const spoofGameFolders = {
         "Sighthound VS Scenthounds":    ["Italian Greyhound",   "Beagle",     "Bloodhound",        "American Foxhound"],
         "Spaniel VS Others":            ["Boxer",   "Boykin Spaniel",     "Silky Terrier",        "Bull Terrier"],
         "Shepherd Dog VS Others":       ["Boxer",   "Boykin Spaniel",     "Border Collie",        "Bloodhound"],
+        "BigSmall1":       ["Boxer",   "Boykin Spaniel"],
+        "BigSmall2":       ["Silky Terrier",   "Bloodhound"],
+        "BigSmall3":       ["Pharaoh Hound",   "Beagle"],
 
 
         "Sighthounds":                  ["Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound"],
@@ -386,12 +390,17 @@ const spoofCorrectTag = {
         2: [""]
     },
 
-    "Life expectancy": {
-        1: ['Boxer', 'Bullmastiff', 'Mastiff'],
-        2: ['Beagle', 'Bloodhound', 'American Foxhound', "Cairn Terrier"],
-        3: ['Yorkshire Terrier',    "Cairn Terrier", 'Boston Terrier'],
-        4: ['American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bloodhound']
-        },
+    // "Life expectancy": {
+    //     1: ['Boxer', 'Bullmastiff', 'Mastiff'],
+    //     2: ['Beagle', 'Bloodhound', 'American Foxhound', "Cairn Terrier"],
+    //     3: ['Yorkshire Terrier',    "Cairn Terrier", 'Boston Terrier'],
+    //     4: ['American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bloodhound']
+    //     },
+    "Life expectancy":{
+        1:       ["Boxer",   "Boykin Spaniel"],
+        2:       ["Silky Terrier",   "Bloodhound"],
+        3:       ["Pharaoh Hound",   "Beagle"],
+    },
     "One rope applications": {
         1: "Overhand Knot",
         2: "Slip Knot",

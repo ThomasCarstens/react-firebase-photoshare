@@ -547,7 +547,7 @@ const SelectionScreen = ({ navigation }) => {
                       navigation.navigate('Test', { // The population average can be computed by cloud functions
                         name: gameName,
                         hint: hintImages, 
-                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         data: (auth.currentUser)?userData:0 })
                     }}>
 
@@ -562,7 +562,7 @@ const SelectionScreen = ({ navigation }) => {
                       navigation.navigate('Score', { // The population average can be computed by cloud functions
                         name: gameName,
                         hint: hintImages, 
-                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         data: (auth.currentUser)?userData:0 })
                     }}>
 
@@ -634,7 +634,7 @@ const SelectionScreen = ({ navigation }) => {
                       navigation.navigate('Application', { // The population average can be computed by cloud functions
                         name: gameName,
                         hint: hintImages, 
-                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         application: applicationImages,
                         applicationName: "Dog hunting situations",
                         data: (auth.currentUser)?userData:0 })
@@ -653,7 +653,7 @@ const SelectionScreen = ({ navigation }) => {
                       navigation.navigate('Application', { // The population average can be computed by cloud functions
                         name: gameName,
                         hint: hintImages, 
-                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         application: applicationImages,
                         applicationName: "Dog weight",
                         data: (auth.currentUser)?userData:0 })
@@ -669,10 +669,10 @@ const SelectionScreen = ({ navigation }) => {
 
                     onPress={() => {
                       setApplicationModalVisible(!applicationModalVisible);
-                      navigation.navigate('Application', { // The population average can be computed by cloud functions
+                      navigation.navigate('Comparison', { // The population average can be computed by cloud functions
                         name: gameName,
                         hint: hintImages, 
-                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         application: applicationImages,
                         applicationName: "Dog life expectancy",
                         data: (auth.currentUser)?userData:0 })
