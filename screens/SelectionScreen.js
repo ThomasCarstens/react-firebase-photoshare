@@ -27,6 +27,7 @@ const SelectionScreen = ({ navigation }) => {
     const [gameName, setGameName] = useState()
     const [gameType, setGameType] = useState()
     const [modalVisible, setModalVisible] = useState(false)
+    const [applicationModalVisible, setApplicationModalVisible] = useState(false)
     const [thumbnailImage, setThumbnailImage] = useState([])
     const [outcomeImage, setOutcomeImage] = useState({})
     const [hintImages, setHintImages] = useState({})
@@ -515,7 +516,7 @@ const SelectionScreen = ({ navigation }) => {
                         data: 0 })
                     }}>
 
-                      <Text style={{fontWeight:"bold"}}> {"\n START FROM BEGINNING"} </Text>
+                      <Text style={{fontWeight:"bold"}}> {"\n Image Recognition"} </Text>
                   </TouchableOpacity>  
             
 
@@ -524,14 +525,16 @@ const SelectionScreen = ({ navigation }) => {
 
                     onPress={() => {
                       setModalVisible(!modalVisible);
-                      navigation.navigate('Application', { // The population average can be computed by cloud functions
-                        name: gameName,
-                        hint: hintImages, 
-                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
-                        application: applicationImages,
-                        applicationName: "Dog hunting situations",
-                        data: (auth.currentUser)?userData:0 })
-                    }}>
+                      setApplicationModalVisible(true);
+                      // navigation.navigate('Application', { // The population average can be computed by cloud functions
+                      //   name: gameName,
+                      //   hint: hintImages, 
+                      //   level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                      //   application: applicationImages,
+                      //   applicationName: "Dog hunting situations",
+                      //   data: (auth.currentUser)?userData:0 })
+                    }}
+                    >
 
                       <Text style={{fontWeight:"bold"}}> {"\n APPLICATIONS"} </Text>
                   </TouchableOpacity>              
@@ -599,6 +602,103 @@ const SelectionScreen = ({ navigation }) => {
       {/* </View>
 
      </SafeAreaView>  */}
+      </Modal>
+
+
+      {/* MODAL IF applicationModalVisible
+              ALL GAME APPLICATIONS
+      */}
+      <Modal
+      animationType="slide"
+      transparent={true}
+      // backgroundColor='rgba(22, 160, 133, 0.8)'
+      visible={applicationModalVisible} //instead of on state change modalVisible
+      onRequestClose={() => {
+        Alert.alert("Modal has been closed.");
+        setModalVisible(!modalVisible);
+      }}
+      >
+
+<View backgroundColor='rgba(46, 204, 113, 0.8)'>
+       
+            <View style={styles.modalRow}>
+
+            <View flexDirection='column' marginBottom={3300}>
+
+                  <TouchableOpacity
+                    style={styles.gameSelectionModal}
+
+                    onPress={() => {
+                      // setModalVisible(!modalVisible);
+                      setApplicationModalVisible(!applicationModalVisible);
+                      navigation.navigate('Application', { // The population average can be computed by cloud functions
+                        name: gameName,
+                        hint: hintImages, 
+                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        application: applicationImages,
+                        applicationName: "Dog hunting situations",
+                        data: (auth.currentUser)?userData:0 })
+                    }}
+                    >
+
+                      <Text style={{fontWeight:"bold"}}> {"\n Dog hunting situations"} </Text>
+                  </TouchableOpacity>              
+                  
+                  <TouchableOpacity
+                    style={styles.gameSelectionModal}
+
+                    onPress={() => {
+                      // setModalVisible(!modalVisible);
+                      setApplicationModalVisible(!applicationModalVisible);
+                      navigation.navigate('Application', { // The population average can be computed by cloud functions
+                        name: gameName,
+                        hint: hintImages, 
+                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        application: applicationImages,
+                        applicationName: "Dog weight",
+                        data: (auth.currentUser)?userData:0 })
+                    }}
+                    >
+
+                      <Text style={{fontWeight:"bold"}}> {"\n Dog weight"} </Text>
+                  </TouchableOpacity>   
+
+
+                  <TouchableOpacity
+                    style={styles.gameSelectionModal}
+
+                    onPress={() => {
+                      setApplicationModalVisible(!applicationModalVisible);
+                      navigation.navigate('Application', { // The population average can be computed by cloud functions
+                        name: gameName,
+                        hint: hintImages, 
+                        level: (auth.currentUser)?userData['Animal tracks']['gameSetLevel']:0, 
+                        application: applicationImages,
+                        applicationName: "Dog life expectancy",
+                        data: (auth.currentUser)?userData:0 })
+                    }}
+                    >
+
+                      <Text style={{fontWeight:"bold"}}> {"\n Dog life expectancy"} </Text>
+                  </TouchableOpacity>   
+
+
+                
+                  <TouchableOpacity
+                    style={styles.gameSelectionModal}
+                    onPress={() => {
+                      setApplicationModalVisible(!applicationModalVisible);
+                    }}>
+                      <Text style={{fontWeight:"bold"}}> {"\n BACK"} </Text>
+                  </TouchableOpacity>  
+            </View>
+            
+            
+              <Image source={{uri:`${outcomeImage[gameName]}`}} style={{height:300, width:500, marginLeft:-10}}></Image>
+            
+          </View>
+      </View>
+
       </Modal>
 
 

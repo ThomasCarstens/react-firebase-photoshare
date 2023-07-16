@@ -21,18 +21,18 @@ const spoofGameFolders = {
     },
     "Dogs": {
         "Sighthound VS Scenthounds":    ["Italian Greyhound",   "Beagle",     "Bloodhound",        "American Foxhound"],
-        "Spaniel VS Others":    ["Boxer",   "Boykin spaniel",     "Silky Terrier",        "Bull Terrier"],
-        "Shepherd Dog VS Others":    ["Boxer",   "Boykin spaniel",     "Border Collie",        "Bloodhound"],
+        "Spaniel VS Others":            ["Boxer",   "Boykin Spaniel",     "Silky Terrier",        "Bull Terrier"],
+        "Shepherd Dog VS Others":       ["Boxer",   "Boykin Spaniel",     "Border Collie",        "Bloodhound"],
 
 
         "Sighthounds":                  ["Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound"],
         "Shepherd dogs":                ["Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd"],
-        "Terriers":         ["Silky Terrier",       "Irish Terrier",    "Yorkshire Terrier",    "Cairn Terrier"],
-        "Bull Terriers":    ['Boston Terrier',      'American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bull Terrier'],
+        "Terriers_2":         ["Silky Terrier",       "Irish Terrier",    "Yorkshire Terrier",    "Cairn Terrier"],
+        "Terriers":    ['Boston Terrier',      'American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bull Terrier'],
         "Hounds":           ['Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound'],
         "Mastiffs":         ['Boxer',               'Bullmastiff',      'Mastiff'],
         "Dogs":             ['Boxer',               'Bullmastiff',      'Mastiff'],
-        "Spaniels":         ['Field spaniel',       'Boykin spaniel',   'American water spaniel'],
+        "Spaniels":         ['Field Spaniel',       'Boykin Spaniel',   'American Water Spaniel'],
     },
     "Africa": {
         "North Coast":      ["Tunisia",   "Morocco",     "Algeria",        "Libya"],
@@ -56,6 +56,7 @@ const spoofGameMetrics = {
         'Boxer':"Mastiffs",               'Bullmastiff':"Mastiffs",      'Mastiff':"Mastiffs",
         'Field Spaniel':"Spaniels",       'Boykin Spaniel':"Spaniels",   'American Water Spaniel':"Spaniels",
     },
+    // https://rvc-repository.worktribe.com/output/1558210
     "Life expectancy": {
         "Italian Greyhound":1,   "Ibizan Hound":2,     "Pharaoh Hound":3,        "Greyhound":4,
         "Bearded Collie":4,      "Border Collie":3,    "Old English Sheepdog":2, "Australian Shepherd":1,
@@ -63,7 +64,7 @@ const spoofGameMetrics = {
         'Boston Terrier':4,      'American Staffordshire Terrier':5, 'Staffordshire Bull Terrier':5, 'Bull Terrier':5,
         'Beagle':5,              'Bloodhound':5.1,       'American Foxhound':5.3,    'Basset Hound':5,
         'Boxer':4.1,               'Bullmastiff':5.2,      'Mastiff':1.1,
-        'Field Spaniel':5,       'Boykin Spaniel':5,   'American water Spaniel':5.5,
+        'Field Spaniel':5,       'Boykin Spaniel':5,   'American Water Spaniel':5.5,
     },
     "Population (2022)": {
         "Tunisia":5,   "Morocco":5,     "Algeria":5,        "Libya":5,
@@ -256,11 +257,15 @@ const spoofInstructions = {
         2: "Game complete!"
     },
     "Sighthound VS Scenthounds": {
-        1: 'Italian Greyhound',
+        1: 'Wide open fields. A deer in the distance. ',
         2: ''
         },
     'Spaniel VS Others': {
-        1: 'Boykin spaniel',
+        1: 'Moles are damaging the vineyard.',
+        2: ''   
+    },
+    'Shepherd Dog VS Others': {
+        1: 'The sheep have broken through the fence and they are dispersing.',
         2: ''   
     },
 };
@@ -269,7 +274,7 @@ const spoofCorrectTag = {
 
     "DogTest": {
         1: "Australian Shepherd",
-        2: 'American water spaniel',
+        2: 'American Water Spaniel',
         3: "Border Collie",
         4: 'Congratulations! You completed all the levels.',
         },
@@ -286,6 +291,10 @@ const spoofCorrectTag = {
         },
     'Spaniel VS Others': {
         1: 'Boykin Spaniel',
+        2: ''   
+    },
+    'Shepherd Dog VS Others': {
+        1: 'Border Collie',
         2: ''   
     },
     'Cheeses': {
@@ -405,10 +414,11 @@ const spoofCorrectTag = {
 const spoofIncorrectTag = {
     "DogTest": {
         1: ["Bearded Collie", "Border Collie", "Old English Sheepdog"],
-        2: ['Boykin spaniel'],
+        2: ['Boykin Spaniel'],
         3: ["Australian Shepherd", "Bearded Collie", "Old English Sheepdog"],
         4: 'Congratulations! You completed all the levels.',
         },
+
     'Dogs': {
         1: ['Bullmastiff'],
         2: ['Boxer'],
@@ -428,6 +438,10 @@ const spoofIncorrectTag = {
         1: ["Boxer","Silky Terrier",   "Bull Terrier"],
         2: ['']   
     },  
+    'Shepherd Dog VS Others': {
+        1: ["Boxer",   "Boykin Spaniel",     "Bloodhound"],
+        2: ['']   
+    },      
     'Cheeses': {
         1: ['Roquefort'],
         2: ['Rochebaron'],
@@ -436,10 +450,10 @@ const spoofIncorrectTag = {
         5: ['']  
     },
     'Spaniels': {
-        1: ['Field spaniel'],
-        2: ['Boykin spaniel'],
-        3: ['American water spaniel'],
-        4: ['Field Spaniel', 'Boykin spaniel'],
+        1: ['Field Spaniel'],
+        2: ['Boykin Spaniel'],
+        3: ['American Water Spaniel'],
+        4: ['Field Spaniel', 'Boykin Spaniel'],
         5: ['']
     },
     'Africa_id': {

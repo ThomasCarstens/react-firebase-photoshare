@@ -48,16 +48,27 @@ const HomeScreen = (props) => {
     console.log('hint is', hint)
     // getAudioLoaded()
     /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-    let fileName = "Vegetables"
-    let subfolders =    ["Bean", "Broccoli", "Cauliflower", "Carrot", "Potato", 
-    "Radish", "Cabbage", "Capsicum", "Bitter Gourd", "Bottle Gourd", "Brinjal", 
-    "Cucumber",
-    "Papaya", "Tomato", "Pumpkin"
-  ]       
-    // for (let index=0; index<subfolders.length; index++){
-    //   const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
-    //   labelBatch(A, subfolders[index]);
-    // }
+  //   let fileName = "Vegetables"
+  //   let subfolders =    ["Bean", "Broccoli", "Cauliflower", "Carrot", "Potato", 
+  //   "Radish", "Cabbage", "Capsicum", "Bitter Gourd", "Bottle Gourd", "Brinjal", 
+  //   "Cucumber",
+  //   "Papaya", "Tomato", "Pumpkin"
+  // ]       
+
+  // let fileName = "Dogs"
+  // let subfolders =    [
+    // "Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound",
+  // "Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd",
+  // "Silky Terrier",       "Irish Terrier",    "Yorkshire Terrier",    "Cairn Terrier",
+  // 'Boston Terrier',      'American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bull Terrier',
+  // 'Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound',
+  // 'Boxer',               'Bullmastiff',      'Mastiff',
+//   'Field Spaniel',       'Boykin Spaniel',   'American Water Spaniel'
+// ]       
+//     for (let index=0; index<subfolders.length; index++){
+//       const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
+//       labelBatch(A, subfolders[index]);
+//     }
       // const A = ref(storage, fileName + "/Bitter Gourd/");
       // labelBatch(A, "Bitter Gourd");
       // const A = ref(storage, fileName + "/Bitter Gourd/");

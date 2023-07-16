@@ -113,6 +113,8 @@ const ApplicationScreen = (props) => {
       if (gameSetLevel+1 == spoofGameSets[selectedGame].length){
         setGameSetComplete(true)
       }
+
+
       return
     }
     
@@ -537,7 +539,7 @@ const ApplicationScreen = (props) => {
           let feedbackTag = incorrectTag[i]
           let metricFeedbackTag = spoofGameMetrics[selectedGame][feedbackTag]
           // toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
-          toast.current.show("Correction: "+metricFeedbackTag+" are not adapted.", { type: "error" });
+          toast.current.show("Correction: "+metricFeedbackTag+" are not adapted to the situation.", { type: "error" });
         }
       }
       
@@ -599,6 +601,7 @@ const ApplicationScreen = (props) => {
       // On last game of gameSet --- set gameSetComplete == true
       if (gameComplete && (gameSetLevel+1 >= Object.keys(spoofGameSets[selectedGame]).length)){
         setGameSetComplete(true)
+        setLoading(true)
         console.log('gameSetComplete set true.')
         // #RECORD_ACCURACY
       } else {
@@ -648,7 +651,7 @@ const ApplicationScreen = (props) => {
       setGameComplete(false)// only place to do so
       // setGameSetComplete(false)
       setLearningLevel(1)
-      setModalVisible(true)
+      // setModalVisible(true) //keep off for applications
       return
     } else {
       // setGameSetComplete(true)
@@ -681,23 +684,66 @@ const ApplicationScreen = (props) => {
         {/* {gameName} */}
           
       </View>
-      <View style={{flexDirection: 'column', alignItems: 'center'}}>
-      
-      <Text style={{fontSize: 20, color:'black'}}> {instructionText} </Text>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      {/* <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}> */}
+      <View style={{flex:1}}></View>
+      <Text style={{flex: 10, fontSize: 20, color:'black'}}> {instructionText} </Text>
 
-      {/* IMAGE ONLY IN HOME SCREEN */}
+      {/* IMAGE APPEARS IN ORDER IF IT EXISTS */}
       
-      <Image 
+      {(applicationImage[(gameSetLevel+1).toString()])?<Image 
           source={{uri:`${applicationImage[(gameSetLevel+1).toString()]}`,}}
-          style={{...styles.imageContainer, height:200, width: 200}}
+          style={{...styles.imageContainer, flex: 10, height:180, width: 180}}
           placeholder={blurhash}
           contentFit="cover"
           transition={1000}
-        />
+        />:<View></View>}
+
         </View>
       
-      <View style={{padding: 10}}></View>
+      {/* <View style={{padding: 10}}></View> */}
+
+      <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
+
+
+
+      {/* <TouchableOpacity  padding={50}  style={styles.button} onPress={openModal} >
+            <Text style={styles.buttonText}>Hint</Text>
+      </TouchableOpacity> */}
+      
+      {/* <Image 
+        source={{uri:`${galleryTags[correctTag]}`,}}
+        style={{...styles.imageContainer, height:100, width: 100}}
+        placeholder={blurhash}
+        contentFit="cover"
+        transition={1000}
+        /> */}
+      {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
+
+      {(gameComplete&&(!gameSetComplete))? //if between games
+        <TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
+              <Text style={styles.buttonText}>Next Level</Text>
+        </TouchableOpacity>
+      :(gameSetComplete)? //if at end of game set
+      <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={()=>{
+        setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
+        let date_finished = new Date();
+        const finishTimestamp = date_finished.getTime(); 
+        navigation.replace('Score', { 
+        name: selectedGame,
+        lastscore: successRate, 
+        lastdate: finishTimestamp,
+        data:  (auth.currentUser)?userData:0 })
+      }}>
+            <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
+      : /*else if game is not complete*/
+      <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>
+      }
+
+    </View>
+
       <View style={{flexDirection: 'row'}} >
+
       <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/>
 
       
@@ -775,89 +821,12 @@ const ApplicationScreen = (props) => {
 
       <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/></View>
 
-      <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
 
-
-
-      {/* <TouchableOpacity  padding={50}  style={styles.button} onPress={openModal} >
-            <Text style={styles.buttonText}>Hint</Text>
-      </TouchableOpacity> */}
-      
-      {/* <Image 
-        source={{uri:`${galleryTags[correctTag]}`,}}
-        style={{...styles.imageContainer, height:100, width: 100}}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-        /> */}
-      {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
-
-      {(gameComplete&&(!gameSetComplete))? //if between games
-        <TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
-              <Text style={styles.buttonText}>Next Level</Text>
-        </TouchableOpacity>
-      :(gameSetComplete)? //if at end of game set
-      <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={()=>{
-        setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
-        let date_finished = new Date();
-        const finishTimestamp = date_finished.getTime(); 
-        navigation.replace('Score', { 
-        name: selectedGame,
-        lastscore: successRate, 
-        lastdate: finishTimestamp,
-        data:  (auth.currentUser)?userData:0 })
-      }}>
-            <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
-      : /*else if game is not complete*/
-      <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>
-      }
-
-    </View>
-    
 
     
-    {/* <View style={styles.container}>
-      <View style={{padding: 20}}></View>
-
-      <View style={styles.progressBar}>
-      </View>
-      <Text style={styles.text3}>{(100*correctClickCount/(correctClickCount+incorrectClickCount)).toFixed(2)}%</Text>
-
-      <StatusBar style="auto" />
-    </View> */}
 
 
     <View style={styles.container}>
-
-      
-      {/* KEEP THIS STUFF
-      
-      <Text>Email: {auth.currentUser?.email}</Text> */}
-      
-      {/* <TextInput
-      onChangeText={onChangeCustomMetadataInput}
-      value={customMetadataInput}
-      style={styles.input}>
-      </TextInput>  */}
-
-      
-
-     {/* <TouchableOpacity style={styles.button} onPress={pickImage} >
-        <Text style={styles.buttonText}>Choose File</Text>
-      </TouchableOpacity>
-
-      
-
-      <TouchableOpacity style={styles.button} onPress={uploadImage} >
-        <Text style={styles.buttonText}>Upload</Text>
-      </TouchableOpacity> */}
-
-
-
-      {/* <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-        <Text style={styles.buttonText}>Sign Out</Text>
-      </TouchableOpacity> */}
-
 
 
 
