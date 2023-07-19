@@ -8,7 +8,7 @@ const spoofGameSets = {
     "Knots":        ["One rope applications", "Choose the right knot"],
     "History":      ["Historical eras"],
     // "Life expectancy": ['Dogs', 'Sheperd dogs'],
-    "Life expectancy": ['BigSmall1', 'BigSmall2', 'BigSmall3'],
+    "Life expectancy": ['BigSmall1', 'BigSmall2', 'BigSmall3', ''],
     "Dog hunting situations": ['Sighthound VS Scenthounds', 'Spaniel VS Others', 'Shepherd Dog VS Others']
 };
 
@@ -60,6 +60,7 @@ const spoofGameMetrics = {
         'Boxer':"Mastiffs",               'Bullmastiff':"Mastiffs",      'Mastiff':"Mastiffs",
         'Field Spaniel':"Spaniels",       'Boykin Spaniel':"Spaniels",   'American Water Spaniel':"Spaniels",
     },
+
     // https://rvc-repository.worktribe.com/output/1558210
     "Life expectancy": {
         "Italian Greyhound":1,   "Ibizan Hound":2,     "Pharaoh Hound":3,        "Greyhound":4,
@@ -75,6 +76,11 @@ const spoofGameMetrics = {
     },    
     
 };
+
+// for (let i=1; i<56; i++){
+//     spoofGameMetrics["Life expectancy"][i] = require("./assets/context/Africa_country_identification/africa-flag_map.jpg")
+// };
+
 
 const spoofUnits = {
     "Life expectancy": "years",
@@ -400,6 +406,7 @@ const spoofCorrectTag = {
         1:       ["Boxer",   "Boykin Spaniel"],
         2:       ["Silky Terrier",   "Bloodhound"],
         3:       ["Pharaoh Hound",   "Beagle"],
+        4:      [""]
     },
     "One rope applications": {
         1: "Overhand Knot",

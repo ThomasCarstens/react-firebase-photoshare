@@ -55,7 +55,7 @@ const HomeScreen = (props) => {
   //   "Papaya", "Tomato", "Pumpkin"
   // ]       
 
-  // let fileName = "Dogs"
+  let fileName = "Dogs"
   // let subfolders =    [
     // "Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound",
   // "Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd",
@@ -69,8 +69,8 @@ const HomeScreen = (props) => {
 //       const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
 //       labelBatch(A, subfolders[index]);
 //     }
-      // const A = ref(storage, fileName + "/Bitter Gourd/");
-      // labelBatch(A, "Bitter Gourd");
+      // const A = ref(storage, fileName + "/Silky Terrier/");
+      // labelBatch(A, "Silky Terrier");
       // const A = ref(storage, fileName + "/Bitter Gourd/");
       // labelBatch(A, "Bitter Gourd");
     // "One rope applications": {
