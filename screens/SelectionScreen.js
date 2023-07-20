@@ -379,6 +379,28 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>  
         </TouchableOpacity>    
 
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {
+          setGameName('Helicopters')
+          setGameType('Home')
+          setModalVisible(true)}}>
+          <ImageBackground source={{uri:`${thumbnailImage[5]}`}}
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
+            <Text style ={styles.gameText}> {'Helicopters'} </Text>
+            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
+          </ImageBackground>  
+        </TouchableOpacity> 
+
+        <TouchableOpacity style={styles.gameSelection} onPress={() => {
+          setGameName('French Bread')
+          setGameType('Home')
+          setModalVisible(true)}}>
+          <ImageBackground source={{uri:`${thumbnailImage[5]}`}}
+          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
+            <Text style ={styles.gameText}> {'French Bread'} </Text>
+            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
+          </ImageBackground>  
+        </TouchableOpacity>  
+
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/crab.jpg')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>

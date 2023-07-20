@@ -55,7 +55,7 @@ const HomeScreen = (props) => {
   //   "Papaya", "Tomato", "Pumpkin"
   // ]       
 
-  let fileName = "Dogs"
+  let fileName = "Helicopters"
   // let subfolders =    [
     // "Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound",
   // "Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd",
@@ -64,13 +64,20 @@ const HomeScreen = (props) => {
   // 'Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound',
   // 'Boxer',               'Bullmastiff',      'Mastiff',
 //   'Field Spaniel',       'Boykin Spaniel',   'American Water Spaniel'
-// ]       
-//     for (let index=0; index<subfolders.length; index++){
-//       const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
-//       labelBatch(A, subfolders[index]);
-//     }
-      // const A = ref(storage, fileName + "/Silky Terrier/");
-      // labelBatch(A, "Silky Terrier");
+// ]  
+  // let subfolders = [
+  //   "Baguette classique",   "Ficelle",     "Flute",        "Fournee", "Viennoise",
+  //    "Brioche", "Fougasse", "Pain de campagne", "Pain d'epices", "Pogne de Romans", "Pompe a l'huile"
+  // ]     
+    // let subfolders = [
+    // "AS355", "H135", "H145", "H155", "H160", "H175", 
+    // "H215", "H225"]   
+    // for (let index=0; index<subfolders.length; index++){
+    //   const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
+    //   labelBatch(A, subfolders[index]);
+    // }
+  // const A = ref(storage, fileName + "/Silky Terrier/");
+  // labelBatch(A, "Silky Terrier");
       // const A = ref(storage, fileName + "/Bitter Gourd/");
       // labelBatch(A, "Bitter Gourd");
     // "One rope applications": {

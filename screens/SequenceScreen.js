@@ -49,6 +49,7 @@ const SequenceScreen = (props) => {
         modifiedMetrics.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
       }
       modifiedMetrics.sort()
+      print(modifiedMetrics)
       setOrderedMetrics(modifiedMetrics)
       var nextCorrectTagList = []
       for (let tagId = 0; tagId<correctTagList.length ; tagId++){

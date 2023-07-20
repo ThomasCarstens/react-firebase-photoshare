@@ -17,15 +17,8 @@ const spoofGameMetrics = {
     },
 
     // https://rvc-repository.worktribe.com/output/1558210
-    "Life expectancy": {
-        "Italian Greyhound":1,   "Ibizan Hound":2,     "Pharaoh Hound":3,        "Greyhound":4,
-        "Bearded Collie":4,      "Border Collie":3,    "Old English Sheepdog":2, "Australian Shepherd":1,
-        "Silky Terrier":2,       "Irish Terrier":3,    "Yorkshire Terrier":4.33,    "Cairn Terrier":5.44,
-        'Boston Terrier':4,      'American Staffordshire Terrier':5, 'Staffordshire Bull Terrier':5, 'Bull Terrier':5,
-        'Beagle':5,              'Bloodhound':5.1,       'American Foxhound':5.3,    'Basset Hound':5,
-        'Boxer':4.1,               'Bullmastiff':5.2,      'Mastiff':1.1,
-        'Field Spaniel':5,       'Boykin Spaniel':5,   'American Water Spaniel':5.5,
-    },
+    "Life expectancy": {'Italian Greyhound': 10.02, 'Ibizan Hound': 0, 'Pharaoh Hound': 11.83, 
+'Greyhound': 9.36, 'Bearded Collie': 12.77, 'Border Collie': 12.52, 'Old English Sheepdog': 11.19, 'Australian Shepherd': 12.28, 'Silky Terrier': 14.25, 'Irish Terrier': 0, 'Yorkshire Terrier': 12.6, 'Cairn Terrier': 13.84, 'Boston Terrier': 10.92, 'American Staffordshire Terrier': 0, 'Staffordshire Bull Terrier': 12.05, 'Bull Terrier': 10.21, 'Beagle': 12.3, 'Bloodhound': 6.75, 'American Foxhound': 0, 'Basset Hound': 11.43, 'Boxer': 8.81, 'Bullmastiff': 7.57, 'Mastiff': 6.5, 'Field Spaniel': 9.9, 'Boykin Spaniel': 0, 'American Water Spaniel': 0},
     "Population (2022)": {
         "Tunisia":5,   "Morocco":5,     "Algeria":5,        "Libya":5,
     },    

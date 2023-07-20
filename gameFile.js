@@ -9,7 +9,10 @@ const spoofGameSets = {
     "History":      ["Historical eras"],
     // "Life expectancy": ['Dogs', 'Sheperd dogs'],
     "Life expectancy": ['BigSmall1', 'BigSmall2', 'BigSmall3', ''],
-    "Dog hunting situations": ['Sighthound VS Scenthounds', 'Spaniel VS Others', 'Shepherd Dog VS Others']
+    "Dog hunting situations": ['Sighthound VS Scenthounds', 'Spaniel VS Others', 'Shepherd Dog VS Others'],
+    "French Bread": [ 'Loaf', 'Baguette'],
+    "Helicopters": ["Light twin engine"]
+
 };
 
 const spoofGameFolders = {
@@ -24,7 +27,7 @@ const spoofGameFolders = {
         "Sighthound VS Scenthounds":    ["Italian Greyhound",   "Beagle",     "Bloodhound",        "American Foxhound"],
         "Spaniel VS Others":            ["Boxer",   "Boykin Spaniel",     "Silky Terrier",        "Bull Terrier"],
         "Shepherd Dog VS Others":       ["Boxer",   "Boykin Spaniel",     "Border Collie",        "Bloodhound"],
-        "BigSmall1":       ["Boxer",   "Boykin Spaniel"],
+        "BigSmall1":       ["Boxer",   "Bull Terrier"],
         "BigSmall2":       ["Silky Terrier",   "Bloodhound"],
         "BigSmall3":       ["Pharaoh Hound",   "Beagle"],
 
@@ -37,7 +40,20 @@ const spoofGameFolders = {
         "Mastiffs":         ['Boxer',               'Bullmastiff',      'Mastiff'],
         "Dogs":             ['Boxer',               'Bullmastiff',      'Mastiff'],
         "Spaniels":         ['Field Spaniel',       'Boykin Spaniel',   'American Water Spaniel'],
+        
     },
+    "French Bread": {
+        "Baguette":    ["Baguette classique",   "Ficelle",     "Flute",        "Fournee", "Viennoise"],
+        "Loaf": ["Brioche", "Fougasse", "Pain de campagne", "Pain d'epices", "Pogne de Romans", "Pompe a l'huile" ],
+    },
+    "Helicopters": {
+        "Light twin engine":    ["AS355", "H135", "H145"],
+        "Intermediate single engine": [],
+        "Medium twin engine": ["H155", "H160" ],
+        "Heavy twin engine": ["H215", "H225"]
+    },
+    // "AS355", "H135", "H145", "H155", "H160", "H175", 
+    // "H215", "H225"]  
     "Africa": {
         "North Coast":      ["Tunisia",   "Morocco",     "Algeria",        "Libya"],
     },    
@@ -62,15 +78,11 @@ const spoofGameMetrics = {
     },
 
     // https://rvc-repository.worktribe.com/output/1558210
-    "Life expectancy": {
-        "Italian Greyhound":1,   "Ibizan Hound":2,     "Pharaoh Hound":3,        "Greyhound":4,
-        "Bearded Collie":4,      "Border Collie":3,    "Old English Sheepdog":2, "Australian Shepherd":1,
-        "Silky Terrier":2,       "Irish Terrier":3,    "Yorkshire Terrier":4.33,    "Cairn Terrier":5.44,
-        'Boston Terrier':4,      'American Staffordshire Terrier':5, 'Staffordshire Bull Terrier':5, 'Bull Terrier':5,
-        'Beagle':5,              'Bloodhound':5.1,       'American Foxhound':5.3,    'Basset Hound':5,
-        'Boxer':4.1,               'Bullmastiff':5.2,      'Mastiff':1.1,
-        'Field Spaniel':5,       'Boykin Spaniel':5,   'American Water Spaniel':5.5,
-    },
+    "Life expectancy": {'Italian Greyhound': 10.02, 'Ibizan Hound': 0, 'Pharaoh Hound': 11.83, 
+    'Greyhound': 9.36, 'Bearded Collie': 12.77, 'Border Collie': 12.52, 'Old English Sheepdog': 11.19, 'Australian Shepherd': 12.28, 'Silky Terrier': 14.25, 'Irish Terrier': 0, 'Yorkshire Terrier': 12.6, 'Cairn Terrier': 13.84, 'Boston Terrier': 10.92, 'American Staffordshire Terrier': 0, 'Staffordshire Bull Terrier': 12.05, 'Bull Terrier': 10.21, 'Beagle': 12.3, 'Bloodhound': 6.75, 'American Foxhound': 0, 'Basset Hound': 11.43, 'Boxer': 8.81, 'Bullmastiff': 7.57, 'Mastiff': 6.5, 'Field Spaniel': 9.9, 'Boykin Spaniel': 0, 'American Water Spaniel': 0},
+
+    "Annual food cost": {'Italian Greyhound': 324.0, 'Ibizan Hound': 0, 'Pharaoh Hound': 466.0, 'Greyhound': 324.0, 'Bearded Collie': 0, 'Border Collie': 324.0, 'Old English Sheepdog': 710.0, 'Australian Shepherd': 466.0, 'Silky Terrier': 0, 'Irish Terrier': 0, 'Yorkshire Terrier': 324.0, 'Cairn Terrier': 324.0, 'Boston Terrier': 324.0, 'American Staffordshire Terrier': 0, 'Staffordshire Bull Terrier': 466.0, 'Bull Terrier': 466.0, 'Beagle': 324.0, 'Bloodhound': 710.0, 'American Foxhound': 0, 'Basset Hound': 324.0, 'Boxer': 466.0, 'Bullmastiff': 466.0, 'Mastiff': 701.0, 'Field Spaniel': 0, 'Boykin Spaniel': 0, 'American Water Spaniel': 0},
+
     "Population (2022)": {
         "Tunisia":5,   "Morocco":5,     "Algeria":5,        "Libya":5,
     },    
@@ -278,7 +290,37 @@ const spoofInstructions = {
         1: 'The sheep have broken through the fence and they are dispersing.',
         2: ''   
     },
+    "Baguette": {
+        1: "Find the Baguette classique.",
+        2: "Locate the Ficelle.",
+        3: "Identify the Flute.",
+        4: "Can you find the Fournee?",
+        5: "Can you find the Viennoise?",
+        6: "Now, locate the Baguette classique.",
+        7: "Try to find the Ficelle.",
+        8: "Great! Now, identify the Viennoise.",
+        9: "Game complete!",
+    },
+
+    "Loaf": {
+        1: "Find the Brioche.",
+        2: "Locate the Fougasse.",
+        3: "Identify the Pain de campagne.",
+        4: "Can you find the Pain d'epices?",
+        5: "Can you find the Pogne de Romans?",
+        6: "Can you find the Pompe a l'huile?",
+        7: "Game complete!"
+    },
+    "Light twin engine": {
+        1: "Find the AS355.",
+        2: "Locate the H135.",
+        3: "Identify the H145.",
+        4: "Can you find the AS355?",
+        5: "Can you find the H135?",
+        6: "Game complete!"
+    },
 };
+
 
 const spoofCorrectTag = {
 
@@ -403,7 +445,7 @@ const spoofCorrectTag = {
     //     4: ['American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bloodhound']
     //     },
     "Life expectancy":{
-        1:       ["Boxer",   "Boykin Spaniel"],
+        1:       ["Boxer",   "Bull Terrier"],
         2:       ["Silky Terrier",   "Bloodhound"],
         3:       ["Pharaoh Hound",   "Beagle"],
         4:      [""]
@@ -425,6 +467,34 @@ const spoofCorrectTag = {
         6: "",
       },
 
+      "Baguette": {
+        1: "Baguette classique",
+        2: "Ficelle",
+        3: "Flute",
+        4: "Fournee",
+        5: "Viennoise",
+        6: "Baguette classique",
+        7: "Ficelle",
+        8: "Viennoise",
+        9: "",
+    },
+    "Loaf": {
+        1: "Brioche",
+        2: "Fougasse",
+        3: "Pain de campagne",
+        4: "Pain d'epices",
+        5: "Pogne de Romans",
+        6: "Pompe a l'huile",
+        7: ""
+    },
+    "Light twin engine": {
+        1: "AS355",
+        2: "H135",
+        3: "H145",
+        4: "AS355",
+        5: "H135",
+        6: ""
+    },
 };
 
 const spoofIncorrectTag = {
@@ -563,6 +633,38 @@ const spoofIncorrectTag = {
         5: ["Reef Knot", "Bowline Knot"],
         6: []
         },
+
+    "Baguette": {
+        1: ["Ficelle", "Flute"],
+        2: ["Baguette classique", "Flute"],
+        3: ["Baguette classique", "Fournee"],
+        4: ["Ficelle", "Fournee"],
+        5: ["Baguette classique", "Viennoise"],
+        6: ["Ficelle", "Viennoise"],
+        7: ["Baguette classique", "Flute"],
+        8: ["Ficelle", "Fournee"],
+        9: ["Baguette classique", "Viennoise"],
+        10: []
+    },
+    "Loaf": {
+        1: ["Fougasse", "Pain de campagne"],
+        2: ["Pogne de Romans", "Pain de campagne"],
+        3: ["Brioche", "Pogne de Romans"],
+        4: ["Pain de campagne", "Pogne de Romans"],
+        5: ["Brioche", "Pain d'epices"],
+        6: ["Pain de campagne", "Pain d'epices"],
+        7: ["Fougasse", "Pompe a l'huile"]
+    },
+
+    "Light twin engine": {
+        1: ["H135", "H145"],
+        2: ["AS355", "H145"],
+        3: ["AS355", "H135"],
+        4: ["H135", "H145"],
+        5: ["AS355", "H135"],
+        6: ["AS355", "H135"]
+    },
+
 }
 
 export {spoofGameSets, spoofGameMetrics, spoofUnits, spoofGameFolders, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}
