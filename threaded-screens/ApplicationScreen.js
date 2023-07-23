@@ -27,52 +27,18 @@ import { Audio } from "expo-av"
 
 
 const ApplicationScreen = (props) => {
-  const folderName = props.route.params.folder  // name
-  const selectedGame = props.route.params.name  // applicationName
+  const folderName = props.route.params?.name
+  const selectedGame = props.route.params?.applicationName  // TBD | Reinstate with navigation.
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
-  const hint = props.route.params?.hint
-  // const applicationImage = props.route.params.application
+  const hint = props.route.params.hint
+  const applicationImage = props.route.params.application
   console.log('init: ... ', selectedGame)
-  // console.log('images ...' ,applicationImage)
+  console.log('images ...' ,applicationImage)
   const sound = new Audio.Sound()
 
-  const [applicationImage, setApplicationImage] = useState({});
+  
 
-  useEffect(()=>{
-
-    const getApplicationImages = async() => {
-
-     // for (let i=0;i<gameKeyList[j].length; i++) {
-       const applicationReference = ref(storage, folderName+'/_applications/'+selectedGame+'/');
-       // spoofGameSets[gameKeyList[j]][i]
-       await list(applicationReference)
-       .then((res) => {
-         console.log('found APPLICATIONS')
-         res.items.forEach((itemRef) => {
-       getDownloadURL(itemRef).then((x)=> {
-        let getHintNb = x.split('.jpg')[0]
-        let index = getHintNb.charAt(getHintNb.length-1)
-        console.log('application', index)
-         setApplicationImage(previous => {
-          let dictHints = {...previous}
-          dictHints[index] = x
-          return dictHints
-         });
-       })
-       if (applicationImage==undefined) {
-           console.log('Error on one.')
-       }
-
-     })
-
-   })
-
-   }
-
-   getApplicationImages()
-
-  }, [selectedGame])
   
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
 

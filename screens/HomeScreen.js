@@ -682,6 +682,7 @@ const HomeScreen = (props) => {
 
   const nextGameSetLevel = () => {
     if (gameSetLevel+1 < Object.keys(spoofGameSets[selectedGame]).length) {
+      // If still in game: record (authenticated) and reinitialize.
       if (auth.currentUser) {
           let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
           setSuccessRate(prev => (prev+averageCorrectRate)/2) // will be reset once per game.

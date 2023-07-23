@@ -32,6 +32,9 @@ const TestScreen = (props) => {
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params.hint
+  const gameMacroEnabled = props.route.params.gameMacroIsEnabled
+  // gameMacroTypeNext
+  // gameMacroNext
   
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
   const [incompleteLevels, setIncompleteLevels] = useState({})
@@ -49,44 +52,6 @@ const TestScreen = (props) => {
       return baseDict
     })
     console.log('hint is', hint)
-    
-    /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-    // let fileName = "One rope applications"
-    // const A = ref(storage, fileName + "/Reef Knot/");
-    // const B = ref(storage, fileName + "/Slip Knot/");
-    // const C = ref(storage, fileName + "/Figure-8 Loop/");
-    // const D = ref(storage, fileName + "/Figure-8 Knot/");
-    // const E = ref(storage, fileName + "/Bowline Knot/");
-    // const F = ref(storage, fileName + "/Overhand Knot/");
-    // labelBatch(A, "Reef Knot");
-    // labelBatch(B, "Slip Knot");
-    // labelBatch(C, "Figure-8 Loop");
-    // labelBatch(D, "Figure-8 Knot");
-    // labelBatch(E, "Bowline Knot");
-    // labelBatch(F, "Overhand Knot");
-    // "One rope applications": {
-    //   1: "Overhand Knot",
-    //   2: "Slip Knot",
-    //   3: "Figure-8 Loop",
-    //   4: "Figure-8 Knot",
-    //   5: "Bowline Knot",
-    //   6: "",
-    // },
-    // "Choose the right knot": {
-    //   1: "Reef Knot",
-    //   2: "Reef Knot",
-    //   3: "Reef Knot",
-    //   4: "Bowline Knot",
-    //   5: "Figure-8 Loop",
-    //   6: "",
-    // },
-
-      
-     
-    // } else {
-    //   setGameSetLevel(0)
-    //   // const userLearningLevel = 1 //TBD | Get from database.
-    // }
 
 
   }, []);
@@ -795,12 +760,25 @@ const TestScreen = (props) => {
         setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
         let date_finished = new Date();
         const finishTimestamp = date_finished.getTime(); 
-        navigation.replace('Score', { 
-        name: selectedGame,
-        lastscore: successRate, 
-        lastdate: finishTimestamp,
-        data:  (auth.currentUser)?userData:0 })
+
+        // if (gameMacroEnabled){
+        //   navigation.replace(gameMacroTypeNext, { 
+        //     name: gameMacroNext,
+        //     lastscore: successRate, 
+        //     lastdate: finishTimestamp,
+        //     data:  (auth.currentUser)?userData:0 })     
+        // } else {
+          navigation.replace('Score', { 
+          name: selectedGame,
+          lastscore: successRate, 
+          lastdate: finishTimestamp,
+          data:  (auth.currentUser)?userData:0 })         
+
+        // }
+
       }}>
+
+
             <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
       : /*else if game is not complete*/
       <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>

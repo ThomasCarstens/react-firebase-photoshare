@@ -11,8 +11,26 @@ const spoofGameSets = {
     "Life expectancy": ['BigSmall1', 'BigSmall2', 'BigSmall3', ''],
     "Dog hunting situations": ['Sighthound VS Scenthounds', 'Spaniel VS Others', 'Shepherd Dog VS Others'],
     "French Bread": [ 'Loaf', 'Baguette'],
-    "Helicopters": ["Light twin engine"]
+    "Helicopters": ["Light twin engine"],
+    "Sight VS Scent":  ["Hounds"],
 
+};
+
+const spoofGameAllocation = {
+    "Dogs": "Home", 
+    "Cheeses": "Home",
+    "Life expectancy": "Comparison",
+    "Dog hunting situations": "Application"
+};
+
+const spoofMacroGameSets = {
+    "Dogs": {
+        1: ["Sight VS Scent", "ThreadedHome", "Dogs"], 
+        2: ["Dog hunting situations", "Application", "Dogs"],
+        3: ["Scenthounds", "Home", "Dogs"],
+        4: ["Life expectancy", "Comparison", "Dogs"], 
+    }
+    
 };
 
 const spoofGameFolders = {
@@ -667,4 +685,4 @@ const spoofIncorrectTag = {
 
 }
 
-export {spoofGameSets, spoofGameMetrics, spoofUnits, spoofGameFolders, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}
+export {spoofGameSets, spoofMacroGameSets, spoofGameMetrics, spoofUnits, spoofGameFolders, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}

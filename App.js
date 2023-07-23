@@ -11,6 +11,8 @@ import SequenceScreen from './screens/SequenceScreen';
 import TestScreen from './screens/TestScreen';
 import ApplicationScreen from './screens/ApplicationScreen';
 import ComparisonScreen from './screens/ComparisonScreen';
+import ThreadedHomeScreen from './threaded-screens/ThreadedHomeScreen';
+import ThreadedTestScreen from './threaded-screens/ThreadedTestScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,7 +35,15 @@ function App() {
         <Stack.Screen options={{headerShown: false}} name="Application" component={ApplicationScreen} />
         <Stack.Screen options={{headerShown: false}} name="Comparison" component={ComparisonScreen} />  
         
-        
+        {/* <Stack.Screen options={{headerShown: false}} name="Login" component={LoginScreen} />
+        <Stack.Screen options={{headerShown: false}} name="Selection" component={SelectionScreen} /> */}
+        <Stack.Screen options={{headerShown: false}} name="ThreadedHome" component={ThreadedHomeScreen} />
+        {/* <Stack.Screen options={{headerShown: false}} name="Sequence" component={SequenceScreen} />
+        <Stack.Screen options={{headerShown: false}} name="Score" component={ScoreScreen} /> */}
+        <Stack.Screen options={{headerShown: false}} name="ThreadedTest" component={ThreadedTestScreen} />
+        {/* <Stack.Screen options={{headerShown: false}} name="Application" component={ApplicationScreen} />
+        <Stack.Screen options={{headerShown: false}} name="Comparison" component={ComparisonScreen} />   */}
+                
         
         
         

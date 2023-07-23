@@ -15,7 +15,7 @@ import { storage, database } from '../firebase'
 import { Linking } from 'react-native';
 import { getDownloadURL, list, ref } from 'firebase/storage'
 import { SearchBar } from 'react-native-elements'
-import { spoofGameHashtags, spoofGameSets, spoofMacroGameSets } from '../gameFile'
+import { spoofGameHashtags, spoofGameSets } from '../gameFile'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
@@ -26,9 +26,6 @@ const SelectionScreen = ({ navigation }) => {
     const [userData, setUserData] = useState()
     const [gameName, setGameName] = useState()
     const [gameType, setGameType] = useState()
-    const [folderName, setFolderName] = useState()
-    const [applicationName, setApplicationName] = useState()
-
     const [modalVisible, setModalVisible] = useState(false)
     const [applicationModalVisible, setApplicationModalVisible] = useState(false)
     const [thumbnailImage, setThumbnailImage] = useState([])
@@ -178,8 +175,40 @@ const SelectionScreen = ({ navigation }) => {
        }
    
        getHintImages()
-      }, [gameName])
+     
 
+       const getApplicationImages = async() => {
+
+        // for (let i=0;i<gameKeyList[j].length; i++) {
+          const applicationReference = ref(storage, gameName+'/_applications/environment/');
+          // spoofGameSets[gameKeyList[j]][i]
+          await list(applicationReference)
+          .then((res) => {
+            console.log('found APPLICATIONS')
+            res.items.forEach((itemRef) => {
+          getDownloadURL(itemRef).then((x)=> {
+           let getHintNb = x.split('.jpg')[0]
+           let index = getHintNb.charAt(getHintNb.length-1)
+           console.log('application', index)
+            setApplicationImages(previous => {
+             let dictHints = {...previous}
+             dictHints[index] = x
+             return dictHints
+            });
+          })
+          if (applicationImages==undefined) {
+              console.log('Error on one.')
+          }
+
+        })
+
+      })
+
+      }
+  
+      getApplicationImages()
+
+     }, [gameName])
 
     const handleSignOut = async () => {
       // await AsyncStorage.clear()
@@ -288,12 +317,8 @@ const SelectionScreen = ({ navigation }) => {
       
         {/* <Image source={{outcomeImage}} style={{height:170, width:130}}></Image> */}
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          // setGameName('Dogs')
-          // setGameType("Home") 
-
-          setGameName("Sight VS Scent")
-          setFolderName("Dogs")
-          setGameType(spoofMacroGameSets["Dogs"][1][1]) //Sequence also possible
+          setGameName('Dogs')
+          setGameType('Home') //Sequence also possible
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[0]}`}} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>
@@ -303,7 +328,6 @@ const SelectionScreen = ({ navigation }) => {
 
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Cheeses')
-          setFolderName("Cheeses")
           setGameType('Home')
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[1]}`}} 
@@ -357,7 +381,6 @@ const SelectionScreen = ({ navigation }) => {
 
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Helicopters')
-          setFolderName("Helicopters")
           setGameType('Home')
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[5]}`}}
@@ -369,7 +392,6 @@ const SelectionScreen = ({ navigation }) => {
 
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('French Bread')
-          setFolderName("French Bread")
           setGameType('Home')
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[5]}`}}
@@ -495,7 +517,6 @@ const SelectionScreen = ({ navigation }) => {
                       setModalVisible(!modalVisible);
                       navigation.navigate(gameType, { 
                         name: gameName, 
-                        folder: folderName,
                         hint: hintImages, 
                         level: userData[gameName]['gameSetLevel'], 
                         data: userData })
@@ -511,8 +532,7 @@ const SelectionScreen = ({ navigation }) => {
                       setModalVisible(!modalVisible);
                       console.log(hintImages)
                       navigation.navigate(gameType, { 
-                        name: gameName,
-                        folder: folderName, 
+                        name: gameName, 
                         hint: hintImages, 
                         level: 0, 
                         data: 0 })
@@ -548,7 +568,6 @@ const SelectionScreen = ({ navigation }) => {
                       setModalVisible(!modalVisible);
                       navigation.navigate('Test', { // The population average can be computed by cloud functions
                         name: gameName,
-                        folder: folderName,
                         hint: hintImages, 
                         level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         data: (auth.currentUser)?userData:0 })
@@ -561,30 +580,9 @@ const SelectionScreen = ({ navigation }) => {
                     style={styles.gameSelectionModal}
 
                     onPress={() => {
-                      setModalVisible(!modalVisible);                      
-                      
-                      navigation.navigate(gameType, { 
-                        name: gameName,
-                        folder: folderName,
-                        macroLevel: 0,
-                        application: applicationImages,
-                        hint: hintImages, 
-                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
-                        data: (auth.currentUser)?userData:0 })
-                    }}>
-
-                      <Text style={{fontWeight:"bold"}}> {"\n THREAD"} </Text>
-                  </TouchableOpacity>  
-
-
-                  <TouchableOpacity
-                    style={styles.gameSelectionModal}
-
-                    onPress={() => {
                       setModalVisible(!modalVisible);
                       navigation.navigate('Score', { // The population average can be computed by cloud functions
                         name: gameName,
-                        folder: folderName,
                         hint: hintImages, 
                         level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         data: (auth.currentUser)?userData:0 })
@@ -653,16 +651,14 @@ const SelectionScreen = ({ navigation }) => {
                     style={styles.gameSelectionModal}
 
                     onPress={() => {
-                      setApplicationName("Dog hunting situations")
                       // setModalVisible(!modalVisible);
                       setApplicationModalVisible(!applicationModalVisible);
                       navigation.navigate('Application', { // The population average can be computed by cloud functions
-                        name: "Dog hunting situations",
-                        folder: folderName,
+                        name: gameName,
                         hint: hintImages, 
                         level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
-                        // application: applicationImages,
-                        // applicationName: "Dog hunting situations",
+                        application: applicationImages,
+                        applicationName: "Dog hunting situations",
                         data: (auth.currentUser)?userData:0 })
                     }}
                     >
@@ -674,12 +670,10 @@ const SelectionScreen = ({ navigation }) => {
                     style={styles.gameSelectionModal}
 
                     onPress={() => {
-                      setApplicationName("Dog weight")
                       // setModalVisible(!modalVisible);
                       setApplicationModalVisible(!applicationModalVisible);
                       navigation.navigate('Application', { // The population average can be computed by cloud functions
-                        name: "Dog weight",
-                        folder: folderName,
+                        name: gameName,
                         hint: hintImages, 
                         level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         application: applicationImages,
@@ -696,11 +690,9 @@ const SelectionScreen = ({ navigation }) => {
                     style={styles.gameSelectionModal}
 
                     onPress={() => {
-                      setApplicationName("Dog life expectancy")
                       setApplicationModalVisible(!applicationModalVisible);
                       navigation.navigate('Comparison', { // The population average can be computed by cloud functions
-                        name: "Dog life expectancy",
-                        folder: folderName,
+                        name: gameName,
                         hint: hintImages, 
                         level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         application: applicationImages,

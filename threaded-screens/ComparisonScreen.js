@@ -13,9 +13,9 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics} from '../gameFile';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics, spoofUnits} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { Audio } from "expo-av"
+
 // import Toast, { useToast } from 'react-native-toast-notifications';
 // import { Platform } from 'react-native/types';
 // import Toast from 'react-native-fast-toast/lib/typescript/toast';
@@ -26,76 +26,86 @@ import { Audio } from "expo-av"
 //https://www.wineware.co.uk/glassware/beginners-guide-to-different-types-of-wine-glasses
 
 
-const ApplicationScreen = (props) => {
-  const folderName = props.route.params.folder  // name
-  const selectedGame = props.route.params.name  // applicationName
+const ComparisonScreen = (props) => {
+  const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
-  const hint = props.route.params?.hint
-  // const applicationImage = props.route.params.application
-  console.log('init: ... ', selectedGame)
-  // console.log('images ...' ,applicationImage)
-  const sound = new Audio.Sound()
-
-  const [applicationImage, setApplicationImage] = useState({});
-
-  useEffect(()=>{
-
-    const getApplicationImages = async() => {
-
-     // for (let i=0;i<gameKeyList[j].length; i++) {
-       const applicationReference = ref(storage, folderName+'/_applications/'+selectedGame+'/');
-       // spoofGameSets[gameKeyList[j]][i]
-       await list(applicationReference)
-       .then((res) => {
-         console.log('found APPLICATIONS')
-         res.items.forEach((itemRef) => {
-       getDownloadURL(itemRef).then((x)=> {
-        let getHintNb = x.split('.jpg')[0]
-        let index = getHintNb.charAt(getHintNb.length-1)
-        console.log('application', index)
-         setApplicationImage(previous => {
-          let dictHints = {...previous}
-          dictHints[index] = x
-          return dictHints
-         });
-       })
-       if (applicationImage==undefined) {
-           console.log('Error on one.')
-       }
-
-     })
-
-   })
-
-   }
-
-   getApplicationImages()
-
-  }, [selectedGame])
-  
+  const hint = props.route.params.hint
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
+  const gameMetric = "Life expectancy"  
+  const [learningLevel, setLearningLevel] = useState(1) // TBD | Keep user game level | Dictionary starts at 1.
 
+  const [correctTag, setCorrectTag] = useState([])
+  const [orderedMetrics, setOrderedMetrics] = useState([])
+  var gameName = "Life expectancy" //spoofGameSets[selectedGame][gameSetLevel]
   // Screen title.
+    const orderTags = () => {
+      let correctTagList = spoofCorrectTag[gameMetric][learningLevel]
+      let metricList = []
+      let modifiedMetrics = []
+      // 1. Get metrics as array
+      for (let tagId = 0; tagId<correctTagList.length ; tagId++){
+        metricList.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
+        modifiedMetrics.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
+      }
+      modifiedMetrics.sort()
+      setOrderedMetrics(modifiedMetrics)
+      var nextCorrectTagList = []
+      for (let tagId = 0; tagId<correctTagList.length ; tagId++){
+        nextCorrectTagList.push(correctTagList[metricList.indexOf(modifiedMetrics[tagId])]) 
+      }
+      setCorrectTag(nextCorrectTagList)
+    }
+
   useEffect(() => {
     navigation.setOptions({
       title: gameName+' Game',
     });
-    console.log('hint is', hint)
+
+  // ORDER BY METRIC
 
 
+
+    orderTags()
   }, []);
 
-  
-  
- 
-      
+  // Images from different sources.
+  useEffect(()=> {
+    console.log(selectedGame, 'IS THE FOLDER')
+    const correctListRef = ref(storage, selectedGame + '/'+correctTag[0]+'/');
+    const correctListRef2 = ref(storage, selectedGame + '/'+correctTag[1]+'/');
+    const correctListRef3 = ref(storage, selectedGame + '/'+correctTag[2]+'/');
+    const correctListRef4 = ref(storage, selectedGame + '/'+correctTag[3]+'/');
+    const correctListRef5 = ref(storage, selectedGame + '/'+correctTag[4]+'/');
+    const correctListRef6 = ref(storage, selectedGame + '/'+correctTag[5]+'/');
+        
+
+    // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
+    // reinitialise current gallery 
+    setGallery(old => [])
+    // setGalleryTags(old => {}) //better here
+    // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
+    // labelBatch(labelListRef, 'Mastiff')
+    
+    getImagesFromRef(correctListRef, 1).then(()=>{
+      getImagesFromRef(correctListRef2, 1).then(()=> {
+          getImagesFromRef(correctListRef3, 1).then(()=>{
+              getImagesFromRef(correctListRef4, 1).then(()=>{
+                getImagesFromRef(correctListRef5, 1).then(()=>{
+                  getImagesFromRef(correctListRef6, 1).then(()=>{
+                  })
+                })
+              })
+          })
+      })
+    })
+
+   
+    // }
+    // console.log(galleryTags)
+  }, [correctTag])
 
 
-  
-  // gameName = gameName?gameName:"shiba inu"
-
-  // const toast = useToast()
   const toast = useRef(null);
   const [url, setUrl] = useState();
   const navigation = useNavigation();
@@ -104,20 +114,34 @@ const ApplicationScreen = (props) => {
   const [loading, setLoading] = useState(true)
   const [correctClickCount, setCorrectClickCount] = useState(0)
   const [incorrectClickCount, setIncorrectClickCount] = useState(0)
-  const [learningLevel, setLearningLevel] = useState(1) // TBD | Keep user game level | Dictionary starts at 1.
   const [successRate, setSuccessRate] = useState(1)
   const [modalVisible, setModalVisible] = useState(true)
 
-  var gameName = spoofGameSets[selectedGame][gameSetLevel]
-  console.log(gameName, "is the game noww.")
   
+  // const images = [
+  //   'https://placeimg.com/640/640/nature',
+  //   'https://placeimg.com/640/640/people',
+  //   'https://placeimg.com/640/640/animals',
+  //   'https://placeimg.com/640/640/beer',
+  //   'https://placeimg.com/640/640/nature',
+  //   'https://placeimg.com/640/640/people',
+  // ];
+    
+  
+  
+  
+  console.log(gameName, "is the game noww.")
   // const [gameName, setGameName ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
-  const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
-  const [instructionText, setInstructionText] = useState(spoofInstructions[gameName][learningLevel])
-  const [correctTag, setCorrectTag] = useState(spoofCorrectTag[gameName][learningLevel])
+  // const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
+  const [instructionText, setInstructionText] = useState('Select from smallest to biggest '+gameMetric.toLowerCase()+'.')
+
+
+
+  
+  const [sequenceNumber, setSequenceNumber] = useState(0) // with correct tag list.
   const [sort, setSort] = useState(false)
   // const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
-  const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofInstructions[gameName]).pop()))
+  const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofCorrectTag[gameName]).pop()))
   const [gameComplete, setGameComplete] = useState(false)
   const [gameSetComplete, setGameSetComplete] = useState(false)
   const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
@@ -129,35 +153,29 @@ const ApplicationScreen = (props) => {
   
   // Game parameters.
   useEffect(() => {
-    
+    setSequenceNumber(0)
     setGallery([]) // At the start to remove prior gameframes 
     setGalleryTags({})
     // At end of 1 game
-    if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
+    if (learningLevel == Object.keys(spoofCorrectTag[gameName]).length) {
       
-      // setGameComplete(true)
-      // setGameSetComplete(true) //hack
-      nextGameSetLevel()
-      // setGameSetLevel(previous => previous+1)
-      // setGameComplete(false)// only place to do so
-
+      setGameComplete(true)
       let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
-      setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
+      setInstructionText('Level complete.' + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
 
       if (gameSetLevel+1 == spoofGameSets[selectedGame].length){
         setGameSetComplete(true)
       }
-
-
       return
     }
     
     // Within stages of 1 game
-    setInstructionText(spoofInstructions[gameName][learningLevel]); //TBD. Database.
-    setCorrectTag(spoofCorrectTag[gameName][learningLevel])
-    setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
+    // setInstructionText(spoofInstructions[gameName][learningLevel]); //TBD. Database.
+    // setCorrectTag(nextCorrectTagList)
+    orderTags()
+    // setIncorrectTag(spoofIncorrectTag[gameName][learningLevel])
     // setOutcomeImage(spoofOutcomeImages[gameName][learningLevel])
-    setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[gameName]).pop()) )
+    setProgressInGame ( learningLevel/(Object.keys(spoofCorrectTag[gameName]).pop()) )
     
   }, [learningLevel, gameSetLevel])
 
@@ -165,62 +183,7 @@ const ApplicationScreen = (props) => {
     toast.current.show(instructionText, { type: "success" });
   }, [instructionText])
 
-  // Images from different sources.
-  useEffect(()=> {
-    const correctListRef = ref(storage, folderName + '/'+correctTag+'/');
-    console.log('incorrectListRef: ', folderName , '/',incorrectTag,'/')
-    const incorrectListRef = ref(storage, folderName + '/'+incorrectTag[0]+'/');
-    if (incorrectTag.length>1){
-      var incorrectListRef2 = ref(storage, folderName + '/'+incorrectTag[1]+'/');
-      var incorrectListRef3 = ref(storage, folderName + '/'+incorrectTag[2]+'/');
-    }
-    // const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
-    // console.log('incorrectListRef: ', gameName , '/',incorrectTag,'/')
-    // const incorrectListRef = ref(storage, gameName + '/'+incorrectTag[0]+'/');
-    // if (incorrectTag.length>1){
-    //   var incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
-    //   var incorrectListRef3 = ref(storage, gameName + '/'+incorrectTag[2]+'/');
-    // }
 
-    // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
-    // reinitialise current gallery 
-    setGallery(old => [])
-    // setGalleryTags(old => []) //dict preserves
-    // const labelListRef = ref(storage, gameName + '/'+'Mastiff'+'/');
-    // labelBatch(labelListRef, 'Mastiff')
-    
-      getImagesFromRef(incorrectListRef, incorrectTag[0], 3).then(()=>{
-
-        getImagesFromRef(correctListRef, correctTag, 4)?.then(()=> {
-          // if (incorrectListRef2){
-            getImagesFromRef(incorrectListRef2, incorrectTag[1], 4)?.then(()=> {
-              if (incorrectListRef3){
-                getImagesFromRef(incorrectListRef3, incorrectTag[2], 4)
-              }
-              
-              
-          })
-
-
-
-
-        })
-
-        // if (typeof incorrectTag != Array){
-        //   const incorrectListRef = ref(storage, gameName + '/'+incorrectTag+'/');
-        //   getImagesFromRef(incorrectListRef)
-        // } else {
-        //   const incorrectListRef = ref(storage, gameName + '/'+incorrectTag[0]+'/');
-        //     getImagesFromRef(incorrectListRef).then(()=>{
-
-        //     const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
-        //     getImagesFromRef(incorrectListRef2)
-        //   })
-        // }
-      })     
-    // }
-    // console.log(galleryTags)
-  }, [correctTag, incorrectTag])
 
   // useEffect(()=> {
   //   if (gallery.length>5) {
@@ -238,35 +201,26 @@ const ApplicationScreen = (props) => {
 
   // TBD | UpperLimit on different game types.
 
-  const getAudioLoaded = async() => {
-    // await sound.setPositionAsync(0);
-    await sound.loadAsync(
-      require('../assets/test_audio/boxer.mp3'),
-      { progressUpdateIntervalMillis: 200 }
-    ).then(async()=> {
-      console.log('sound is loaded.')
-      await sound.playAsync().then(()=>console.log('sound has been played.'))
-    })
-    // 
-  }
-  
-  const getImagesFromRef = async(ref, tag, upperLimit=5) => {
-    if (ref==undefined){
-      console.log('skipping ref because storage is undefined:', ref)
-      return
-    }
+  const getImagesFromRef = async(ref, tag, upperLimit=1) => {
     // TBD | according to gameName
+    if (ref=='undefined'){
+      console.log('ref is undefined')
+    }
     await list(ref)
     .then((res) => {
       // console.log('nb of items: ', ((res.items).length))
-      let window = (((res.items).length) > upperLimit)? ((res.items).length-upperLimit-1) : 0; 
+      // let window = (((res.items).length) > upperLimit)? ((res.items).length-upperLimit) : 0; 
       // take a range of x to x+upperLimit AS LONG AS x+upperLimit<length ELSE x=0 and upperLimit=length
-      const randomDatabaseImageIndex = Math.floor(Math.random() * (window));
-      upperLimit = (window==0)?((res.items).length):upperLimit;
+      const randomDatabaseImageIndex = Math.floor(Math.random() * ((res.items).length-upperLimit-1) );
+      // console.log(randomDatabaseImageIndex)
+      // upperLimit = (window==0)?(1):upperLimit;
+      // console.log(randomDatabaseImageIndex+upperLimit)
       // .
       // sliced to 10 correct tags
-      res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
       
+      allItems = res.items
+      allItems.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
+
 
                         getDownloadURL(itemRef).then((y)=> {
                         
@@ -275,44 +229,30 @@ const ApplicationScreen = (props) => {
                               
                               setGalleryTags(old => {
                                 let tagDict = {...old}
-                                if (Object.keys(tagDict).includes(metadata.customMetadata['tag'])){ // make sure its an array
-                                  old[metadata.customMetadata['tag']].push(y)
-                                  // console.log(galleryTags)
-                                  if (old[metadata.customMetadata['tag']].length == upperLimit){
-                                    setGallery(gallery => {
-                                      let val = [...gallery, ...old[metadata.customMetadata['tag']]] // later find tag from galleryTags[gallery[picNb-1]]
-                                      // simple sort
-
-                                      
-                                      if (val.length>6){
-                                        // val.sort( () => .3 - Math.random() );
-                                        // console.log('LENGTH 12')
-                                        // var visibleGallery = val.slice(0, 5)
-                                        // var correctLeftInGallery = tagDict[correctTag].filter((url) => visibleGallery.includes(url) )
-                                        
-                                        do {
-                                          console.log('Shuffling -')
-                                          visibleGallery = val.slice(0, 5)
-                                          correctLeftInGallery = tagDict[correctTag].filter((url) => visibleGallery.includes(url) )
-                                          val.sort( () => .3 - Math.random() );
-                                        } while (correctLeftInGallery < 2)
-                                        
-                                        console.log(correctLeftInGallery)
-                                      
-                                        
-                                        // let temp = val[0]
-                                        // val[0] = val [3]
-                                        // val[3] = temp
-                                        // temp = val[2]
-                                        // val[2] = val [5]
-                                        // val[5] = temp
-                                      }
-                                      return val
-                                    });
-                                  };                                   
+                                if ((tagDict)&&(Object.keys(tagDict).includes(metadata.customMetadata['tag']))){ // make sure its an array
+                                  tagDict[metadata.customMetadata['tag']].push(y)                     
                                 } else {
                                   tagDict[metadata.customMetadata['tag']]=[y]
                                 }
+
+                                if (tagDict[metadata.customMetadata['tag']].length == upperLimit){
+                                    console.log("CORRECT LENGTH")
+                                    setGallery(gallery => {
+                                      let val = [...gallery, ...tagDict[metadata.customMetadata['tag']]] // later find tag from galleryTags[gallery[picNb-1]]
+                                      // simple sort
+                                      
+                                      if (val.length>6){
+                                        let temp = val[0]
+                                        val[0] = val [3]
+                                        val[3] = temp
+                                        temp = val[2]
+                                        val[2] = val [5]
+                                        val[5] = temp
+                                      }
+                                      setLoading(false)
+                                      return val
+                                    });
+                                  };              
                                 return tagDict
                                 
                              
@@ -502,17 +442,9 @@ const ApplicationScreen = (props) => {
 
   }
 
-  const handlePicSelection = async( picNb ) => {
+  const handlePicSelection = ( picNb ) => {
     // Also removed gallery for good measure
-    // await sound.loadAsync(
-    //   require('../assets/test_audio/boxer.mp3'),
-    //   // { progressUpdateIntervalMillis: 150 }
-    // ).then(()=> {    
-    // await sound.setPositionAsync(0).then(()=>sound.playAsync())
-
-      // console.log('sound is loaded.')
-      
-    // })
+    
     if (gameComplete||gameSetComplete){
       toast.current.show("Game Complete!", { type: "error" });
       return
@@ -520,7 +452,7 @@ const ApplicationScreen = (props) => {
 
 
 
-    setLoading(false)
+    // setLoading(false) // should be here??
     /* Spoof Memo (now removed): we're just using the gallery indexes (picNb)
        let spoofMemo = {'labrador': [2, 3, 6], 
                          'shiba_inu': [1, 4] }
@@ -536,8 +468,9 @@ const ApplicationScreen = (props) => {
 
     // CASE: Picture correctly selected.       
     // if (galleryTags[picNb-1]?.includes(correctTag)) {  
-    if (galleryTags[correctTag]?.includes(gallery[picNb-1])) { // new dict format of tags
+    if (galleryTags[correctTag[sequenceNumber]]?.includes(gallery[picNb-1])) { // new dict format of tags
     // REMOVE Picture 
+      setSequenceNumber(previous => previous+1)
       setGallery(prevState => {
           
           let newState = [...prevState]
@@ -546,15 +479,17 @@ const ApplicationScreen = (props) => {
           //   prevOnline.splice(picNb-1, 1);
           //   return prevOnline
           // })
-
-          newState.splice(picNb-1, 1);                   
+          // no splicing on SEQUENTIAL
+          // newState.splice(picNb-1, 1);                   
           return newState})
       setCorrectClickCount(prevClicks=> prevClicks+1)
+      toast.current.show(correctTag[sequenceNumber]+" ("+orderedMetrics[sequenceNumber] +' '+spoofUnits[gameName]+')', { type: "success" });
 
 
 
     } else {
       // DO NOTHING.
+      setSequenceNumber(0)
       setGallery(prevState => {
 
 
@@ -567,19 +502,19 @@ const ApplicationScreen = (props) => {
         return prevState})
 
       setIncorrectClickCount(prevState=> prevState+1)
+      toast.current.show("Start over", { type: "error" });  
 
-      for (let i=0; i<incorrectTag.length; i++){
-        if (galleryTags[incorrectTag[i]]?.includes(gallery[picNb-1])){
-          let feedbackTag = incorrectTag[i]
-          let metricFeedbackTag = spoofGameMetrics[selectedGame][feedbackTag]
-          // toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
-          toast.current.show("Correction: "+metricFeedbackTag+" are not adapted to the situation.", { type: "error" });
-        }
-      }
+      // FEEDBACK FOR CATEGORIES
+      // for (i=0; i<incorrectTag.length; i++){
+      //   if (galleryTags[incorrectTag[i]]?.includes(gallery[picNb-1])){
+      //     feedbackTag = incorrectTag[i]
+      //     toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
+      //   }
+      // }
       
     }
 
-    return 
+    // return images
   }
 
   const handleSignOut = () => {
@@ -615,19 +550,15 @@ const ApplicationScreen = (props) => {
     } else {
     let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
 
-    var index = 0
-    var visibleGallery = gallery.slice(0,5)
-    var correctLeftInGallery = galleryTags[correctTag].filter((url) => visibleGallery.includes(url) )
-    // || ((correctLeftInGallery.length == 0 ) && !loading)
-    // if ((averageCorrectRate > 0.8) ){
-    // var  correctLeftInGallery = 2
-    console.log('level if 0: ', correctLeftInGallery.length)
+    // var visibleGallery = gallery.slice(0,5)
+    // var correctLeftInGallery = galleryTags[correctTag].filter((url) => visibleGallery.includes(url) )
+    // console.log('level if 0: ', correctLeftInGallery.length)
 
     
     // END OF GAME
-    if (correctLeftInGallery.length == 0){
+    if (sequenceNumber == correctTag.length){
       setLoading(true)
-      console.log('Empty correct images.')
+      
       // Next level when 80% correct rate OR no more correctLeftInGallery  
 
       
@@ -635,19 +566,19 @@ const ApplicationScreen = (props) => {
       // On last game of gameSet --- set gameSetComplete == true
       if (gameComplete && (gameSetLevel+1 >= Object.keys(spoofGameSets[selectedGame]).length)){
         setGameSetComplete(true)
-        setLoading(true)
-        console.log('gameSetComplete set true.')
         // #RECORD_ACCURACY
       } else {
         setLearningLevel(prev => prev+1) 
       }
+
+      
       
 
       // Learning Level changes the gallery + instructions
       
     }
     
-    console.log("correct Africa_idgallery: ", correctLeftInGallery)
+    // console.log("gallery: ", correctLeftInGallery)
     // correct images that are yet-unclicked from the 6 in view.
     // average correct click rate over correct+incorrect clicks -- it's 0 if correct is 0.
 
@@ -685,7 +616,7 @@ const ApplicationScreen = (props) => {
       setGameComplete(false)// only place to do so
       // setGameSetComplete(false)
       setLearningLevel(1)
-      // setModalVisible(true) //keep off for applications
+      setModalVisible(true)
       return
     } else {
       // setGameSetComplete(true)
@@ -698,7 +629,6 @@ const ApplicationScreen = (props) => {
 
 
   const openModal = () => {
-    
     setModalVisible(true)
   }
 {/* <SafeAreaView style={{...styles.webContainer}}> 
@@ -709,49 +639,97 @@ const ApplicationScreen = (props) => {
     <View>
       <Toast ref={toast} />
       <View style={{padding: 15}}></View>
-      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'flex-start'}}>
-        <TouchableOpacity  onPress={handleSelectionScreen}>
-          <Text style={{...styles.buttonText, color:'black'}}>{"< Back"}</Text>
-        </TouchableOpacity>
-        <Text style={{fontSize: 13, alignContent: 'flex-end', marginLeft: 20}} > 
-        {selectedGame.toUpperCase()}: ({gameSetLevel+1}/{spoofGameSets[selectedGame].length})  </Text>
-        {/* {gameName} */}
-          
-      </View>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      {/* <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}> */}
-      <View style={{flex:1}}></View>
-      <Text style={{flex: 10, fontSize: 20, color:'black'}}> {instructionText} </Text>
+      <Text style={{fontSize: 13, alignContent: 'flex-end'}} >  GAME {gameSetLevel+1} </Text>
+      <Text style={{fontSize: 20}}> {instructionText} </Text>
+      <View style={{padding: 10}}></View>
+      <View style={{flexDirection: 'row'}} >
+      <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/>
 
-      {/* IMAGE APPEARS IN ORDER IF IT EXISTS */}
       
-      {(applicationImage[(gameSetLevel+1).toString()])?<Image 
-          source={{uri:`${applicationImage[(gameSetLevel+1).toString()]}`,}}
-          style={{...styles.imageContainer, flex: 10, height:180, width: 180}}
+
+      <View style={{flexDirection: 'column'}}>
+      <TouchableHighlight //onPress={()=> handlePicSelection(1)}
+      >
+        <Image 
+
+          // source={{uri:`${gallery[0]}`,}}
+          style={styles.imageContainer}
           placeholder={blurhash}
           contentFit="cover"
           transition={1000}
-        />:<View></View>}
+        />
+      </TouchableHighlight>
 
-        </View>
-      
-      {/* <View style={{padding: 10}}></View> */}
-
-      <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
-
-
-
-      {/* <TouchableOpacity  padding={50}  style={styles.button} onPress={openModal} >
-            <Text style={styles.buttonText}>Hint</Text>
-      </TouchableOpacity> */}
-      
-      {/* <Image 
-        source={{uri:`${galleryTags[correctTag]}`,}}
-        style={{...styles.imageContainer, height:100, width: 100}}
+      <TouchableHighlight onPress={()=> handlePicSelection(1)}>
+      <Image 
+        source={{uri:`${gallery[0]}`,}}
+        style={styles.imageContainer}
         placeholder={blurhash}
         contentFit="cover"
         transition={1000}
-        /> */}
+      />
+      </TouchableHighlight>
+      <TouchableHighlight //onPress={()=> handlePicSelection(5)}
+      >
+      <Image 
+        // source={{uri:`${gallery[4]}`,}}
+        style={styles.imageContainer}
+        placeholder={blurhash}
+        contentFit="cover"
+        transition={1000}
+      />
+      </TouchableHighlight>
+      
+
+      </View>
+
+      <View style={{flexDirection: 'column'}}>
+
+
+      <TouchableHighlight //onPress={()=> handlePicSelection(2)}
+      >
+      <Image 
+        // source={{uri:`${gallery[1]}`,}}
+        style={styles.imageContainer}
+        placeholder={blurhash}
+        contentFit="cover"
+        transition={1000}
+      />
+      </TouchableHighlight>
+
+      <TouchableHighlight onPress={()=> handlePicSelection(2)}>
+        <Image 
+          source={{uri:`${gallery[1]}`,}}
+          style={styles.imageContainer}
+          placeholder={blurhash}
+          contentFit="cover"
+          transition={1000}
+        />        
+      </TouchableHighlight>
+      <TouchableHighlight //onPress={()=> handlePicSelection(6)}
+      >
+      <Image 
+        // source={{uri:`${gallery[2]}`,}}
+        style={styles.imageContainer}
+        placeholder={blurhash}
+        contentFit="cover"
+        transition={1000}
+      />
+      </TouchableHighlight>
+      
+
+
+      </View>
+
+
+      <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/></View>
+
+      <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
+
+      <TouchableOpacity  padding={50}  style={styles.button} onPress={openModal} >
+            <Text style={styles.buttonText}>Hint</Text>
+      </TouchableOpacity>
+      
       {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
 
       {(gameComplete&&(!gameSetComplete))? //if between games
@@ -775,92 +753,53 @@ const ApplicationScreen = (props) => {
       }
 
     </View>
-
-      <View style={{flexDirection: 'row'}} >
-
-      <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/>
-
-      
-
-      <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection(1)}>
-        <Image 
-
-          source={{uri:`${gallery[0]}`,}}
-          style={styles.imageContainer}
-          placeholder={blurhash}
-          contentFit="cover"
-          transition={1000}
-        />
-      </TouchableHighlight>
-
-      <TouchableHighlight onPress={()=> handlePicSelection(3)}>
-      <Image 
-        source={{uri:`${gallery[2]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-      <TouchableHighlight onPress={()=> handlePicSelection(5)}>
-      <Image 
-        source={{uri:`${gallery[4]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-      
-
-      </View>
-
-      <View style={{flexDirection: 'column'}}>
-
-
-      <TouchableHighlight onPress={()=> handlePicSelection(2)}>
-      <Image 
-        source={{uri:`${gallery[1]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-
-      <TouchableHighlight onPress={()=> handlePicSelection(4)}>
-        <Image 
-          source={{uri:`${gallery[3]}`,}}
-          style={styles.imageContainer}
-          placeholder={blurhash}
-          contentFit="cover"
-          transition={1000}
-        />        
-      </TouchableHighlight>
-      <TouchableHighlight onPress={()=> handlePicSelection(6)}>
-      <Image 
-        source={{uri:`${gallery[5]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-      
-
-
-      </View>
-
-
-      <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/></View>
-
-
+    
 
     
+    {/* <View style={styles.container}>
+      <View style={{padding: 20}}></View>
+
+      <View style={styles.progressBar}>
+      </View>
+      <Text style={styles.text3}>{(100*correctClickCount/(correctClickCount+incorrectClickCount)).toFixed(2)}%</Text>
+
+      <StatusBar style="auto" />
+    </View> */}
 
 
     <View style={styles.container}>
+
+      
+      {/* KEEP THIS STUFF
+      
+      <Text>Email: {auth.currentUser?.email}</Text> */}
+      
+      {/* <TextInput
+      onChangeText={onChangeCustomMetadataInput}
+      value={customMetadataInput}
+      style={styles.input}>
+      </TextInput>  */}
+
+      
+
+     {/* <TouchableOpacity style={styles.button} onPress={pickImage} >
+        <Text style={styles.buttonText}>Choose File</Text>
+      </TouchableOpacity>
+
+      
+
+      <TouchableOpacity style={styles.button} onPress={uploadImage} >
+        <Text style={styles.buttonText}>Upload</Text>
+      </TouchableOpacity> */}
+
+      <TouchableOpacity style={styles.button} onPress={handleSelectionScreen}>
+        <Text style={styles.buttonText}>Back</Text>
+      </TouchableOpacity>
+
+      {/* <TouchableOpacity style={styles.button} onPress={handleSignOut}>
+        <Text style={styles.buttonText}>Sign Out</Text>
+      </TouchableOpacity> */}
+
 
 
 
@@ -889,8 +828,8 @@ const ApplicationScreen = (props) => {
 
       <View  style={{backgroundColor:(webView)?'rgb(46, 204, 113)':'rgba(46, 204, 113, 0.8)'}}> 
           {/* Is a hint supplied? //*/}
-          {(hint[(gameSetLevel+1).toString()])?
-           <Image source={{uri: `${hint[(gameSetLevel+1).toString()]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?300:15, marginBottom:-150}}></Image>
+          {(hint[gameSetLevel])?
+           <Image source={{uri: `${hint[gameSetLevel]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?300:15, marginBottom:-150}}></Image>
             : // else: signal button
 
             <View></View>
@@ -908,7 +847,7 @@ const ApplicationScreen = (props) => {
               
 
               <TouchableOpacity
-                style={{...styles.gameSelection, marginBottom:100}}
+                style={{...styles.gameSelection, marginBottom:100, marginLeft:(webView)?300:5}}
                 onPress={() => {
                   setModalVisible(!modalVisible);
                   console.log(hint)
@@ -931,7 +870,7 @@ const ApplicationScreen = (props) => {
 // </SafeAreaView>  
 }
 
-export default ApplicationScreen
+export default ComparisonScreen
 
 
 const styles = StyleSheet.create({
