@@ -8,11 +8,11 @@ const spoofGameSets = {
     "Knots":        ["One rope applications", "Choose the right knot"],
     "History":      ["Historical eras"],
     // "Life expectancy": ['Dogs', 'Sheperd dogs'],
-    "Life expectancy": ['BigSmall1', 'BigSmall2', 'BigSmall3', ''],
+    "Life expectancy": ['BigSmall1', 'BigSmall2', 'BigSmall3'],
     "Dog hunting situations": ['Sighthound VS Scenthounds', 'Spaniel VS Others', 'Shepherd Dog VS Others'],
     "French Bread": [ 'Loaf', 'Baguette'],
     "Helicopters": ["Light twin engine"],
-    "Sight VS Scent":  ["Hounds"],
+    "Sight VS Scent":  ["Hounds", "Sighthounds"],
 
 };
 
@@ -25,10 +25,10 @@ const spoofGameAllocation = {
 
 const spoofMacroGameSets = {
     "Dogs": {
-        1: ["Sight VS Scent", "ThreadedHome", "Dogs"], 
-        2: ["Dog hunting situations", "Application", "Dogs"],
-        3: ["Scenthounds", "Home", "Dogs"],
-        4: ["Life expectancy", "Comparison", "Dogs"], 
+        // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+        1: ["Sight VS Scent", "ThreadedHome", "Dogs", 1],
+        2: ["Life expectancy", "Comparison", "Dogs", 0],
+        3: ["Dog hunting situations", "Application", "Dogs", 0],
     }
     
 };
@@ -456,12 +456,7 @@ const spoofCorrectTag = {
         2: [""]
     },
 
-    // "Life expectancy": {
-    //     1: ['Boxer', 'Bullmastiff', 'Mastiff'],
-    //     2: ['Beagle', 'Bloodhound', 'American Foxhound', "Cairn Terrier"],
-    //     3: ['Yorkshire Terrier',    "Cairn Terrier", 'Boston Terrier'],
-    //     4: ['American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bloodhound']
-    //     },
+
     "Life expectancy":{
         1:       ["Boxer",   "Bull Terrier"],
         2:       ["Silky Terrier",   "Bloodhound"],

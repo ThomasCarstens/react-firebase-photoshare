@@ -27,27 +27,30 @@ import { Audio } from "expo-av"
 
 
 const ThreadedHomeScreen = (props) => {
-  const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
+  const selectedGame = props.route.params.name  // TBD | Reinstate with navigation.
   const selectedFolder = props.route.params?.folder
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params?.hint
   const applicationImages = props.route.params?.application
+  const gameIsThreaded = props.route.params?.gameIsThreaded
 
   const sound = new Audio.Sound()
-  let macroLevel = props.route.params.macroLevel + 1
+  const macroLevel = props.route.params.macroLevel 
   
 
-  
+
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
-
+  
   // Screen title.
   useEffect(() => {
     navigation.setOptions({
       title: gameName+' Game',
     });
     console.log('hint is', hint)
-
+    if (gameIsThreaded){
+      setGameSetLevel(spoofMacroGameSets[selectedFolder][macroLevel][3])
+    }
 
   }, []);
 
@@ -805,23 +808,29 @@ const ThreadedHomeScreen = (props) => {
         let date_finished = new Date();
         const finishTimestamp = date_finished.getTime(); 
 
-        
-        navigation.replace(spoofMacroGameSets["Dogs"][macroLevel+ 1][1], { 
-          name: spoofMacroGameSets["Dogs"][macroLevel+ 1][0],
-          folder: spoofMacroGameSets["Dogs"][macroLevel+ 1][2],
-          macroLevel: macroLevel + 1,
-          hint: hint, 
-          application: applicationImages,
-          level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
-          data: (auth.currentUser)?userData:0 })
+        if (gameIsThreaded ==1) {
+          navigation.replace(spoofMacroGameSets["Dogs"][macroLevel+ 1][1], { 
+            name: spoofMacroGameSets["Dogs"][macroLevel+ 1][0],
+            folder: spoofMacroGameSets["Dogs"][macroLevel+ 1][2],
+            macroLevel: macroLevel + 1,
+            hint: hint, 
+            gameIsThreaded: 1,
+            application: applicationImages,
+            level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
+            data: (auth.currentUser)?userData:0 })
+        } else {
+
+          navigation.replace('Score', { 
+            name: selectedGame,
+            lastscore: successRate, 
+            lastdate: finishTimestamp,
+            data:  (auth.currentUser)?userData:0 })          
+        }
 
 
 
-        // navigation.replace('Score', { 
-        // name: selectedGame,
-        // lastscore: successRate, 
-        // lastdate: finishTimestamp,
-        // data:  (auth.currentUser)?userData:0 })
+
+
       }}>
             <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
       : /*else if game is not complete*/

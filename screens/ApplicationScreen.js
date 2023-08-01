@@ -13,7 +13,7 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics} from '../gameFile';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics, spoofMacroGameSets} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Audio } from "expo-av"
 // import Toast, { useToast } from 'react-native-toast-notifications';
@@ -32,6 +32,11 @@ const ApplicationScreen = (props) => {
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params?.hint
+
+  //threaded params
+  const gameIsThreaded = props.route.params?.gameIsThreaded
+  let macroLevel = props.route.params?.macroLevel
+  const selectedFolder = props.route.params?.folder
   // const applicationImage = props.route.params.application
   console.log('init: ... ', selectedGame)
   // console.log('images ...' ,applicationImage)
@@ -763,11 +768,28 @@ const ApplicationScreen = (props) => {
         setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
         let date_finished = new Date();
         const finishTimestamp = date_finished.getTime(); 
-        navigation.replace('Score', { 
-        name: selectedGame,
-        lastscore: successRate, 
-        lastdate: finishTimestamp,
-        data:  (auth.currentUser)?userData:0 })
+
+        if ((gameIsThreaded ==1)&&(macroLevel<Object.keys(spoofMacroGameSets[selectedFolder]).length)) {
+
+          navigation.replace(spoofMacroGameSets["Dogs"][macroLevel+ 1][1], { 
+            name: spoofMacroGameSets["Dogs"][macroLevel+ 1][0],
+            folder: spoofMacroGameSets["Dogs"][macroLevel+ 1][2],
+            macroLevel: macroLevel + 1,
+            hint: hint, 
+            gameIsThreaded: 1,
+            // application: applicationImages,
+            level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
+            data: (auth.currentUser)?userData:0 })
+
+        } else {
+
+          navigation.replace('Score', { 
+            name: selectedGame,
+            lastscore: successRate, 
+            lastdate: finishTimestamp,
+            data:  (auth.currentUser)?userData:0 })
+
+        }
       }}>
             <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
       : /*else if game is not complete*/

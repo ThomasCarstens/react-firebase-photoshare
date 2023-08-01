@@ -13,7 +13,7 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics, spoofUnits} from '../gameFile';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics, spoofUnits, spoofMacroGameSets} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
 // import Toast, { useToast } from 'react-native-toast-notifications';
@@ -31,12 +31,20 @@ const ComparisonScreen = (props) => {
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params.hint
-  const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
-  const gameMetric = "Life expectancy"  
+
   const [learningLevel, setLearningLevel] = useState(1) // TBD | Keep user game level | Dictionary starts at 1.
 
   const [correctTag, setCorrectTag] = useState([])
   const [orderedMetrics, setOrderedMetrics] = useState([])
+
+  const gameMetric = "Life expectancy"  
+
+  //gameThread params
+  const gameIsThreaded = props.route.params?.gameIsThreaded
+  var macroLevel = props.route.params?.macroLevel
+  const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
+  const selectedFolder = props.route.params?.folder
+
   var gameName = "Life expectancy" //spoofGameSets[selectedGame][gameSetLevel]
   // Screen title.
     const orderTags = () => {
@@ -58,6 +66,13 @@ const ComparisonScreen = (props) => {
     }
 
   useEffect(() => {
+    if (gameIsThreaded){
+      console.log('start Comparison: Level', macroLevel)
+      setGameSetLevel(spoofMacroGameSets[selectedFolder][macroLevel][3])
+      gameName = spoofMacroGameSets[selectedFolder][macroLevel][0]
+
+    }
+
     navigation.setOptions({
       title: gameName+' Game',
     });
@@ -71,13 +86,13 @@ const ComparisonScreen = (props) => {
 
   // Images from different sources.
   useEffect(()=> {
-    console.log(selectedGame, 'IS THE FOLDER')
-    const correctListRef = ref(storage, selectedGame + '/'+correctTag[0]+'/');
-    const correctListRef2 = ref(storage, selectedGame + '/'+correctTag[1]+'/');
-    const correctListRef3 = ref(storage, selectedGame + '/'+correctTag[2]+'/');
-    const correctListRef4 = ref(storage, selectedGame + '/'+correctTag[3]+'/');
-    const correctListRef5 = ref(storage, selectedGame + '/'+correctTag[4]+'/');
-    const correctListRef6 = ref(storage, selectedGame + '/'+correctTag[5]+'/');
+    console.log(selectedFolder, 'IS THE FOLDER')
+    const correctListRef = ref(storage, selectedFolder + '/'+correctTag[0]+'/');
+    const correctListRef2 = ref(storage, selectedFolder + '/'+correctTag[1]+'/');
+    const correctListRef3 = ref(storage, selectedFolder + '/'+correctTag[2]+'/');
+    const correctListRef4 = ref(storage, selectedFolder + '/'+correctTag[3]+'/');
+    const correctListRef5 = ref(storage, selectedFolder + '/'+correctTag[4]+'/');
+    const correctListRef6 = ref(storage, selectedFolder + '/'+correctTag[5]+'/');
         
 
     // const incorrectListRef2 = ref(storage, gameName + '/'+incorrectTag[1]+'/');
@@ -158,14 +173,14 @@ const ComparisonScreen = (props) => {
     setGalleryTags({})
     // At end of 1 game
     if (learningLevel == Object.keys(spoofCorrectTag[gameName]).length) {
-      
+      console.log('gameSetLevel=',gameSetLevel)
       setGameComplete(true)
       let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
       setInstructionText('Level complete.' + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
-
-      if (gameSetLevel+1 == spoofGameSets[selectedGame].length){
-        setGameSetComplete(true)
-      }
+      setGameSetComplete(true)
+      // if (gameSetLevel >= spoofGameSets[selectedGame].length){
+        // Removed.
+      // }
       return
     }
     
@@ -177,6 +192,10 @@ const ComparisonScreen = (props) => {
     // setOutcomeImage(spoofOutcomeImages[gameName][learningLevel])
     setProgressInGame ( learningLevel/(Object.keys(spoofCorrectTag[gameName]).pop()) )
     
+    // if (gameSetLevel+1 == spoofGameSets[selectedGame].length){
+    //   setGameSetComplete(true)
+    // }
+
   }, [learningLevel, gameSetLevel])
 
   useEffect(() => {
@@ -730,22 +749,46 @@ const ComparisonScreen = (props) => {
             <Text style={styles.buttonText}>Hint</Text>
       </TouchableOpacity>
       
-      {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
+      {/* 'NEXT' -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
 
       {(gameComplete&&(!gameSetComplete))? //if between games
         <TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
               <Text style={styles.buttonText}>Next Level</Text>
         </TouchableOpacity>
+
       :(gameSetComplete)? //if at end of game set
       <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={()=>{
         setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
         let date_finished = new Date();
         const finishTimestamp = date_finished.getTime(); 
-        navigation.replace('Score', { 
-        name: selectedGame,
-        lastscore: successRate, 
-        lastdate: finishTimestamp,
-        data:  (auth.currentUser)?userData:0 })
+
+
+      {/* NAV - Single Game: go to ScoreSheet. Multi Game: go to Next in Macro */}
+
+        if ((gameIsThreaded ==1)&&(macroLevel<Object.keys(spoofMacroGameSets[selectedFolder]).length)) {
+          console.log('End Comparison: Level ', macroLevel+1)
+
+          
+          navigation.replace(spoofMacroGameSets["Dogs"][macroLevel+ 1][1], { 
+            name: spoofMacroGameSets["Dogs"][macroLevel+ 1][0],
+            folder: spoofMacroGameSets["Dogs"][macroLevel+ 1][2],
+            macroLevel: macroLevel + 1,
+            hint: hint, 
+            gameIsThreaded: 1,
+            // application: applicationImages,
+            level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
+            data: (auth.currentUser)?userData:0 })
+
+        } else {
+
+          navigation.replace('Score', { 
+            name: selectedGame,
+            lastscore: successRate, 
+            lastdate: finishTimestamp,
+            data:  (auth.currentUser)?userData:0 })
+
+        }
+
       }}>
             <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
       : /*else if game is not complete*/

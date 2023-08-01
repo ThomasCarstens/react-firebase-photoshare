@@ -541,7 +541,7 @@ const SelectionScreen = ({ navigation }) => {
                       <Text style={{fontWeight:"bold"}}> {"\n APPLICATIONS"} </Text>
                   </TouchableOpacity>              
                   
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={styles.gameSelectionModal}
 
                     onPress={() => {
@@ -555,18 +555,35 @@ const SelectionScreen = ({ navigation }) => {
                     }}>
 
                       <Text style={{fontWeight:"bold"}}> {"\n TEST YOUR KNOWLEDGE"} </Text>
-                  </TouchableOpacity>  
+                  </TouchableOpacity>   */}
+
+                  {/* <TouchableOpacity
+                    style={styles.gameSelectionModal}
+
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      navigation.navigate('Comparison', { // The population average can be computed by cloud functions
+                        name: gameName,
+                        folder: folderName,
+                        hint: hintImages, 
+                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
+                        data: (auth.currentUser)?userData:0 })
+                    }}>
+
+                      <Text style={{fontWeight:"bold"}}> {"\n COMPARISON??"} </Text>
+                  </TouchableOpacity>   */}
 
                   <TouchableOpacity
                     style={styles.gameSelectionModal}
 
                     onPress={() => {
                       setModalVisible(!modalVisible);                      
-                      
-                      navigation.navigate(gameType, { 
-                        name: gameName,
-                        folder: folderName,
-                        macroLevel: 0,
+                      let macroLevel = 0 
+                      navigation.navigate(spoofMacroGameSets["Dogs"][macroLevel+ 1][1], { 
+                        name: spoofMacroGameSets["Dogs"][macroLevel+ 1][0],
+                        folder: spoofMacroGameSets["Dogs"][macroLevel+ 1][2],
+                        gameIsThreaded: 1,
+                        macroLevel: 1,
                         application: applicationImages,
                         hint: hintImages, 
                         level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
@@ -659,6 +676,7 @@ const SelectionScreen = ({ navigation }) => {
                       navigation.navigate('Application', { // The population average can be computed by cloud functions
                         name: "Dog hunting situations",
                         folder: folderName,
+                        // gameIsThreaded: 1,
                         hint: hintImages, 
                         level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         // application: applicationImages,
@@ -681,6 +699,7 @@ const SelectionScreen = ({ navigation }) => {
                         name: "Dog weight",
                         folder: folderName,
                         hint: hintImages, 
+                        // gameIsThreaded: 1,
                         level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         application: applicationImages,
                         applicationName: "Dog weight",
@@ -699,8 +718,9 @@ const SelectionScreen = ({ navigation }) => {
                       setApplicationName("Dog life expectancy")
                       setApplicationModalVisible(!applicationModalVisible);
                       navigation.navigate('Comparison', { // The population average can be computed by cloud functions
-                        name: "Dog life expectancy",
+                        name: "Life expectancy",
                         folder: folderName,
+                        // gameIsThreaded: 1,
                         hint: hintImages, 
                         level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
                         application: applicationImages,
