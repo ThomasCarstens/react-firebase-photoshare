@@ -340,11 +340,11 @@ const SelectionScreen = ({ navigation }) => {
           // setGameName('Dogs')
           // setGameType("Home") 
 
-          setGameName("Sight VS Scent")
+          setGameName("Dogs")
           setFolderName("Dogs")
           setGameType('Home') //Sequence also possible / spoofMacroGameSets["Dogs"][1][1]
           setModalVisible(true)}}>
-          <ImageBackground source={{uri:`${thumbnailImage[0]}`}} 
+          <ImageBackground source={require('../assets/thumbnails/dogs.jpg')} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>
             <Text style ={styles.gameText}> {'Dogs'} </Text>
           </ImageBackground>     
@@ -409,7 +409,7 @@ const SelectionScreen = ({ navigation }) => {
           setFolderName("Helicopters")
           setGameType('Home')
           setModalVisible(true)}}>
-          <ImageBackground source={{uri:`${thumbnailImage[5]}`}}
+          <ImageBackground source={require('../assets/thumbnails/helicopter.jpg')}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Helicopters'} </Text>
             {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
@@ -421,7 +421,7 @@ const SelectionScreen = ({ navigation }) => {
           setFolderName("French Bread")
           setGameType('Home')
           setModalVisible(true)}}>
-          <ImageBackground source={{uri:`${thumbnailImage[5]}`}}
+          <ImageBackground source={require('../assets/thumbnails/breads.png')}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'French Bread'} </Text>
             {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
@@ -429,7 +429,7 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity>  
 
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/crab.jpg')} 
+          <ImageBackground source={require('../assets/thumbnails/crabs.jpg')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Crabs'} </Text>
             {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
@@ -444,7 +444,7 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground> 
         </TouchableOpacity>   
   
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
+        {/* <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={{uri:`${outcomeImage[0]}`}} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Engines'} </Text>
@@ -507,7 +507,7 @@ const SelectionScreen = ({ navigation }) => {
             {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>
         </TouchableOpacity> 
-  
+   */}
       </ScrollView>
       
       </View>
@@ -630,9 +630,10 @@ const SelectionScreen = ({ navigation }) => {
                     onPress={() => {
                       setModalVisible(!modalVisible);                      
                       let macroLevel = 0 
-                      navigation.navigate(spoofMacroGameSets["Dogs"][macroLevel+ 1][1], { 
-                        name: spoofMacroGameSets["Dogs"][macroLevel+ 1][0],
-                        folder: spoofMacroGameSets["Dogs"][macroLevel+ 1][2],
+                      navigation.navigate(spoofMacroGameSets[gameName][macroLevel+ 1][1], { 
+                        name: spoofMacroGameSets[gameName][macroLevel+ 1][0],
+                        folder: spoofMacroGameSets[gameName][macroLevel+ 1][2],
+                        macroName: gameName,
                         gameIsThreaded: 1,
                         macroLevel: 1,
                         application: applicationImages,

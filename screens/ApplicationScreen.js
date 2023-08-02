@@ -29,6 +29,7 @@ import { Audio } from "expo-av"
 const ApplicationScreen = (props) => {
   const folderName = props.route.params.folder  // name
   const selectedGame = props.route.params.name  // applicationName
+  
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params?.hint
@@ -37,6 +38,7 @@ const ApplicationScreen = (props) => {
   const gameIsThreaded = props.route.params?.gameIsThreaded
   let macroLevel = props.route.params?.macroLevel
   const selectedFolder = props.route.params?.folder
+  const macroName = props.route.params?.macroName
   // const applicationImage = props.route.params.application
   console.log('init: ... ', selectedGame)
   // console.log('images ...' ,applicationImage)
@@ -769,12 +771,13 @@ const ApplicationScreen = (props) => {
         let date_finished = new Date();
         const finishTimestamp = date_finished.getTime(); 
 
-        if ((gameIsThreaded ==1)&&(macroLevel<Object.keys(spoofMacroGameSets[selectedFolder]).length)) {
+        if ((gameIsThreaded ==1)&&(macroLevel<Object.keys(spoofMacroGameSets[macroName]).length)) {
 
-          navigation.replace(spoofMacroGameSets["Dogs"][macroLevel+ 1][1], { 
-            name: spoofMacroGameSets["Dogs"][macroLevel+ 1][0],
-            folder: spoofMacroGameSets["Dogs"][macroLevel+ 1][2],
+          navigation.replace(spoofMacroGameSets[macroName][macroLevel+ 1][1], { 
+            name: spoofMacroGameSets[macroName][macroLevel+ 1][0],
+            folder: spoofMacroGameSets[macroName][macroLevel+ 1][2],
             macroLevel: macroLevel + 1,
+            macroName: macroName,
             hint: hint, 
             gameIsThreaded: 1,
             // application: applicationImages,

@@ -42,6 +42,7 @@ const ComparisonScreen = (props) => {
   //gameThread params
   const gameIsThreaded = props.route.params?.gameIsThreaded
   var macroLevel = props.route.params?.macroLevel
+  const macroName = props.route.params?.macroName
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
   const selectedFolder = props.route.params?.folder
 
@@ -774,6 +775,7 @@ const ComparisonScreen = (props) => {
             folder: spoofMacroGameSets["Dogs"][macroLevel+ 1][2],
             macroLevel: macroLevel + 1,
             hint: hint, 
+            macroName: macroName,
             gameIsThreaded: 1,
             // application: applicationImages,
             level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 

@@ -6,7 +6,9 @@
     "development": {
       "distribution": "internal",
       "android": {
+      
         "gradleCommand": ":app:assembleDebug"
+
       },
       "ios": {
         "buildConfiguration": "Debug"
@@ -18,6 +20,11 @@
     "production": {}
   },
   "submit": {
-    "production": {}
+    "production": {
+    "android": {
+        "serviceAccountKeyPath": "../credentials.json",
+        }
+
+      }
   }
 }

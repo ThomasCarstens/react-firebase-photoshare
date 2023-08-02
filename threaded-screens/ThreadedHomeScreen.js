@@ -34,6 +34,7 @@ const ThreadedHomeScreen = (props) => {
   const hint = props.route.params?.hint
   const applicationImages = props.route.params?.application
   const gameIsThreaded = props.route.params?.gameIsThreaded
+  const macroName = props.route.params?.macroName
 
   const sound = new Audio.Sound()
   const macroLevel = props.route.params.macroLevel 
@@ -49,7 +50,7 @@ const ThreadedHomeScreen = (props) => {
     });
     console.log('hint is', hint)
     if (gameIsThreaded){
-      setGameSetLevel(spoofMacroGameSets[selectedFolder][macroLevel][3])
+      setGameSetLevel(spoofMacroGameSets[macroName][macroLevel][3])
     }
 
   }, []);
@@ -809,10 +810,11 @@ const ThreadedHomeScreen = (props) => {
         const finishTimestamp = date_finished.getTime(); 
 
         if (gameIsThreaded ==1) {
-          navigation.replace(spoofMacroGameSets["Dogs"][macroLevel+ 1][1], { 
-            name: spoofMacroGameSets["Dogs"][macroLevel+ 1][0],
-            folder: spoofMacroGameSets["Dogs"][macroLevel+ 1][2],
+          navigation.replace(spoofMacroGameSets[macroName][macroLevel+ 1][1], { 
+            name: spoofMacroGameSets[macroName][macroLevel+ 1][0],
+            folder: spoofMacroGameSets[macroName][macroLevel+ 1][2],
             macroLevel: macroLevel + 1,
+            macroName: macroName,
             hint: hint, 
             gameIsThreaded: 1,
             application: applicationImages,
