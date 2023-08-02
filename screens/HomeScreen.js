@@ -157,9 +157,11 @@ const HomeScreen = (props) => {
 
   
   if (!webView){
-    ScreenOrientation.lockAsync(2); //LANDSCAPE_LEFT
+    ScreenOrientation.lockAsync(2); //PORTRAIT
   } 
-  
+  // if (!webView){
+  //   ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
+  // } 
   // Game parameters.
   useEffect(() => {
     

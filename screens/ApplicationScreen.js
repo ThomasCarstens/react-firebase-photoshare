@@ -576,7 +576,7 @@ const ApplicationScreen = (props) => {
       for (let i=0; i<incorrectTag.length; i++){
         if (galleryTags[incorrectTag[i]]?.includes(gallery[picNb-1])){
           let feedbackTag = incorrectTag[i]
-          let metricFeedbackTag = spoofGameMetrics[selectedGame][feedbackTag]
+          let metricFeedbackTag = spoofGameMetrics[selectedFolder][selectedGame][feedbackTag]
           // toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
           toast.current.show("Correction: "+metricFeedbackTag+" are not adapted to the situation.", { type: "error" });
         }

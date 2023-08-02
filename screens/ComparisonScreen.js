@@ -53,8 +53,8 @@ const ComparisonScreen = (props) => {
       let modifiedMetrics = []
       // 1. Get metrics as array
       for (let tagId = 0; tagId<correctTagList.length ; tagId++){
-        metricList.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
-        modifiedMetrics.push(spoofGameMetrics[gameMetric][correctTagList[tagId]])
+        metricList.push(spoofGameMetrics[selectedFolder][gameMetric][correctTagList[tagId]])
+        modifiedMetrics.push(spoofGameMetrics[selectedFolder][gameMetric][correctTagList[tagId]])
       }
       modifiedMetrics.sort()
       setOrderedMetrics(modifiedMetrics)

@@ -15,7 +15,7 @@ import { storage, database } from '../firebase'
 import { Linking } from 'react-native';
 import { getDownloadURL, list, ref } from 'firebase/storage'
 import { SearchBar } from 'react-native-elements'
-import { spoofGameHashtags, spoofGameSets, spoofMacroGameSets } from '../gameFile'
+import { spoofGameAllocation, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
@@ -37,6 +37,8 @@ const SelectionScreen = ({ navigation }) => {
     const [applicationImages, setApplicationImages] = useState({})
     const [searchValue, setSearchValue] = useState()
     const [searchResult, setSearchResult] = useState([])
+
+    
     let thumbnailBg = webView?(styles.imageBackgroundWeb):(styles.imageBackgroundMobile)
     let thumbnailStyle = webView?(styles.imageStyleWeb):(styles.imageStyleMobile)
     if (!webView){
@@ -212,7 +214,7 @@ const SelectionScreen = ({ navigation }) => {
     }
 
     const plsCreateAccount = () => {
-      toast.current.show('Create an account to unlock this course ! ', { type: "success" });
+      toast.current.show('Log in to access ! ', { type: "success" });
     }
 
     const plsAwaitRelease = () => {
@@ -230,14 +232,59 @@ const SelectionScreen = ({ navigation }) => {
         }
       }
     }
+
+    function ApplicationsBlock() {
+      let ApplicationsButtons = [];
+      // console.log('#### folder name is ', folderName)
+      let metricList = Object.keys(spoofGameMetrics[folderName])
+      // console.log('### metricList: ', metricList)
+      for (let metric_i = 0; metric_i<metricList.length; metric_i++){
+        let nextButton =      (  <TouchableOpacity
+
+                style={styles.gameSelectionModal}
+
+                onPress={() => {
+                  setApplicationName("Dog hunting situations")
+                  setApplicationModalVisible(!applicationModalVisible);
+                  // Navigate if game is allocated.
+
+                  if (spoofGameAllocation[metricList[metric_i]]){
+
+                    navigation.navigate(spoofGameAllocation[metricList[metric_i]], { 
+                      name: metricList[metric_i],
+                      folder: folderName,
+                      gameIsThreaded: 0,
+                      hint: hintImages, 
+                      level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
+                      application: applicationImages,
+                      applicationName: metricList[metric_i],
+                      data: (auth.currentUser)?userData:0 })
+                  } else 
+                  { plsAwaitRelease()
+                  }
+                }}>
+                  <Text style={{fontWeight:"bold"}}> {"\n"+metricList[metric_i]} </Text>
+          </TouchableOpacity>  )
+        
+        ApplicationsButtons.push(nextButton)
+
+    }
+
+      return(
+        ApplicationsButtons
+      )
+    
+    }
+
+
 //  <SafeAreaView style={{...styles.webContainer}}> 
 //              <View style={{...styles.webContent}}>    
     return (
         
       
       <ImageBackground source={require('../assets/bg/loadingscreen01.png')} style={{width: '102%', left: '-2%',  height: '120%', top: '-5%'}}>
-      <Toast ref={toast}  />
-      
+      {/* initial toast location */}
+      <Toast ref={toast}  style={styles.toastPosition}/>
       <View style={{flex: 1, flexDirection:"column"}}>
       
       {/* <View style={{flex: 1, flexDirection:"row", alignContent:'space-between'}}> 
@@ -274,7 +321,8 @@ const SelectionScreen = ({ navigation }) => {
       </Text> */}
     <View style={{flex: 6, flexDirection: 'column'}}>
       <View padding={(webView)?100:20} marginTop={(webView)?200:2}></View>
-    <SearchBar
+      {/* TBD | SEARCH OPTIONS */}
+    {/* <SearchBar
               placeholder="What will you learn today?"
               inputStyle={{backgroundColor: 'white'}}
               containerStyle={{backgroundColor: 'white', borderColor: 'black', borderWidth: 70, borderRadius: 10}}
@@ -282,7 +330,8 @@ const SelectionScreen = ({ navigation }) => {
               onChangeText={updateSearch}
               value={searchValue}
 
-            />
+            /> */}
+            
       <ScrollView  contentContainerStyle= {styles.gameRow}>
 
       
@@ -293,7 +342,7 @@ const SelectionScreen = ({ navigation }) => {
 
           setGameName("Sight VS Scent")
           setFolderName("Dogs")
-          setGameType(spoofMacroGameSets["Dogs"][1][1]) //Sequence also possible
+          setGameType('Home') //Sequence also possible / spoofMacroGameSets["Dogs"][1][1]
           setModalVisible(true)}}>
           <ImageBackground source={{uri:`${thumbnailImage[0]}`}} 
             style={thumbnailBg} imageStyle={thumbnailStyle}>
@@ -312,7 +361,7 @@ const SelectionScreen = ({ navigation }) => {
           </ImageBackground>
         </TouchableOpacity>          
   
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {
+        {/* <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Africa')
           setGameType('Home')
           setModalVisible(true)}}>
@@ -320,7 +369,7 @@ const SelectionScreen = ({ navigation }) => {
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Africa'} </Text>
           </ImageBackground>    
-        </TouchableOpacity>
+        </TouchableOpacity> */}
   
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
           setGameName('Animal tracks')
@@ -460,7 +509,9 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity> 
   
       </ScrollView>
+      
       </View>
+      
       </View>
       </View>
 
@@ -665,75 +716,9 @@ const SelectionScreen = ({ navigation }) => {
             <View style={styles.modalRow}>
 
             <View flexDirection='column' marginBottom={3300}>
-
-                  <TouchableOpacity
-                    style={styles.gameSelectionModal}
-
-                    onPress={() => {
-                      setApplicationName("Dog hunting situations")
-                      // setModalVisible(!modalVisible);
-                      setApplicationModalVisible(!applicationModalVisible);
-                      navigation.navigate('Application', { // The population average can be computed by cloud functions
-                        name: "Dog hunting situations",
-                        folder: folderName,
-                        // gameIsThreaded: 1,
-                        hint: hintImages, 
-                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
-                        // application: applicationImages,
-                        // applicationName: "Dog hunting situations",
-                        data: (auth.currentUser)?userData:0 })
-                    }}
-                    >
-
-                      <Text style={{fontWeight:"bold"}}> {"\n Dog hunting situations"} </Text>
-                  </TouchableOpacity>              
                   
-                  <TouchableOpacity
-                    style={styles.gameSelectionModal}
+                  <ApplicationsBlock/> 
 
-                    onPress={() => {
-                      setApplicationName("Dog weight")
-                      // setModalVisible(!modalVisible);
-                      setApplicationModalVisible(!applicationModalVisible);
-                      navigation.navigate('Application', { // The population average can be computed by cloud functions
-                        name: "Dog weight",
-                        folder: folderName,
-                        hint: hintImages, 
-                        // gameIsThreaded: 1,
-                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
-                        application: applicationImages,
-                        applicationName: "Dog weight",
-                        data: (auth.currentUser)?userData:0 })
-                    }}
-                    >
-
-                      <Text style={{fontWeight:"bold"}}> {"\n Dog weight"} </Text>
-                  </TouchableOpacity>   
-
-
-                  <TouchableOpacity
-                    style={styles.gameSelectionModal}
-
-                    onPress={() => {
-                      setApplicationName("Dog life expectancy")
-                      setApplicationModalVisible(!applicationModalVisible);
-                      navigation.navigate('Comparison', { // The population average can be computed by cloud functions
-                        name: "Life expectancy",
-                        folder: folderName,
-                        // gameIsThreaded: 1,
-                        hint: hintImages, 
-                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
-                        application: applicationImages,
-                        applicationName: "Dog life expectancy",
-                        data: (auth.currentUser)?userData:0 })
-                    }}
-                    >
-
-                      <Text style={{fontWeight:"bold"}}> {"\n Dog life expectancy"} </Text>
-                  </TouchableOpacity>   
-
-
-                
                   <TouchableOpacity
                     style={styles.gameSelectionModal}
                     onPress={() => {
@@ -855,6 +840,15 @@ var styles = StyleSheet.create({
     },
     imageBackgroundMobile: {
       flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4
+    },
+
+
+    toastPosition: {
+      left: '0%',
+      top: '-20%',
+
+      backgroundColor:'rgba(255, 165, 0, 0.8)',
+      flexWrap: "wrap"
     },
 
     gameSelection: {
