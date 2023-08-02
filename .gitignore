@@ -75,5 +75,5 @@ yarn-error.log
 .expo/
 web-build/
 dist/
-
+credentials.json
 # @end expo-cli
