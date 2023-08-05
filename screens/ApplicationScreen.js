@@ -131,7 +131,7 @@ const ApplicationScreen = (props) => {
 
   
   if (!webView){
-    ScreenOrientation.lockAsync(2); //LANDSCAPE_LEFT
+    ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
   } 
   
   // Game parameters.
@@ -721,85 +721,20 @@ const ApplicationScreen = (props) => {
           <Text style={{...styles.buttonText, color:'black'}}>{"< Back"}</Text>
         </TouchableOpacity>
         <Text style={{fontSize: 13, alignContent: 'flex-end', marginLeft: 20}} > 
-        {selectedGame.toUpperCase()}: ({gameSetLevel+1}/{spoofGameSets[selectedGame].length})  </Text>
+                {selectedGame.toUpperCase()}: ({gameSetLevel+1}/{spoofGameSets[selectedGame].length})  </Text>
+        <Text style={{fontSize: 20, alignContent: 'flex-end', marginLeft: 20}} > 
+        Choose Your Dog  </Text>
+
+        
+
+
         {/* {gameName} */}
           
       </View>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      {/* <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}> */}
-      <View style={{flex:1}}></View>
-      <Text style={{flex: 10, fontSize: 20, color:'black'}}> {instructionText} </Text>
 
-      {/* IMAGE APPEARS IN ORDER IF IT EXISTS */}
+
       
-      {(applicationImage[(gameSetLevel+1).toString()])?<Image 
-          source={{uri:`${applicationImage[(gameSetLevel+1).toString()]}`,}}
-          style={{...styles.imageContainer, flex: 10, height:180, width: 180}}
-          placeholder={blurhash}
-          contentFit="cover"
-          transition={1000}
-        />:<View></View>}
-
-        </View>
       
-      {/* <View style={{padding: 10}}></View> */}
-
-      <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
-
-
-
-      {/* <TouchableOpacity  padding={50}  style={styles.button} onPress={openModal} >
-            <Text style={styles.buttonText}>Hint</Text>
-      </TouchableOpacity> */}
-      
-      {/* <Image 
-        source={{uri:`${galleryTags[correctTag]}`,}}
-        style={{...styles.imageContainer, height:100, width: 100}}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-        /> */}
-      {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
-
-      {(gameComplete&&(!gameSetComplete))? //if between games
-        <TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
-              <Text style={styles.buttonText}>Next Level</Text>
-        </TouchableOpacity>
-      :(gameSetComplete)? //if at end of game set
-      <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={()=>{
-        setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
-        let date_finished = new Date();
-        const finishTimestamp = date_finished.getTime(); 
-
-        if ((gameIsThreaded ==1)&&(macroLevel<Object.keys(spoofMacroGameSets[macroName]).length)) {
-
-          navigation.replace(spoofMacroGameSets[macroName][macroLevel+ 1][1], { 
-            name: spoofMacroGameSets[macroName][macroLevel+ 1][0],
-            folder: spoofMacroGameSets[macroName][macroLevel+ 1][2],
-            macroLevel: macroLevel + 1,
-            macroName: macroName,
-            hint: hint, 
-            gameIsThreaded: 1,
-            // application: applicationImages,
-            level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
-            data: (auth.currentUser)?userData:0 })
-
-        } else {
-
-          navigation.replace('Score', { 
-            name: selectedGame,
-            lastscore: successRate, 
-            lastdate: finishTimestamp,
-            data:  (auth.currentUser)?userData:0 })
-
-        }
-      }}>
-            <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
-      : /*else if game is not complete*/
-      <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>
-      }
-
-    </View>
 
       <View style={{flexDirection: 'row'}} >
 
@@ -807,72 +742,178 @@ const ApplicationScreen = (props) => {
 
       
 
-      <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection(1)}>
-        <Image 
-
-          source={{uri:`${gallery[0]}`,}}
-          style={styles.imageContainer}
+      <View style={{flexDirection: 'column', alignItems: 'center'}}>
+      {/* <View style={{flex:1}}></View> */}
+      
+      
+      {(applicationImage[(gameSetLevel+1).toString()])?<Image 
+          source={{uri:`${applicationImage[(gameSetLevel+1).toString()]}`,}}
+          style={{...styles.imageContainer, height:180, width: 80}}
           placeholder={blurhash}
           contentFit="cover"
           transition={1000}
-        />
-      </TouchableHighlight>
+        />:<View></View>}
 
-      <TouchableHighlight onPress={()=> handlePicSelection(3)}>
-      <Image 
-        source={{uri:`${gallery[2]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-      <TouchableHighlight onPress={()=> handlePicSelection(5)}>
-      <Image 
-        source={{uri:`${gallery[4]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-      
+        <Text style={{fontSize: 14, color:'black'}}> {instructionText} </Text>
 
-      </View>
+
+
+
+{/* <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}> */}
+
+
+
+{/* <TouchableOpacity  padding={50}  style={styles.button} onPress={openModal} >
+      <Text style={styles.buttonText}>Hint</Text>
+</TouchableOpacity> */}
+
+{/* <Image 
+  source={{uri:`${galleryTags[correctTag]}`,}}
+  style={{...styles.imageContainer, height:100, width: 100}}
+  placeholder={blurhash}
+  contentFit="cover"
+  transition={1000}
+  /> */}
+{/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
+
+{(gameComplete&&(!gameSetComplete))? //if between games
+  <TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
+        <Text style={styles.buttonText}>Next Level</Text>
+  </TouchableOpacity>
+:(gameSetComplete)? //if at end of game set
+<TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={()=>{
+  setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
+  let date_finished = new Date();
+  const finishTimestamp = date_finished.getTime(); 
+
+  if ((gameIsThreaded ==1)&&(macroLevel<Object.keys(spoofMacroGameSets[macroName]).length)) {
+
+    navigation.replace(spoofMacroGameSets[macroName][macroLevel+ 1][1], { 
+      name: spoofMacroGameSets[macroName][macroLevel+ 1][0],
+      folder: spoofMacroGameSets[macroName][macroLevel+ 1][2],
+      macroLevel: macroLevel + 1,
+      macroName: macroName,
+      hint: hint, 
+      gameIsThreaded: 1,
+      // application: applicationImages,
+      level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
+      data: (auth.currentUser)?userData:0 })
+
+  } else {
+
+    navigation.replace('Score', { 
+      name: selectedGame,
+      lastscore: successRate, 
+      lastdate: finishTimestamp,
+      data:  (auth.currentUser)?userData:0 })
+
+  }
+}}>
+      <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
+: /*else if game is not complete*/
+<Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>
+}
+
+
+        </View>
+
+
+
 
       <View style={{flexDirection: 'column'}}>
+        <TouchableHighlight onPress={()=> handlePicSelection(1)}>
+          <Image 
 
+            source={{uri:`${gallery[0]}`,}}
+            style={styles.imageContainer}
+            placeholder={blurhash}
+            contentFit="cover"
+            transition={1000}
+          />
+        </TouchableHighlight>
 
-      <TouchableHighlight onPress={()=> handlePicSelection(2)}>
-      <Image 
-        source={{uri:`${gallery[1]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-
-      <TouchableHighlight onPress={()=> handlePicSelection(4)}>
+        <TouchableHighlight onPress={()=> handlePicSelection(4)}>
         <Image 
           source={{uri:`${gallery[3]}`,}}
           style={styles.imageContainer}
           placeholder={blurhash}
           contentFit="cover"
           transition={1000}
-        />        
-      </TouchableHighlight>
-      <TouchableHighlight onPress={()=> handlePicSelection(6)}>
-      <Image 
-        source={{uri:`${gallery[5]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
+        />
+        </TouchableHighlight>
+        {/* <TouchableHighlight onPress={()=> handlePicSelection(5)}>
+        <Image 
+          source={{uri:`${gallery[4]}`,}}
+          style={styles.imageContainer}
+          placeholder={blurhash}
+          contentFit="cover"
+          transition={1000}
+        />
+        </TouchableHighlight> */}
       
+
+      </View>
+
+
+      <View style={{flexDirection: 'column'}}>
+
+
+        <TouchableHighlight onPress={()=> handlePicSelection(2)}>
+        <Image 
+          source={{uri:`${gallery[1]}`,}}
+          style={styles.imageContainer}
+          placeholder={blurhash}
+          contentFit="cover"
+          transition={1000}
+        />
+        </TouchableHighlight>
+
+        <TouchableHighlight onPress={()=> handlePicSelection(5)}>
+          <Image 
+            source={{uri:`${gallery[4]}`,}}
+            style={styles.imageContainer}
+            placeholder={blurhash}
+            contentFit="cover"
+            transition={1000}
+          />        
+        </TouchableHighlight>
+        {/* <TouchableHighlight onPress={()=> handlePicSelection(6)}>
+        <Image 
+          source={{uri:`${gallery[5]}`,}}
+          style={styles.imageContainer}
+          placeholder={blurhash}
+          contentFit="cover"
+          transition={1000}
+        />
+        </TouchableHighlight> */}
+        
+
+
+      </View>
+
+      <View style={{flexDirection: 'column'}}>
+
+
+        <TouchableHighlight onPress={()=> handlePicSelection(3)}>
+        <Image 
+          source={{uri:`${gallery[2]}`,}}
+          style={styles.imageContainer}
+          placeholder={blurhash}
+          contentFit="cover"
+          transition={1000}
+        />
+        </TouchableHighlight>
+
+        <TouchableHighlight onPress={()=> handlePicSelection(6)}>
+          <Image 
+            source={{uri:`${gallery[5]}`,}}
+            style={styles.imageContainer}
+            placeholder={blurhash}
+            contentFit="cover"
+            transition={1000}
+          />        
+        </TouchableHighlight>
+
 
 
       </View>
@@ -1003,8 +1044,8 @@ const styles = StyleSheet.create({
         // backgroundColor: '#123456',
         // justifyContent: 'center',
         // alignItems: 'center',
-        width:150,
-        height:150,
+        width:100,
+        height:140,
         borderRadius:20,
         
         // resizeMode: 'contain',
