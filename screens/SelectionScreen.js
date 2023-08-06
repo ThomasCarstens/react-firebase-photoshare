@@ -15,8 +15,9 @@ import { storage, database } from '../firebase'
 import { Linking } from 'react-native';
 import { getDownloadURL, list, ref } from 'firebase/storage'
 import { SearchBar } from 'react-native-elements'
-import { spoofGameAllocation, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
+import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Progress from 'react-native-progress';
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
@@ -375,35 +376,44 @@ const SelectionScreen = ({ navigation }) => {
         </TouchableOpacity> */}
   
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          setGameName('Animal tracks')
-          setGameType('Home')
-          setModalVisible(true)}}>
+          // setGameName('Animal tracks')
+          // setGameType('Home')
+          // setModalVisible(true)}}
+          //LOCKED
+          if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={{uri:`${thumbnailImage[3]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Animal tracks'} </Text>
-            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>  
         </TouchableOpacity>        
 
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          setGameName('Knots')
-          setGameType('Home')
-          setModalVisible(true)}}>
+          
+          // setGameName('Knots')
+          // setGameType('Home')
+          // setModalVisible(true)}}>
+            //LOCKED
+            if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
+
           <ImageBackground source={{uri:`${thumbnailImage[4]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Knots'} </Text>
-            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>  
         </TouchableOpacity>        
 
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          setGameName('History')
-          setGameType('Sequence')
-          setModalVisible(true)}}>
+        <TouchableOpacity style={styles.gameSelection} 
+        // onPress={() => {
+        //   setGameName('History')
+        //   setGameType('Sequence')
+        //   setModalVisible(true)}}>
+          //LOCKED
+          onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={{uri:`${thumbnailImage[5]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Timelines'} </Text>
-            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>  
         </TouchableOpacity>    
 
@@ -415,7 +425,7 @@ const SelectionScreen = ({ navigation }) => {
           <ImageBackground source={require('../assets/thumbnails/helicopter.jpg')}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Helicopters'} </Text>
-            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
+            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
           </ImageBackground>  
         </TouchableOpacity> 
 
@@ -534,13 +544,65 @@ const SelectionScreen = ({ navigation }) => {
      {/* <SafeAreaView style ={styles.webContainer}>
         <View style ={styles.webContent}>    */}
 
-<View backgroundColor='rgba(46, 204, 113, 0.8)'>
+<View backgroundColor='rgba(13, 1, 117, 0.8)'>
           {/* <View style={{ flexDirection:"row"}}> */}
             {/* <View padding={400} ></View> */}
           
             <View style={styles.modalRow}>
 
             <View flexDirection='column' marginBottom={3300}>
+
+            <TouchableOpacity
+                    style={styles.gameSelectionModal}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}>
+                      <Text style={{fontWeight:"bold"}}> {"\n BACK"} </Text>
+            </TouchableOpacity> 
+            
+            <TouchableOpacity
+                    style={styles.gameSelectionModal}
+                    onPress={() => {
+                      // setModalVisible(!modalVisible);
+                    }}>
+                      <View flexDirection='row'>
+                        <Text style={{fontWeight:"bold", color:'rgb(50, 100, 1000)', fontSize:18, marginTop:-10}}> {"\n Hounds"} </Text>
+                        
+                        <Progress.Bar progress={0.8} color='rgb(13, 1, 117)' borderRadius={20} marginLeft={10} marginTop={10} width={140} height={30}>
+                          <Text style={styles.modalProgressBarText}>31/40 Species</Text>
+                        </Progress.Bar>
+                      </View>
+                      
+            </TouchableOpacity> 
+
+            <TouchableOpacity
+                    style={styles.gameSelectionModal}
+                    onPress={() => {
+                      // setModalVisible(!modalVisible);
+                    }}>
+                      <View flexDirection='row'>
+                        <Text style={{fontWeight:"bold", color:'rgb(50, 100, 1000)', fontSize:18, marginTop:-10}}> {"\n Shepherd dogs"} </Text>
+                        
+                        <Progress.Bar progress={0.8} color='rgb(13, 1, 117)' borderRadius={20} marginLeft={10} marginTop={10} width={140} height={30}>
+                          <Text style={styles.modalProgressBarText}>31/{spoofGameFolders["Dogs"]["Shepherd dogs_ALL"].length} Species</Text>
+                        </Progress.Bar>
+                      </View>
+            </TouchableOpacity> 
+
+            <TouchableOpacity
+                    style={styles.gameSelectionModal}
+                    onPress={() => {
+                      // setModalVisible(!modalVisible);
+                    }}>
+                      <View flexDirection='row'>
+                        <Text style={{fontWeight:"bold", color:'rgb(50, 100, 1000)', fontSize:18, marginTop:-10}}> {"\n Pointers"} </Text>
+                        
+                        <Progress.Bar progress={0.8} color='rgb(13, 1, 117)' borderRadius={20} marginLeft={10} marginTop={10} width={140} height={30}>
+                          <Text style={styles.modalProgressBarText}>31/{spoofGameFolders["Dogs"]["Hounds_ALL"].length} Species</Text>
+                        </Progress.Bar>
+                      </View>
+            </TouchableOpacity> 
+
               {(auth.currentUser)?
               <TouchableOpacity
                     style={styles.gameSelectionModal}
@@ -665,14 +727,10 @@ const SelectionScreen = ({ navigation }) => {
                       <Text style={{fontWeight:"bold"}}> {"\n RANKING"} </Text>
                   </TouchableOpacity>  
                 
-                  <TouchableOpacity
-                    style={styles.gameSelectionModal}
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
-                    }}>
-                      <Text style={{fontWeight:"bold"}}> {"\n BACK"} </Text>
-                  </TouchableOpacity>  
+
             </View>
+
+          
             
             
               {/* <TouchableOpacity
@@ -685,7 +743,7 @@ const SelectionScreen = ({ navigation }) => {
       
                 <Text> {"\n EXIT TO GAME SELECTION"} </Text>
               </TouchableOpacity> */}
-              <Image source={{uri:`${outcomeImage[gameName]}`}} style={{height:300, width:500, marginLeft:-10}}></Image>
+              <Image source={{uri:`${outcomeImage[gameName]}`}} style={{height:200, width:360, marginLeft:-10, marginTop:50}}></Image>
             
             
               
@@ -845,8 +903,12 @@ var styles = StyleSheet.create({
     imageBackgroundMobile: {
       flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4
     },
-
-
+    modalProgressBar: {
+      color:'rgb(13, 1, 117)', borderRadius:20, marginLeft:10, marginTop:10, width:140, height:30
+    },
+    modalProgressBarText: {
+      position:'absolute', flex:0, color:'rgb(255, 255, 255)', marginLeft:15, marginTop:5
+    },
     toastPosition: {
       left: '0%',
       top: '-20%',
@@ -878,9 +940,9 @@ var styles = StyleSheet.create({
       justifyContent: 'space-between',
       alignItems: 'center',
       alignContent: 'space-around',
-      width: 170,
+      width: 300,
       height: 50,
-      backgroundColor:'rgba(144, 144, 0, 0.8)',
+      backgroundColor:'rgba(251, 192, 147, 0.8)',
       // justifyContent: 'space-evenly',
       borderRadius: 50,
       flexWrap: "wrap"
@@ -1068,8 +1130,8 @@ var styles = StyleSheet.create({
     },
     lock: {
       width: "100%",
-      width:60,
-      height: 60,
+      width:90,
+      height: 90,
       marginLeft: 40,
       
     },

@@ -1,7 +1,8 @@
 
 
 const spoofGameSets = {
-    "Dogs":         ["Sighthounds", "Shepherd dogs", "Terriers_2", "Hounds", "Dogs", "Spaniels", "Terriers" ],
+    // "Dogs":         ["Sighthounds", "Shepherd dogs", "Terriers_2", "Hounds", "Dogs", "Spaniels", "Terriers" ],
+    "Dogs":         ["Hounds", "Shepherd dogs", "Spaniels", "Terriers", "Mastiffs" ],
     "Cheeses":      ["Cheeses"],
     "Africa":       ["Africa_id", "Africa_country_of_location"],
     "Animal tracks":["Footprints of species", "Animal gait from tracks"],
@@ -61,6 +62,10 @@ const spoofGameFolders = {
 
         "Sighthounds":         ["Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound"],
         "Shepherd dogs":       ["Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd"],
+        "Shepherd dogs_ALL":       ["Beauceron",      "Belgian Sheepdog",    "German Shepherd Dog", "Icelandic Sheepdog",
+                                    "Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd",
+                                    "Belgian Malinois",      "Bouvier des Flandres",    "Briard", "Collie"],
+
         "Shepherds_01":        ["Beauceron",      "Belgian Sheepdog",    "German Shepherd Dog", "Icelandic Sheepdog"],
         "Shepherds_02":        ["Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd"],
         "Shepherds_03":        ["Belgian Malinois",      "Bouvier des Flandres",    "Briard", "Collie"],
