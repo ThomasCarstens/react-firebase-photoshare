@@ -714,7 +714,7 @@ const ApplicationScreen = (props) => {
     
 
     <View>
-      <Toast ref={toast} />
+      <Toast ref={toast}  style={styles.toastPosition}/>
       <View style={{padding: 15}}></View>
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'flex-start'}}>
         <TouchableOpacity  onPress={handleSelectionScreen}>
@@ -814,10 +814,7 @@ const ApplicationScreen = (props) => {
 <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>
 }
 
-
         </View>
-
-
 
 
       <View style={{flexDirection: 'column'}}>
@@ -840,17 +837,7 @@ const ApplicationScreen = (props) => {
           contentFit="cover"
           transition={1000}
         />
-        </TouchableHighlight>
-        {/* <TouchableHighlight onPress={()=> handlePicSelection(5)}>
-        <Image 
-          source={{uri:`${gallery[4]}`,}}
-          style={styles.imageContainer}
-          placeholder={blurhash}
-          contentFit="cover"
-          transition={1000}
-        />
-        </TouchableHighlight> */}
-      
+        </TouchableHighlight>    
 
       </View>
 
@@ -877,18 +864,7 @@ const ApplicationScreen = (props) => {
             transition={1000}
           />        
         </TouchableHighlight>
-        {/* <TouchableHighlight onPress={()=> handlePicSelection(6)}>
-        <Image 
-          source={{uri:`${gallery[5]}`,}}
-          style={styles.imageContainer}
-          placeholder={blurhash}
-          contentFit="cover"
-          transition={1000}
-        />
-        </TouchableHighlight> */}
         
-
-
       </View>
 
       <View style={{flexDirection: 'column'}}>
@@ -1001,6 +977,13 @@ export default ApplicationScreen
 
 
 const styles = StyleSheet.create({
+      toastPosition: {
+        left: '-10%',
+        top: '-80%',
+
+        backgroundColor:'rgba(255, 165, 0, 0.8)',
+        flexWrap: "wrap"
+      },
       text1: {
         fontSize: 34
       },

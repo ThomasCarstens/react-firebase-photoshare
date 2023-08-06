@@ -13,7 +13,7 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets} from '../gameFile';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Audio } from "expo-av"
 // import Toast, { useToast } from 'react-native-toast-notifications';
@@ -26,32 +26,84 @@ import { Audio } from "expo-av"
 //https://www.wineware.co.uk/glassware/beginners-guide-to-different-types-of-wine-glasses
 
 
-const ThreadedHomeScreen = (props) => {
-  const selectedGame = props.route.params.name  // TBD | Reinstate with navigation.
-  const selectedFolder = props.route.params?.folder
+const HomeScreen = (props) => {
+  const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
-  const hint = props.route.params?.hint
-  const applicationImages = props.route.params?.application
-  const gameIsThreaded = props.route.params?.gameIsThreaded
-  const macroName = props.route.params?.macroName
+  const hint = props.route.params.hint
+  
 
   const sound = new Audio.Sound()
-  const macroLevel = props.route.params?.macroLevel 
+
   
 
-
+  
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
-  
+
   // Screen title.
   useEffect(() => {
     navigation.setOptions({
       title: gameName+' Game',
     });
     console.log('hint is', hint)
-    if (gameIsThreaded){
-      setGameSetLevel(spoofMacroGameSets[macroName][macroLevel][3])
-    }
+    // getAudioLoaded()
+    /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
+  //   let fileName = "Vegetables"
+  //   let subfolders =    ["Bean", "Broccoli", "Cauliflower", "Carrot", "Potato", 
+  //   "Radish", "Cabbage", "Capsicum", "Bitter Gourd", "Bottle Gourd", "Brinjal", 
+  //   "Cucumber",
+  //   "Papaya", "Tomato", "Pumpkin"
+  // ]       
+
+  let fileName = "Helicopters"
+  // let subfolders =    [
+    // "Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound",
+  // "Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd",
+  // "Silky Terrier",       "Irish Terrier",    "Yorkshire Terrier",    "Cairn Terrier",
+  // 'Boston Terrier',      'American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bull Terrier',
+  // 'Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound',
+  // 'Boxer',               'Bullmastiff',      'Mastiff',
+//   'Field Spaniel',       'Boykin Spaniel',   'American Water Spaniel'
+// ]  
+  // let subfolders = [
+  //   "Baguette classique",   "Ficelle",     "Flute",        "Fournee", "Viennoise",
+  //    "Brioche", "Fougasse", "Pain de campagne", "Pain d'epices", "Pogne de Romans", "Pompe a l'huile"
+  // ]     
+    // let subfolders = [
+    // "AS355", "H135", "H145", "H155", "H160", "H175", 
+    // "H215", "H225"]   
+    // for (let index=0; index<subfolders.length; index++){
+    //   const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
+    //   labelBatch(A, subfolders[index]);
+    // }
+  // const A = ref(storage, fileName + "/Silky Terrier/");
+  // labelBatch(A, "Silky Terrier");
+      // const A = ref(storage, fileName + "/Bitter Gourd/");
+      // labelBatch(A, "Bitter Gourd");
+    // "One rope applications": {
+    //   1: "Overhand Knot",
+    //   2: "Slip Knot",
+    //   3: "Figure-8 Loop",
+    //   4: "Figure-8 Knot",
+    //   5: "Bowline Knot",
+    //   6: "",
+    // },
+    // "Choose the right knot": {
+    //   1: "Reef Knot",
+    //   2: "Reef Knot",
+    //   3: "Reef Knot",
+    //   4: "Bowline Knot",
+    //   5: "Figure-8 Loop",
+    //   6: "",
+    // },
+
+      
+     
+    // } else {
+    //   setGameSetLevel(0)
+    //   // const userLearningLevel = 1 //TBD | Get from database.
+    // }
+
 
   }, []);
 
@@ -105,9 +157,11 @@ const ThreadedHomeScreen = (props) => {
 
   
   if (!webView){
-    ScreenOrientation.lockAsync(2); //LANDSCAPE_LEFT
+    ScreenOrientation.lockAsync(2); //PORTRAIT
   } 
-  
+  // if (!webView){
+  //   ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
+  // } 
   // Game parameters.
   useEffect(() => {
     
@@ -141,12 +195,12 @@ const ThreadedHomeScreen = (props) => {
 
   // Images from different sources.
   useEffect(()=> {
-    const correctListRef = ref(storage, selectedFolder + '/'+correctTag+'/');
-    console.log('incorrectListRef: ', selectedFolder , '/',incorrectTag,'/')
-    const incorrectListRef = ref(storage, selectedFolder + '/'+incorrectTag[0]+'/');
+    const correctListRef = ref(storage, selectedGame + '/'+correctTag+'/');
+    console.log('incorrectListRef: ', selectedGame , '/',incorrectTag,'/')
+    const incorrectListRef = ref(storage, selectedGame + '/'+incorrectTag[0]+'/');
     if (incorrectTag.length>1){
-      var incorrectListRef2 = ref(storage, selectedFolder + '/'+incorrectTag[1]+'/');
-      var incorrectListRef3 = ref(storage, selectedFolder + '/'+incorrectTag[2]+'/');
+      var incorrectListRef2 = ref(storage, selectedGame + '/'+incorrectTag[1]+'/');
+      var incorrectListRef3 = ref(storage, selectedGame + '/'+incorrectTag[2]+'/');
     }
     // const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
     // console.log('incorrectListRef: ', gameName , '/',incorrectTag,'/')
@@ -808,31 +862,11 @@ const ThreadedHomeScreen = (props) => {
         setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
         let date_finished = new Date();
         const finishTimestamp = date_finished.getTime(); 
-
-        if (gameIsThreaded ==1) {
-          navigation.replace(spoofMacroGameSets[macroName][macroLevel+ 1][1], { 
-            name: spoofMacroGameSets[macroName][macroLevel+ 1][0],
-            folder: spoofMacroGameSets[macroName][macroLevel+ 1][2],
-            macroLevel: macroLevel + 1,
-            macroName: macroName,
-            hint: hint, 
-            gameIsThreaded: 1,
-            application: applicationImages,
-            level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
-            data: (auth.currentUser)?userData:0 })
-        } else {
-
-          navigation.replace('Score', { 
-            name: selectedGame,
-            lastscore: successRate, 
-            lastdate: finishTimestamp,
-            data:  (auth.currentUser)?userData:0 })          
-        }
-
-
-
-
-
+        navigation.replace('Score', { 
+        name: selectedGame,
+        lastscore: successRate, 
+        lastdate: finishTimestamp,
+        data:  (auth.currentUser)?userData:0 })
       }}>
             <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
       : /*else if game is not complete*/
@@ -910,16 +944,21 @@ const ThreadedHomeScreen = (props) => {
         <View style ={styles.webContent}>    */}
 
         
-          {/* Is a hint supplied? // Suppressed for ThreadedHomeScreen.*/}
 
       <View  style={{backgroundColor:(webView)?'rgb(46, 204, 113)':'rgba(46, 204, 113, 0.8)'}}> 
-          {/* {(hint[(gameSetLevel+1).toString()])?
+          {/* Is a hint supplied? //*/}
+          {(hint[(gameSetLevel+1).toString()])?
            <Image source={{uri: `${hint[(gameSetLevel+1).toString()]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?300:15, marginBottom:-150}}></Image>
-            : 
+            : // else: signal button
 
             <View></View>
-
-        } */}
+          // <TouchableOpacity
+          //       style={{...styles.gameSelection, marginBottom:200}}
+          //       onPress={() =>Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}
+          //       >
+          //       <Text color="red">{"No hint was supplied. Click here if you think it's a mistake and you want to signal it."}</Text> 
+          //     </TouchableOpacity>
+        }
 
             <View style={styles.modalRow}>
 
@@ -950,7 +989,7 @@ const ThreadedHomeScreen = (props) => {
 // </SafeAreaView>  
 }
 
-export default ThreadedHomeScreen
+export default HomeScreen
 
 
 const styles = StyleSheet.create({

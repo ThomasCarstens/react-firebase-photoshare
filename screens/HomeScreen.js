@@ -13,7 +13,7 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag} from '../gameFile';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Audio } from "expo-av"
 // import Toast, { useToast } from 'react-native-toast-notifications';
@@ -27,83 +27,32 @@ import { Audio } from "expo-av"
 
 
 const HomeScreen = (props) => {
-  const selectedGame = props.route.params?.name  // TBD | Reinstate with navigation.
+  const selectedGame = props.route.params.name  // TBD | Reinstate with navigation.
+  const selectedFolder = props.route.params?.folder
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
-  const hint = props.route.params.hint
-  
+  const hint = props.route.params?.hint
+  const applicationImages = props.route.params?.application
+  const gameIsThreaded = props.route.params?.gameIsThreaded
+  const macroName = props.route.params?.macroName
 
   const sound = new Audio.Sound()
-
+  const macroLevel = props.route.params?.macroLevel 
   
 
-  
+
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
 
+  
   // Screen title.
   useEffect(() => {
     navigation.setOptions({
       title: gameName+' Game',
     });
     console.log('hint is', hint)
-    // getAudioLoaded()
-    /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
-  //   let fileName = "Vegetables"
-  //   let subfolders =    ["Bean", "Broccoli", "Cauliflower", "Carrot", "Potato", 
-  //   "Radish", "Cabbage", "Capsicum", "Bitter Gourd", "Bottle Gourd", "Brinjal", 
-  //   "Cucumber",
-  //   "Papaya", "Tomato", "Pumpkin"
-  // ]       
-
-  let fileName = "Helicopters"
-  // let subfolders =    [
-    // "Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound",
-  // "Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd",
-  // "Silky Terrier",       "Irish Terrier",    "Yorkshire Terrier",    "Cairn Terrier",
-  // 'Boston Terrier',      'American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bull Terrier',
-  // 'Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound',
-  // 'Boxer',               'Bullmastiff',      'Mastiff',
-//   'Field Spaniel',       'Boykin Spaniel',   'American Water Spaniel'
-// ]  
-  // let subfolders = [
-  //   "Baguette classique",   "Ficelle",     "Flute",        "Fournee", "Viennoise",
-  //    "Brioche", "Fougasse", "Pain de campagne", "Pain d'epices", "Pogne de Romans", "Pompe a l'huile"
-  // ]     
-    // let subfolders = [
-    // "AS355", "H135", "H145", "H155", "H160", "H175", 
-    // "H215", "H225"]   
-    // for (let index=0; index<subfolders.length; index++){
-    //   const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
-    //   labelBatch(A, subfolders[index]);
-    // }
-  // const A = ref(storage, fileName + "/Silky Terrier/");
-  // labelBatch(A, "Silky Terrier");
-      // const A = ref(storage, fileName + "/Bitter Gourd/");
-      // labelBatch(A, "Bitter Gourd");
-    // "One rope applications": {
-    //   1: "Overhand Knot",
-    //   2: "Slip Knot",
-    //   3: "Figure-8 Loop",
-    //   4: "Figure-8 Knot",
-    //   5: "Bowline Knot",
-    //   6: "",
-    // },
-    // "Choose the right knot": {
-    //   1: "Reef Knot",
-    //   2: "Reef Knot",
-    //   3: "Reef Knot",
-    //   4: "Bowline Knot",
-    //   5: "Figure-8 Loop",
-    //   6: "",
-    // },
-
-      
-     
-    // } else {
-    //   setGameSetLevel(0)
-    //   // const userLearningLevel = 1 //TBD | Get from database.
-    // }
-
+    if (gameIsThreaded){
+      setGameSetLevel(spoofMacroGameSets[macroName][macroLevel][3])
+    }
 
   }, []);
 
@@ -154,14 +103,12 @@ const HomeScreen = (props) => {
   const [gameComplete, setGameComplete] = useState(false)
   const [gameSetComplete, setGameSetComplete] = useState(false)
   const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
-
+  const [showHint, setShowHint] = useState(false)
   
   if (!webView){
-    ScreenOrientation.lockAsync(2); //PORTRAIT
+    ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
   } 
-  // if (!webView){
-  //   ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
-  // } 
+  
   // Game parameters.
   useEffect(() => {
     
@@ -195,12 +142,12 @@ const HomeScreen = (props) => {
 
   // Images from different sources.
   useEffect(()=> {
-    const correctListRef = ref(storage, selectedGame + '/'+correctTag+'/');
-    console.log('incorrectListRef: ', selectedGame , '/',incorrectTag,'/')
-    const incorrectListRef = ref(storage, selectedGame + '/'+incorrectTag[0]+'/');
+    const correctListRef = ref(storage, selectedFolder + '/'+correctTag+'/');
+    console.log('incorrectListRef: ', selectedFolder , '/',incorrectTag,'/')
+    const incorrectListRef = ref(storage, selectedFolder + '/'+incorrectTag[0]+'/');
     if (incorrectTag.length>1){
-      var incorrectListRef2 = ref(storage, selectedGame + '/'+incorrectTag[1]+'/');
-      var incorrectListRef3 = ref(storage, selectedGame + '/'+incorrectTag[2]+'/');
+      var incorrectListRef2 = ref(storage, selectedFolder + '/'+incorrectTag[1]+'/');
+      var incorrectListRef3 = ref(storage, selectedFolder + '/'+incorrectTag[2]+'/');
     }
     // const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
     // console.log('incorrectListRef: ', gameName , '/',incorrectTag,'/')
@@ -731,7 +678,7 @@ const HomeScreen = (props) => {
     
 
     <View>
-      <Toast ref={toast} />
+      <Toast ref={toast}  style={styles.toastPosition}/>
       <View style={{padding: 15}}></View>
       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'flex-start'}}>
         <TouchableOpacity  onPress={handleSelectionScreen}>
@@ -739,12 +686,12 @@ const HomeScreen = (props) => {
         </TouchableOpacity>
         <Text style={{fontSize: 13, alignContent: 'flex-end', marginLeft: 20}} > 
         {selectedGame.toUpperCase()}: ({gameSetLevel+1}) {gameName} </Text>
-        
+
           
       </View>
       <View style={{flexDirection: 'column', alignItems: 'center'}}>
       
-      <Text style={{fontSize: 20, color:'black'}}> {instructionText} </Text>
+      {/* <Text style={{fontSize: 20, color:'black'}}> {instructionText} </Text> */}
 
       {/* IMAGE ONLY IN HOME SCREEN */}
       {/* <Image 
@@ -760,75 +707,141 @@ const HomeScreen = (props) => {
       <View style={{padding: 10}}></View>
       <View style={{flexDirection: 'row'}} >
       <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/>
+      <View style={{flexDirection: 'column', width:115, marginTop:10}}>
+      <Text style={{fontSize: 20, color:'black'}}> {instructionText} </Text>
+      <View   style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around'}}>
 
-      
 
+
+{/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
+
+{(gameComplete&&(!gameSetComplete))? //if between games
+<TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
+      <Text style={styles.buttonText}>Next Level</Text>
+</TouchableOpacity>
+:(gameSetComplete)? //if at end of game set
+<TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={()=>{
+setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
+let date_finished = new Date();
+const finishTimestamp = date_finished.getTime(); 
+
+if (gameIsThreaded ==1) {
+  navigation.replace(spoofMacroGameSets[macroName][macroLevel+ 1][1], { 
+    name: spoofMacroGameSets[macroName][macroLevel+ 1][0],
+    folder: spoofMacroGameSets[macroName][macroLevel+ 1][2],
+    macroLevel: macroLevel + 1,
+    macroName: macroName,
+    hint: hint, 
+    gameIsThreaded: 1,
+    application: applicationImages,
+    level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
+    data: (auth.currentUser)?userData:0 })
+} else {
+
+  navigation.replace('Score', { 
+    name: selectedGame,
+    lastscore: successRate, 
+    lastdate: finishTimestamp,
+    data:  (auth.currentUser)?userData:0 })          
+}
+
+
+
+
+
+}}>
+    <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
+: /*else if game is not complete*/
+<Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={110} height={30}/>
+}
+
+<TouchableOpacity  padding={50}  style={{...styles.button, width:100}} onPress={()=>setShowHint(!showHint)} >
+    {showHint?<Image 
+      source={{uri:`${galleryTags[correctTag]}`,}}
+      style={{...styles.imageContainer, height:100, width: 100}}
+      placeholder={blurhash}
+      contentFit="cover"
+      transition={1000}
+      />:<Text style={styles.buttonText}>Hint</Text>}
+</TouchableOpacity>
+
+
+
+</View>
+       </View> 
       <View style={{flexDirection: 'column'}}>
-      <TouchableHighlight onPress={()=> handlePicSelection(1)}>
-        <Image 
+        <TouchableHighlight onPress={()=> handlePicSelection(1)}>
+          <Image 
 
-          source={{uri:`${gallery[0]}`,}}
-          style={styles.imageContainer}
-          placeholder={blurhash}
-          contentFit="cover"
-          transition={1000}
-        />
-      </TouchableHighlight>
+            source={{uri:`${gallery[0]}`,}}
+            style={styles.imageContainer}
+            placeholder={blurhash}
+            contentFit="cover"
+            transition={1000}
+          />
+        </TouchableHighlight>
 
-      <TouchableHighlight onPress={()=> handlePicSelection(3)}>
-      <Image 
-        source={{uri:`${gallery[2]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-      <TouchableHighlight onPress={()=> handlePicSelection(5)}>
-      <Image 
-        source={{uri:`${gallery[4]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-      
-
-      </View>
-
-      <View style={{flexDirection: 'column'}}>
-
-
-      <TouchableHighlight onPress={()=> handlePicSelection(2)}>
-      <Image 
-        source={{uri:`${gallery[1]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-
-      <TouchableHighlight onPress={()=> handlePicSelection(4)}>
+        <TouchableHighlight onPress={()=> handlePicSelection(4)}>
         <Image 
           source={{uri:`${gallery[3]}`,}}
           style={styles.imageContainer}
           placeholder={blurhash}
           contentFit="cover"
           transition={1000}
-        />        
-      </TouchableHighlight>
-      <TouchableHighlight onPress={()=> handlePicSelection(6)}>
-      <Image 
-        source={{uri:`${gallery[5]}`,}}
-        style={styles.imageContainer}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-      />
-      </TouchableHighlight>
-      
+        />
+        </TouchableHighlight>    
+
+      </View>
+
+
+      <View style={{flexDirection: 'column'}}>
+
+
+        <TouchableHighlight onPress={()=> handlePicSelection(2)}>
+        <Image 
+          source={{uri:`${gallery[1]}`,}}
+          style={styles.imageContainer}
+          placeholder={blurhash}
+          contentFit="cover"
+          transition={1000}
+        />
+        </TouchableHighlight>
+
+        <TouchableHighlight onPress={()=> handlePicSelection(5)}>
+          <Image 
+            source={{uri:`${gallery[4]}`,}}
+            style={styles.imageContainer}
+            placeholder={blurhash}
+            contentFit="cover"
+            transition={1000}
+          />        
+        </TouchableHighlight>
+        
+      </View>
+
+      <View style={{flexDirection: 'column'}}>
+
+
+        <TouchableHighlight onPress={()=> handlePicSelection(3)}>
+        <Image 
+          source={{uri:`${gallery[2]}`,}}
+          style={styles.imageContainer}
+          placeholder={blurhash}
+          contentFit="cover"
+          transition={1000}
+        />
+        </TouchableHighlight>
+
+        <TouchableHighlight onPress={()=> handlePicSelection(6)}>
+          <Image 
+            source={{uri:`${gallery[5]}`,}}
+            style={styles.imageContainer}
+            placeholder={blurhash}
+            contentFit="cover"
+            transition={1000}
+          />        
+        </TouchableHighlight>
+
 
 
       </View>
@@ -836,44 +849,7 @@ const HomeScreen = (props) => {
 
       <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/></View>
 
-      <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}>
-
-
-
-      {/* <TouchableOpacity  padding={50}  style={styles.button} onPress={openModal} >
-            <Text style={styles.buttonText}>Hint</Text>
-      </TouchableOpacity> */}
       
-      <Image 
-        source={{uri:`${galleryTags[correctTag]}`,}}
-        style={{...styles.imageContainer, height:100, width: 100}}
-        placeholder={blurhash}
-        contentFit="cover"
-        transition={1000}
-        />
-      {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
-
-      {(gameComplete&&(!gameSetComplete))? //if between games
-        <TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
-              <Text style={styles.buttonText}>Next Level</Text>
-        </TouchableOpacity>
-      :(gameSetComplete)? //if at end of game set
-      <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={()=>{
-        setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
-        let date_finished = new Date();
-        const finishTimestamp = date_finished.getTime(); 
-        navigation.replace('Score', { 
-        name: selectedGame,
-        lastscore: successRate, 
-        lastdate: finishTimestamp,
-        data:  (auth.currentUser)?userData:0 })
-      }}>
-            <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
-      : /*else if game is not complete*/
-      <Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>
-      }
-
-    </View>
     
 
     
@@ -944,21 +920,16 @@ const HomeScreen = (props) => {
         <View style ={styles.webContent}>    */}
 
         
+          {/* Is a hint supplied? // Suppressed for ThreadedHomeScreen.*/}
 
       <View  style={{backgroundColor:(webView)?'rgb(46, 204, 113)':'rgba(46, 204, 113, 0.8)'}}> 
-          {/* Is a hint supplied? //*/}
-          {(hint[(gameSetLevel+1).toString()])?
+          {/* {(hint[(gameSetLevel+1).toString()])?
            <Image source={{uri: `${hint[(gameSetLevel+1).toString()]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?300:15, marginBottom:-150}}></Image>
-            : // else: signal button
+            : 
 
             <View></View>
-          // <TouchableOpacity
-          //       style={{...styles.gameSelection, marginBottom:200}}
-          //       onPress={() =>Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}
-          //       >
-          //       <Text color="red">{"No hint was supplied. Click here if you think it's a mistake and you want to signal it."}</Text> 
-          //     </TouchableOpacity>
-        }
+
+        } */}
 
             <View style={styles.modalRow}>
 
@@ -993,6 +964,15 @@ export default HomeScreen
 
 
 const styles = StyleSheet.create({
+
+      toastPosition: {
+        left: '-10%',
+        top: '-80%',
+
+        backgroundColor:'rgba(255, 165, 0, 0.8)',
+        flexWrap: "wrap"
+      },
+
       text1: {
         fontSize: 34
       },
@@ -1036,8 +1016,8 @@ const styles = StyleSheet.create({
         // backgroundColor: '#123456',
         // justifyContent: 'center',
         // alignItems: 'center',
-        width:150,
-        height:150,
+        width:100,
+        height:140,
         borderRadius:20,
         
         // resizeMode: 'contain',

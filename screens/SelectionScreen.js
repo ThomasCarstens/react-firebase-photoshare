@@ -305,8 +305,11 @@ const SelectionScreen = ({ navigation }) => {
       <View style={{flex: 6, flexDirection: 'row', justifyContent: 'center'}}>
       
       <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
+      <Text  style={{color: '#b6dbd8', fontSize:20}} marginTop={135} marginLeft={(webView)?200:20} >
+        {'Cultivate'} 
+      </Text>
 
-      <Text  style={{color: '#b6dbd8'}} marginTop={220} marginLeft={(webView)?200:20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
+      <Text  style={{color: '#b6dbd8'}} marginTop={45} marginLeft={(webView)?200:20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
         {'Send suggestions \n to the team'} 
       </Text>
       <View padding={20}></View>
@@ -861,7 +864,7 @@ var styles = StyleSheet.create({
       alignContent: 'space-around',
       width: 170,
       height: 90,
-      backgroundColor:'rgba(144, 144, 0, 0.8)',
+      backgroundColor:'rgba(251, 192, 147, 0.8)',
       // justifyContent: 'space-evenly',
       borderRadius: 50,
       flexWrap: "wrap"

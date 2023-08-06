@@ -26,11 +26,20 @@ const spoofGameAllocation = {
 const spoofMacroGameSets = {
     "Dogs": {
         // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
-        1: ["Sight VS Scent", "ThreadedHome", "Dogs", 1],
+        1: ["Sight VS Scent", "Home", "Dogs", 1],
         2: ["Life expectancy", "Comparison", "Dogs", 0],
         3: ["Dog hunting situations", "Application", "Dogs", 0],
     },
-    
+    "MACRO_Hounds_01": {
+        // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+        1: ["Hounds_01", "Application", "Dogs", 0],
+        2: ["Hounds_01", "Home", "Dogs", 0],
+    },
+    "MACRO_Hounds_02": {
+        // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+        1: ["Hounds_02", "Application", "Dogs", 2],
+        2: ["Hounds_02", "Home", "Dogs", 0],
+    },    
 };
 
 const spoofGameFolders = {
@@ -50,11 +59,30 @@ const spoofGameFolders = {
         "BigSmall3":       ["Pharaoh Hound",   "Beagle"],
 
 
-        "Sighthounds":                  ["Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound"],
-        "Shepherd dogs":                ["Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd"],
+        "Sighthounds":         ["Italian Greyhound",   "Ibizan Hound",     "Pharaoh Hound",        "Greyhound"],
+        "Shepherd dogs":       ["Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd"],
+        "Shepherds_01":        ["Beauceron",      "Belgian Sheepdog",    "German Shepherd Dog", "Icelandic Sheepdog"],
+        "Shepherds_02":        ["Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd"],
+        "Shepherds_03":        ["Belgian Malinois",      "Bouvier des Flandres",    "Briard", "Collie"],
+
         "Terriers_2":         ["Silky Terrier",       "Irish Terrier",    "Yorkshire Terrier",    "Cairn Terrier"],
         "Terriers":    ['Boston Terrier',      'American Staffordshire Terrier', 'Staffordshire Bull Terrier', 'Bull Terrier'],
+        
         "Hounds":           ['Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound'],
+
+        "Hounds_ALL":       ['Beagle',              'Bloodhound',           'American Foxhound',        'Basset Hound',
+                             'Dachshund',        'Bluetick Coonhound',   'Black and Tan Coonhound',  'Plott Hound',
+                             'Afghan Hound',     'Otterhound',           'Basenji',                  'Irish Wolfhound'],
+
+        "Hounds_01":        ['Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound'],
+        "Hounds_02":        ['Dachshund',    'Bluetick Coonhound',      'Black and Tan Coonhound',    'Plott Hound'],
+        "Hounds_03":        ['Afghan Hound',              'Otterhound',       'Basenji',    'Irish Wolfhound'],
+
+        "Hounds_11":        ['Beagle',              'Otterhound',      'Irish Wolfhound',  'American Foxhound'  ],
+        "Hounds_12":        ['Afghan Hound',     'Bluetick Coonhound',     'Black and Tan Coonhound',      'Basenji'],
+        "Hounds_13":        ['Dachshund',         'Bloodhound',       'Basset Hound' ,    'Plott Hound'   ],
+
+
         "Mastiffs":         ['Boxer',               'Bullmastiff',      'Mastiff'],
         "Dogs":             ['Boxer',               'Bullmastiff',      'Mastiff'],
         "Spaniels":         ['Field Spaniel',       'Boykin Spaniel',   'American Water Spaniel'],
@@ -62,7 +90,15 @@ const spoofGameFolders = {
     },
     "French Bread": {
         "Baguette":    ["Baguette classique",   "Ficelle",     "Flute",        "Fournee", "Viennoise"],
-        "Loaf": ["Brioche", "Fougasse", "Pain de campagne", "Pain d'epices", "Pogne de Romans", "Pompe a l'huile" ],
+        "Loaf": ["Brioche", "Fougasse", "Pain de campagne", "Pain d'epices", 
+                "Pogne de Romans", "Pompe a l'huile","Fouee", "Gibassier",
+                "Pain au son", "Boule au pain", "Pain au chocolat", "Croissant"],
+        "Loaf_01": ["Brioche", "Fougasse", "Pain de campagne", "Pain d'epices" ],
+        "Loaf_02": ["Pogne de Romans", "Pompe a l'huile", "Fouee", "Gibassier" ],
+        "Loaf_03": ["Pain au son", "Boule au pain", "Pain au chocolat", "Croissant"],
+        "Loaf_11": ["Pompe a l'huile", "Fougasse", "Pain au chocolat", "Pain d'epices" ],
+        "Loaf_12": ["Pain au son", "Brioche", "Fouee", "Gibassier" ],
+        "Loaf_13": ["Pogne de Romans", "Boule au pain", "Pain de campagne",  "Croissant"],
     },
     "Helicopters": {
         "Light twin engine":    ["AS355", "H135", "H145"],
