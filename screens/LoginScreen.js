@@ -5,6 +5,7 @@ import { auth, firebase } from '../firebase'
 import { useNavigation } from '@react-navigation/core'
 import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
@@ -18,7 +19,7 @@ const LoginScreen = () => {
     }
     useEffect(() => {
         console.log('Login finds key: ', userLoggedIn)
-
+        ScreenOrientation.lockAsync(2); //LANDSCAPE_LEFT
         const unsubscribe = auth.onAuthStateChanged(user=> {
             if (user) {
                 // AsyncStorage.setItem('@TestUser:key', auth.currentUser);

@@ -638,12 +638,12 @@ const HomeScreen = (props) => {
           const currentDate = new Date();
           const timestamp = currentDate.getTime(); 
           // Update user -> game -> level: gameSetLevel  
-          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame), {
+          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame+'/latestLevel/'), {
             gameSetLevel: gameSetLevel+1,
           }).catch(error =>alert(error.message));        
           // Update user -> game -> accuracy -> level: gameSetLevel  
-          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame+'/accuracy/'+gameSetLevel), {
-            [timestamp]: averageCorrectRate,
+          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame+'/accuracy/'+timestamp), {
+            correct: averageCorrectRate,
 
           }).catch(error =>alert(error.message));    
         }

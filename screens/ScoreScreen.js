@@ -3,7 +3,7 @@ import React from 'react';
 import { Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { spoofGameSets } from '../gameFile';
+import { spoofGameFolders, spoofGameSets } from '../gameFile';
 import { auth } from '../firebase';
 
 const TableExample = (props) => {
@@ -46,7 +46,7 @@ const TableExample = (props) => {
 
 
   if (!webView){
-    ScreenOrientation.lockAsync(2); //PROFILE
+    ScreenOrientation.lockAsync(6); //PROFILE
   } 
   
   const TableRowGenerator = () => {
@@ -77,78 +77,66 @@ const TableExample = (props) => {
        
     )
   }
+
+  const SpeciesTableGenerator = () => {
+    let rowGenerated = []
+    rowGenerated.push( <DataTable.Header style={styles.tableHeader}>
+    <DataTable.Title>Level</DataTable.Title>
+    <DataTable.Title>Correct Rate</DataTable.Title>
+    <DataTable.Title>Date</DataTable.Title>
+  </DataTable.Header>)
+  
+    for (let i=0; i<spoofGameFolders[gameName][gameName+"_ALL"].length;i=i+3){
+      rowGenerated.push( <DataTable.Row >
+      <DataTable.Cell> ✔️ {spoofGameFolders[gameName][gameName+"_ALL"][i]}</DataTable.Cell>
+      <DataTable.Cell> 🔲 {spoofGameFolders[gameName][gameName+"_ALL"][i+1]}</DataTable.Cell>
+      <DataTable.Cell> 🔲 {spoofGameFolders[gameName][gameName+"_ALL"][i+2]}</DataTable.Cell>
+
+      {/* <DataTable.Cell>{latestRecords[i]?(100*spoofAccuracy['0'][latestRecords[i]]).toFixed(2)+'%':"Sign In"}</DataTable.Cell>
+      <DataTable.Cell>{latestRecordDates[i]?(latestRecordDates[i]):(loggedIn)?"Not attempted":"Sign In"}</DataTable.Cell> */}
+    </DataTable.Row> )
+      }
+    return(
+      <DataTable rowHeight={17} backgroundColor='rgba(102, 140, 190, 1)'>
+      {rowGenerated}
+        <DataTable.Row>
+            <DataTable.Cell>SCORE</DataTable.Cell>
+            <DataTable.Cell>{overallSuccess}%</DataTable.Cell>
+            <DataTable.Cell>{lastdate}</DataTable.Cell>
+        </DataTable.Row>
+      </DataTable>
+
+       
+    )
+  }
+
   
   // <SafeAreaView style={{...styles.webContainer}}> 
     //         <View style={{...styles.webContent}}>   
   return (
   
 
-    <View>
+    <View style={{backgroundColor:'black'}}>
         <View padding={20}></View>
-        <Text style={{fontSize:50, marginLeft:30}}> Score</Text>
-        <Text style={{fontSize:30, marginLeft:30}}> IN {gameName.toUpperCase()} GAME</Text>
-        {(!data)?<Text style={{fontSize:20, marginLeft:30}}> (No user data detected)</Text>:<View></View>}
+        <Text>
+          <Text style={{color: 'white', fontSize:40, marginLeft:30}}> {gameName} </Text><Text style={{color: 'white', fontSize:20}}> SCORE</Text>
+        </Text>
+        {(!data)?<Text style={{color: 'white', fontSize:20, marginLeft:30}}> (No user data detected)</Text>:<View></View>}
         <View padding={5}></View>
-      {/* <DataTable style={styles.container}> */}
-        {/* <DataTable.Header style={styles.tableHeader}>
-          <DataTable.Title>Level</DataTable.Title>
-          <DataTable.Title>Correct Rate</DataTable.Title>
-          <DataTable.Title>Date</DataTable.Title>
-        </DataTable.Header>
-        
-        <DataTable.Row>
-          
-          <DataTable.Cell>1. {spoofGameSets[gameName][0]}</DataTable.Cell>
-          <DataTable.Cell>{latestRecords[0]?(latestRecords[0]).toFixed(2)+'%':"Sign In"}</DataTable.Cell>
-          <DataTable.Cell>{latestRecordDates[0]?(latestRecordDates[0]):(loggedIn)?"Not attempted":"Sign In"}</DataTable.Cell>
-        </DataTable.Row>
-    
-        <DataTable.Row>
-          
-          <DataTable.Cell>2. {spoofGameSets[gameName][1]}</DataTable.Cell>
-          <DataTable.Cell>{latestRecords[1]?(100*spoofAccuracy['0'][latestRecords[1]]).toFixed(2)+'%':"Sign In"}</DataTable.Cell>
-          <DataTable.Cell>{latestRecordDates[1]?(latestRecordDates[1]):(loggedIn)?"Not attempted":"Sign In"}</DataTable.Cell>
-        </DataTable.Row>
 
-        <DataTable.Row>
-          
-          <DataTable.Cell>3. {spoofGameSets[gameName][2]}</DataTable.Cell>
-          <DataTable.Cell>{latestRecords[2]?(100*spoofAccuracy['0'][latestRecords[2]]).toFixed(2)+'%':"Sign In"}</DataTable.Cell>
-          <DataTable.Cell>{latestRecordDates[2]?(latestRecordDates[2]):(loggedIn)?"Not attempted":"Sign In"}</DataTable.Cell>
-        </DataTable.Row>
-
-        <DataTable.Row>
-          <DataTable.Cell>4. {spoofGameSets[gameName][3]}</DataTable.Cell>
-          <DataTable.Cell>{latestRecords[3]?(100*spoofAccuracy['0'][latestRecords[3]]).toFixed(2)+'%':"Sign In"}</DataTable.Cell>
-          <DataTable.Cell>{latestRecordDates[3]?(latestRecordDates[3]):(loggedIn)?"Not attempted":"Sign In"}</DataTable.Cell>
-        </DataTable.Row> */}
+        <Text style={{color: 'white', fontSize:20, marginLeft:30}}>{spoofGameFolders[gameName][gameName+"_ALL"].join(false?' ✔️':' 🔲')}</Text>
+        {/* <SpeciesTableGenerator></SpeciesTableGenerator> */}
 
         <TableRowGenerator></TableRowGenerator>
-
-        {/* <DataTable.Row>
-
-          <DataTable.Cell>{gameName.toUpperCase()} GAME</DataTable.Cell>
-          <DataTable.Cell>{overallSuccess}%</DataTable.Cell>
-          <DataTable.Cell>{lastdate}</DataTable.Cell>
-        </DataTable.Row> */}
-      {/* </DataTable> */}
-      {/* <View flexDirection='row'> */}
-
-      {/* <TouchableOpacity
-                style={styles.gameSelection}
-                onPress={() => {
-                  navigation.replace("Selection")
-                }}>
-                  <Text style={{fontWeight:"bold"}}> {"\n START OVER"} </Text>
-      </TouchableOpacity>   */}
+        <View padding={10}></View>
       <TouchableOpacity
                 style={styles.gameSelection}
                 onPress={() => {
                   navigation.replace("Selection")
                 }}>
-                  <Text style={{fontWeight:"bold"}}> {"\n CHANGE GAME"} </Text>
+                  <Text style={{color: 'white', fontWeight:"bold"}}> {"\n CHANGE GAME"} </Text>
       </TouchableOpacity>  
-      
+      <View padding={500}></View>
       {/* </View> */}
     </View>
 
@@ -164,7 +152,8 @@ export default TableExample;
 const styles = StyleSheet.create({
   container: {
     padding: 22,
-
+    backgroundColor:'rgba(102, 140, 190, 1)',
+    rowHeight:12
   },
   tableHeader: {
     backgroundColor: '#DCDCDC',

@@ -256,7 +256,7 @@ const SelectionScreen = ({ navigation }) => {
                       folder: folderName,
                       gameIsThreaded: 0,
                       hint: hintImages, 
-                      level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
+                      level: (auth.currentUser)?userData[gameName]['latestLevel']['gameSetLevel']:0, 
                       application: applicationImages,
                       applicationName: metricList[metric_i],
                       data: (auth.currentUser)?userData:0 })
@@ -563,7 +563,18 @@ const SelectionScreen = ({ navigation }) => {
             <TouchableOpacity
                     style={styles.gameSelectionModal}
                     onPress={() => {
-                      // setModalVisible(!modalVisible);
+                      setModalVisible(!modalVisible);                      
+                      let macroLevel = 0 
+                      navigation.navigate(spoofMacroGameSets["MACRO_Hounds_01"][macroLevel+ 1][1], { 
+                        name: spoofMacroGameSets["MACRO_Hounds_01"][macroLevel+ 1][0],
+                        folder: spoofMacroGameSets["MACRO_Hounds_01"][macroLevel+ 1][2],
+                        macroName: "MACRO_Hounds_01",
+                        gameIsThreaded: 1,
+                        macroLevel: 1,
+                        application: applicationImages,
+                        hint: hintImages, 
+                        level: (auth.currentUser)?userData["MACRO_Hounds_01"]['latestLevel']['gameSetLevel']:0, 
+                        data: (auth.currentUser)?userData:0 })
                     }}>
                       <View flexDirection='row'>
                         <Text style={{fontWeight:"bold", color:'rgb(50, 100, 1000)', fontSize:18, marginTop:-10}}> {"\n Hounds"} </Text>
@@ -613,7 +624,7 @@ const SelectionScreen = ({ navigation }) => {
                         name: gameName, 
                         folder: folderName,
                         hint: hintImages, 
-                        level: userData[gameName]['gameSetLevel'], 
+                        level: userData[gameName]['latestLevel']['gameSetLevel'], 
                         data: userData })
                     }}>
 
@@ -703,7 +714,7 @@ const SelectionScreen = ({ navigation }) => {
                         macroLevel: 1,
                         application: applicationImages,
                         hint: hintImages, 
-                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
+                        level: (auth.currentUser)?userData[gameName]['latestLevel']['gameSetLevel']:0, 
                         data: (auth.currentUser)?userData:0 })
                     }}>
 
@@ -720,7 +731,7 @@ const SelectionScreen = ({ navigation }) => {
                         name: gameName,
                         folder: folderName,
                         hint: hintImages, 
-                        level: (auth.currentUser)?userData[gameName]['gameSetLevel']:0, 
+                        level: (auth.currentUser)?userData[gameName]['latestLevel']['gameSetLevel']:0, 
                         data: (auth.currentUser)?userData:0 })
                     }}>
 

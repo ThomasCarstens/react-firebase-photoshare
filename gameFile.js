@@ -14,6 +14,7 @@ const spoofGameSets = {
     "French Bread": [ 'Loaf', 'Baguette'],
     "Helicopters": ["Light twin engine"],
     "Sight VS Scent":  ["Hounds", "Sighthounds"],
+    "Hounds_01": ["Hounds_01"],
 
 };
 
@@ -52,6 +53,14 @@ const spoofGameFolders = {
         "Fruit":    ["Capsicum", "Bitter gourd", "Bottle gourd", "Brinjal", "Cucumber"],        
     },
     "Dogs": {
+        "Dogs_ALL":         ["Beauceron",      "Belgian Sheepdog",    "German Shepherd Dog", "Icelandic Sheepdog",
+                            "Bearded Collie",      "Border Collie",    "Old English Sheepdog", "Australian Shepherd",
+                            "Belgian Malinois",      "Bouvier des Flandres",    "Briard", "Collie",
+                            'Beagle',              'Bloodhound',           'American Foxhound',        'Basset Hound',
+                             'Dachshund',        'Bluetick Coonhound',   'Black and Tan Coonhound',  'Plott Hound',
+                             'Afghan Hound',     'Otterhound',           'Basenji',                  'Irish Wolfhound'],
+
+
         "Sighthound VS Scenthounds":    ["Italian Greyhound",   "Beagle",     "Bloodhound",        "American Foxhound"],
         "Spaniel VS Others":            ["Boxer",   "Boykin Spaniel",     "Silky Terrier",        "Bull Terrier"],
         "Shepherd Dog VS Others":       ["Boxer",   "Boykin Spaniel",     "Border Collie",        "Bloodhound"],
