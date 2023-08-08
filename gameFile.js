@@ -34,8 +34,9 @@ const spoofMacroGameSets = {
     },
     "MACRO_Hounds_01": {
         // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
-        1: ["Hounds_01", "Application", "Dogs", 0],
-        2: ["Hounds_01", "Home", "Dogs", 0],
+        1: ["Hounds_01", "Home", "Dogs", 0],        
+        2: ["Hounds_01", "Application", "Dogs", 0],
+
     },
     "MACRO_Hounds_02": {
         // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
@@ -100,6 +101,7 @@ const spoofGameFolders = {
         "Mastiffs":         ['Boxer',               'Bullmastiff',      'Mastiff'],
         "Dogs":             ['Boxer',               'Bullmastiff',      'Mastiff'],
         "Spaniels":         ['Field Spaniel',       'Boykin Spaniel',   'American Water Spaniel'],
+        "Pointers":         ['German Shorthaired Pointer',       'German Wirehaired Pointer'],
         
     },
     "French Bread": {
@@ -300,6 +302,33 @@ const spoofInstructions = {
         4: 'Test your knowledge: find the American Foxhound.',
         5: 'Done with the Hounds. '
         },
+    "Hounds_01": {
+        1: 'Find the Beagle.',
+        2: 'Locate the Bloodhound.',
+        3: 'Identify the American Foxhound.',
+        4: 'Can you find the Basset Hound?',
+        5: 'Game complete!'
+    },
+    "Hounds_02": {
+        1: 'Find the Dachshund.',
+        2: 'Locate the Bluetick Coonhound.',
+        3: 'Identify the Black and Tan Coonhound.',
+        4: 'Can you find the Plott Hound?',
+        5: 'Game complete!'
+    },
+    "Hounds_03": {
+        1: 'Find the Afghan Hound.',
+        2: 'Locate the Otterhound.',
+        3: 'Identify the Basenji.',
+        4: 'Can you find the Irish Wolfhound?',
+        5: 'Game complete!'
+    },
+
+    // "Hounds_01":        ['Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound'],
+    // "Hounds_02":        ['Dachshund',    'Bluetick Coonhound',      'Black and Tan Coonhound',    'Plott Hound'],
+    // "Hounds_03":        ['Afghan Hound',              'Otterhound',       'Basenji',    'Irish Wolfhound'],
+
+
     "Sighthounds": {
         1: 'Level 1: Find all the Greyhounds.',
         2: 'Level 2: Find the Italian Greyhounds.',
@@ -514,8 +543,6 @@ const spoofCorrectTag = {
         1: ["19th", "20th", "21st"],
         2: [""]
     },
-
-
     "Life expectancy":{
         1:       ["Boxer",   "Bull Terrier"],
         2:       ["Silky Terrier",   "Bloodhound"],
@@ -537,8 +564,7 @@ const spoofCorrectTag = {
         4: "Bowline Knot",
         5: "Figure-8 Loop",
         6: "",
-      },
-
+    },
       "Baguette": {
         1: "Baguette classique",
         2: "Ficelle",
@@ -567,6 +593,27 @@ const spoofCorrectTag = {
         5: "H135",
         6: ""
     },
+    "Hounds_01": {
+        1: 'Beagle',
+        2: 'Bloodhound',
+        3: 'American Foxhound',
+        4: 'Basset Hound',
+        5: ''
+    },
+    "Hounds_02": {
+        1: 'Dachshund',
+        2: 'Bluetick Coonhound',
+        3: 'Black and Tan Coonhound',
+        4: 'Plott Hound',
+        5: ''
+    },
+    "Hounds_03": {
+        1: 'Afghan Hound',
+        2: 'Otterhound',
+        3: 'Basenji',
+        4: 'Irish Wolfhound',
+        5: ''
+    },
 };
 
 const spoofIncorrectTag = {
@@ -576,7 +623,6 @@ const spoofIncorrectTag = {
         3: ["Australian Shepherd", "Bearded Collie", "Old English Sheepdog"],
         4: 'Congratulations! You completed all the levels.',
         },
-
     'Dogs': {
         1: ['Bullmastiff'],
         2: ['Boxer'],
@@ -584,14 +630,12 @@ const spoofIncorrectTag = {
         4: ['Mastiff', 'Boxer'],
         5: ['']  
     },
-
     'Sighthound VS Scenthounds': {
         1: ['Beagle', 'Bloodhound', 'American Foxhound'],
         2: ['']   
         // 3: ["Boxer", "Boykin spaniel",  "Bloodhound"],
         // 4: ['']
     },
-
     'Spaniel VS Others': {
         1: ["Boxer","Silky Terrier",   "Bull Terrier"],
         2: ['']   
@@ -705,7 +749,6 @@ const spoofIncorrectTag = {
         5: ["Reef Knot", "Bowline Knot"],
         6: []
         },
-
     "Baguette": {
         1: ["Ficelle", "Flute"],
         2: ["Baguette classique", "Flute"],
@@ -727,7 +770,6 @@ const spoofIncorrectTag = {
         6: ["Pain de campagne", "Pain d'epices"],
         7: ["Fougasse", "Pompe a l'huile"]
     },
-
     "Light twin engine": {
         1: ["H135", "H145"],
         2: ["AS355", "H145"],
@@ -736,7 +778,27 @@ const spoofIncorrectTag = {
         5: ["AS355", "H135"],
         6: ["AS355", "H135"]
     },
-
+    "Hounds_01": {
+        1: ['Bloodhound', 'American Foxhound'],
+        2: ['Basset Hound', 'Beagle'],
+        3: ['Beagle', 'Basset Hound'],
+        4: ['American Foxhound', 'Bloodhound'],
+        5: ['']
+    },
+    "Hounds_02": {
+        1: ['Bluetick Coonhound', 'Black and Tan Coonhound'],
+        2: ['Plott Hound', 'Dachshund'],
+        3: ['Dachshund', 'Plott Hound'],
+        4: ['Black and Tan Coonhound', 'Bluetick Coonhound'],
+        5: ['']
+    },
+    "Hounds_03": {
+        1: ['Otterhound', 'Basenji'],
+        2: ['Irish Wolfhound', 'Afghan Hound'],
+        3: ['Afghan Hound', 'Irish Wolfhound'],
+        4: ['Basenji', 'Otterhound'],
+        5: ['']
+    },
 }
 
 export {spoofGameAllocation, spoofGameSets, spoofMacroGameSets, spoofGameMetrics, spoofUnits, spoofGameFolders, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}

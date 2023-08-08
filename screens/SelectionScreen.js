@@ -586,7 +586,7 @@ const SelectionScreen = ({ navigation }) => {
                       
             </TouchableOpacity> 
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
                     style={styles.gameSelectionModal}
                     onPress={() => {
                       // setModalVisible(!modalVisible);
@@ -612,7 +612,7 @@ const SelectionScreen = ({ navigation }) => {
                           <Text style={styles.modalProgressBarText}>31/{spoofGameFolders["Dogs"]["Hounds_ALL"].length} Species</Text>
                         </Progress.Bar>
                       </View>
-            </TouchableOpacity> 
+            </TouchableOpacity>  */}
 
               {(auth.currentUser)?
               <TouchableOpacity

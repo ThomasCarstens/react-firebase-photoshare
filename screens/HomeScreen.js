@@ -13,7 +13,7 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets} from '../gameFile';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets, spoofGameFolders} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Audio } from "expo-av"
 // import Toast, { useToast } from 'react-native-toast-notifications';
@@ -53,6 +53,16 @@ const HomeScreen = (props) => {
     if (gameIsThreaded){
       setGameSetLevel(spoofMacroGameSets[macroName][macroLevel][3])
     }
+
+    /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
+    // let fileName = "Dogs"
+    //   let subfolders =    spoofGameFolders[fileName]["Shepherd dogs_ALL"]   
+
+    //   for (let index=0; index<subfolders.length; index++){
+  
+    //     const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
+    //     labelBatch(A, subfolders[index]);
+    //   }
 
   }, []);
 
