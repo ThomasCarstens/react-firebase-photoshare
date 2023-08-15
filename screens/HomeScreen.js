@@ -113,6 +113,18 @@ const HomeScreen = (props) => {
       if (gameSetLevel+1 == spoofMacroGameSets[macroName].length){
         setGameSetComplete(true)
       }
+      if (auth.currentUser){
+        // Update Latest Level (is reset for every level)
+        set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/'+macroName+'/latestLevel/'), {
+          gameSetLevel: gameSetLevel,
+          folder: selectedFolder,
+          gameName: spoofGameFolders[selectedFolder][selectedGame][0],
+          levelGrouping: gameName,
+          macroName: macroName,
+        }).catch(error =>alert(error.message)); 
+
+      }
+
       return
     }
 
@@ -475,7 +487,7 @@ const HomeScreen = (props) => {
 
   const nextGameSetLevel = () => {
     // Within Macro Game Set: record latestLevel & accuracy
-    if (gameSetLevel < Object.keys(spoofMacroGameSets[macroName]).length) {
+    if (gameSetLevel-1 < Object.keys(spoofMacroGameSets[macroName]).length) {
       
       if (auth.currentUser) {
           let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
@@ -483,17 +495,19 @@ const HomeScreen = (props) => {
           const currentDate = new Date();
           const timestamp = currentDate.getTime(); 
 
-          // Update Latest Level (is reset for every level)
-          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/'+macroName+'/latestLevel/'), {
-            gameSetLevel: gameSetLevel+1,
-            gameName: selectedGame,
-            levelName: gameName,
-          }).catch(error =>alert(error.message));       
+          // // Update Latest Level (is reset for every level)
+          // set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/'+macroName+'/latestLevel/'), {
+          //   gameSetLevel: gameSetLevel,
+          //   folder: selectedFolder,
+          //   gameName: spoofGameFolders[selectedFolder][selectedGame][0],
+          //   levelGrouping: gameName,
+          //   macroName: macroName,
+          // }).catch(error =>alert(error.message));       
 
           // Update Level Accuracy (set by timestamp to prevent resetting)
-          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/'+macroName+'/accuracy/'+(gameSetLevel+1) + '/'+timestamp), {
+          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/'+macroName+'/accuracy/'+(gameSetLevel) + '/'+timestamp), {
             correct: averageCorrectRate,
-            time: currentDate
+            time: currentDate.getDate()+'/'+(currentDate.getMonth()+1)+'@'+currentDate.getHours()+':'+currentDate.getMinutes()
           }).catch(error =>alert(error.message));    
         }
       

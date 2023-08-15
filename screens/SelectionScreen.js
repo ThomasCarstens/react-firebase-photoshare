@@ -587,8 +587,8 @@ const SelectionScreen = ({ navigation }) => {
                         application: applicationImages,
                         hint: hintImages, 
                         level:   (auth.currentUser)?
-                        (userData["Hounds"])?userData["Hounds"]['latestLevel']['gameSetLevel']:0
-                        :0,
+                        (userData["Hounds"])?userData["Hounds"]['latestLevel']['gameSetLevel']:1
+                        :1,
                         data: (auth.currentUser)?userData:0 })
 
                       }}>
@@ -648,6 +648,24 @@ const SelectionScreen = ({ navigation }) => {
                       <Text style={{fontWeight:"bold"}}> {"\n CONTINUE GAME"} </Text>
                   </TouchableOpacity>  
 :<View></View>}
+
+                  <TouchableOpacity
+                    style={styles.gameSelectionModal}
+
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      navigation.navigate('Score', { // The population average can be computed by cloud functions
+                        name: gameName,
+                        folder: folderName,
+                        hint: hintImages, 
+                        macroName: "Hounds",
+                        level: (auth.currentUser)?userData[gameName]['latestLevel']['gameSetLevel']:0, 
+                        data: (auth.currentUser)?userData:0 })
+                    }}>
+
+                      <Text style={{fontWeight:"bold"}}> {"\n RANKING"} </Text>
+                  </TouchableOpacity>  
+                
                   <TouchableOpacity
                     style={styles.gameSelectionModal}
 
@@ -739,22 +757,7 @@ const SelectionScreen = ({ navigation }) => {
                   </TouchableOpacity>  
 
 
-                  <TouchableOpacity
-                    style={styles.gameSelectionModal}
 
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
-                      navigation.navigate('Score', { // The population average can be computed by cloud functions
-                        name: gameName,
-                        folder: folderName,
-                        hint: hintImages, 
-                        level: (auth.currentUser)?userData[gameName]['latestLevel']['gameSetLevel']:0, 
-                        data: (auth.currentUser)?userData:0 })
-                    }}>
-
-                      <Text style={{fontWeight:"bold"}}> {"\n RANKING"} </Text>
-                  </TouchableOpacity>  
-                
 
             </View>
 
