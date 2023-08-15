@@ -13,7 +13,7 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofGameMetrics, spoofMacroGameSets} from '../gameFile';
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets, spoofGameFolders} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Audio } from "expo-av"
 // import Toast, { useToast } from 'react-native-toast-notifications';
@@ -26,70 +26,42 @@ import { Audio } from "expo-av"
 //https://www.wineware.co.uk/glassware/beginners-guide-to-different-types-of-wine-glasses
 
 
-const ApplicationScreen = (props) => {
-  const folderName = props.route.params.folder  // name
-  const selectedGame = props.route.params.name  // applicationName
-  
+const HomeScreen = (props) => {
+  const selectedGame = props.route.params.name  // TBD | Reinstate with navigation.
+  const selectedFolder = props.route.params?.folder
   const dimScreen= Dimensions.get("screen");
   const userData = props.route.params?.data  // TBD | Reinstate with navigation.
   const hint = props.route.params?.hint
-
-  //threaded params
+  const applicationImages = props.route.params?.application
   const gameIsThreaded = props.route.params?.gameIsThreaded
-  let macroLevel = props.route.params?.macroLevel
-  const selectedFolder = props.route.params?.folder
   const macroName = props.route.params?.macroName
-  // const applicationImage = props.route.params.application
-  console.log('init: ... ', selectedGame)
-  // console.log('images ...' ,applicationImage)
+
   const sound = new Audio.Sound()
-
-  const [applicationImage, setApplicationImage] = useState({});
-
-  useEffect(()=>{
-
-    const getApplicationImages = async() => {
-
-     // for (let i=0;i<gameKeyList[j].length; i++) {
-       const applicationReference = ref(storage, folderName+'/_applications/'+selectedGame+'/');
-       // spoofGameSets[gameKeyList[j]][i]
-       await list(applicationReference)
-       .then((res) => {
-         console.log('found APPLICATIONS')
-         res.items.forEach((itemRef) => {
-       getDownloadURL(itemRef).then((x)=> {
-        let getHintNb = x.split('.jpg')[0]
-        let index = getHintNb.charAt(getHintNb.length-1)
-        console.log('application', index)
-         setApplicationImage(previous => {
-          let dictHints = {...previous}
-          dictHints[index] = x
-          return dictHints
-         });
-       })
-       if (applicationImage==undefined) {
-           console.log('Error on one.')
-       }
-
-     })
-
-   })
-
-   }
-
-   getApplicationImages()
-
-  }, [selectedGame])
+  const macroLevel = props.route.params?.macroLevel 
   
+
+
   const [gameSetLevel, setGameSetLevel] = useState((auth.currentUser)?props.route.params?.level:0)
 
+  
   // Screen title.
   useEffect(() => {
     navigation.setOptions({
-      title: gameName+' Game',
     });
     console.log('hint is', hint)
+    if (gameIsThreaded){
+      setGameSetLevel(spoofMacroGameSets[macroName][macroLevel][3])
+    }
 
+    /* CAREFUL, VISIBLE PERFORMANCE LIMITATIONS. */
+    // let fileName = "Dogs"
+    //   let subfolders =    spoofGameFolders[fileName]["Shepherd dogs_ALL"]   
+
+    //   for (let index=0; index<subfolders.length; index++){
+  
+    //     const A = ref(storage, fileName + "/"+ subfolders[index]+ "/");
+    //     labelBatch(A, subfolders[index]);
+    //   }
 
   }, []);
 
@@ -115,9 +87,21 @@ const ApplicationScreen = (props) => {
   const [successRate, setSuccessRate] = useState(1)
   const [modalVisible, setModalVisible] = useState(true)
 
-  var gameName = spoofGameSets[selectedGame][gameSetLevel]
-  console.log(gameName, "is the game noww.")
   
+  const images = [
+    'https://placeimg.com/640/640/nature',
+    'https://placeimg.com/640/640/people',
+    'https://placeimg.com/640/640/animals',
+    'https://placeimg.com/640/640/beer',
+    'https://placeimg.com/640/640/nature',
+    'https://placeimg.com/640/640/people',
+  ];
+    
+  
+  
+  var gameName = spoofGameSets[selectedGame][gameSetLevel]
+  
+  console.log(gameName, "is the game noww.")
   // const [gameName, setGameName ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   const [instructionText, setInstructionText] = useState(spoofInstructions[gameName][learningLevel])
@@ -128,7 +112,7 @@ const ApplicationScreen = (props) => {
   const [gameComplete, setGameComplete] = useState(false)
   const [gameSetComplete, setGameSetComplete] = useState(false)
   const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
-
+  const [showHint, setShowHint] = useState(false)
   
   if (!webView){
     ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
@@ -142,20 +126,13 @@ const ApplicationScreen = (props) => {
     // At end of 1 game
     if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
       
-      // setGameComplete(true)
-      // setGameSetComplete(true) //hack
-      nextGameSetLevel()
-      // setGameSetLevel(previous => previous+1)
-      // setGameComplete(false)// only place to do so
-
+      setGameComplete(true)
       let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
       setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
 
       if (gameSetLevel+1 == spoofGameSets[selectedGame].length){
         setGameSetComplete(true)
       }
-
-
       return
     }
     
@@ -174,12 +151,12 @@ const ApplicationScreen = (props) => {
 
   // Images from different sources.
   useEffect(()=> {
-    const correctListRef = ref(storage, folderName + '/'+correctTag+'/');
-    console.log('incorrectListRef: ', folderName , '/',incorrectTag,'/')
-    const incorrectListRef = ref(storage, folderName + '/'+incorrectTag[0]+'/');
+    const correctListRef = ref(storage, selectedFolder + '/'+correctTag+'/');
+    console.log('incorrectListRef: ', selectedFolder , '/',incorrectTag,'/')
+    const incorrectListRef = ref(storage, selectedFolder + '/'+incorrectTag[0]+'/');
     if (incorrectTag.length>1){
-      var incorrectListRef2 = ref(storage, folderName + '/'+incorrectTag[1]+'/');
-      var incorrectListRef3 = ref(storage, folderName + '/'+incorrectTag[2]+'/');
+      var incorrectListRef2 = ref(storage, selectedFolder + '/'+incorrectTag[1]+'/');
+      var incorrectListRef3 = ref(storage, selectedFolder + '/'+incorrectTag[2]+'/');
     }
     // const correctListRef = ref(storage, gameName + '/'+correctTag+'/');
     // console.log('incorrectListRef: ', gameName , '/',incorrectTag,'/')
@@ -291,7 +268,7 @@ const ApplicationScreen = (props) => {
                                       // simple sort
 
                                       
-                                      if (val.length>6){
+                                      if (val.length==12){
                                         // val.sort( () => .3 - Math.random() );
                                         // console.log('LENGTH 12')
                                         // var visibleGallery = val.slice(0, 5)
@@ -578,15 +555,13 @@ const ApplicationScreen = (props) => {
       for (let i=0; i<incorrectTag.length; i++){
         if (galleryTags[incorrectTag[i]]?.includes(gallery[picNb-1])){
           let feedbackTag = incorrectTag[i]
-          let metricFeedbackTag = spoofGameMetrics[selectedFolder][selectedGame][feedbackTag]
-          // toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
-          toast.current.show("Correction: "+metricFeedbackTag+" are not adapted to the situation.", { type: "error" });
+          toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
         }
       }
       
     }
 
-    return 
+    return images
   }
 
   const handleSignOut = () => {
@@ -634,7 +609,6 @@ const ApplicationScreen = (props) => {
     // END OF GAME
     if (correctLeftInGallery.length == 0){
       setLoading(true)
-      console.log('Empty correct images.')
       // Next level when 80% correct rate OR no more correctLeftInGallery  
 
       
@@ -642,8 +616,6 @@ const ApplicationScreen = (props) => {
       // On last game of gameSet --- set gameSetComplete == true
       if (gameComplete && (gameSetLevel+1 >= Object.keys(spoofGameSets[selectedGame]).length)){
         setGameSetComplete(true)
-        setLoading(true)
-        console.log('gameSetComplete set true.')
         // #RECORD_ACCURACY
       } else {
         setLearningLevel(prev => prev+1) 
@@ -668,31 +640,37 @@ const ApplicationScreen = (props) => {
 
   const nextGameSetLevel = () => {
     if (gameSetLevel+1 < Object.keys(spoofGameSets[selectedGame]).length) {
+      // If still in game: record (authenticated) and reinitialize.
       if (auth.currentUser) {
           let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
           setSuccessRate(prev => (prev+averageCorrectRate)/2) // will be reset once per game.
           const currentDate = new Date();
           const timestamp = currentDate.getTime(); 
-          // Update user -> game -> level: gameSetLevel  
-          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame), {
-            gameSetLevel: gameSetLevel+1,
-          }).catch(error =>alert(error.message));        
-          // Update user -> game -> accuracy -> level: gameSetLevel  
-          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedGame+'/accuracy/'+gameSetLevel), {
-            [timestamp]: averageCorrectRate,
 
+          // Update Latest Level (is reset for every level)
+          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/'+macroName+'/latestLevel/'), {
+            gameSetLevel: gameSetLevel+1,
+            gameName: selectedGame,
+            levelName: gameName,
+          }).catch(error =>alert(error.message));       
+
+          // Update Level Accuracy (set by timestamp to prevent resetting)
+          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/'+macroName+'/accuracy/'+(gameSetLevel+1) + '/'+timestamp), {
+            correct: averageCorrectRate,
+            time: currentDate
           }).catch(error =>alert(error.message));    
         }
       
       console.log('successRate: ', successRate)
       console.log('Level Up.')
-      setCorrectClickCount(0)  //reset (avoid loop)
+      // Resetting In-Game state
+      setCorrectClickCount(0)  
       setIncorrectClickCount(0)
       setGameSetLevel(previous => previous+1)
       setGameComplete(false)// only place to do so
       // setGameSetComplete(false)
       setLearningLevel(1)
-      // setModalVisible(true) //keep off for applications
+      setModalVisible(true)
       return
     } else {
       // setGameSetComplete(true)
@@ -721,102 +699,92 @@ const ApplicationScreen = (props) => {
           <Text style={{...styles.buttonText, color:'black'}}>{"< Back"}</Text>
         </TouchableOpacity>
         <Text style={{fontSize: 13, alignContent: 'flex-end', marginLeft: 20}} > 
-                {selectedGame.toUpperCase()}: ({gameSetLevel+1}/{spoofGameSets[selectedGame].length})  </Text>
-        <Text style={{fontSize: 20, alignContent: 'flex-end', marginLeft: 20}} > 
-        Choose Your Dog  </Text>
+        {selectedGame.toUpperCase()}: ({gameSetLevel+1}) {gameName} </Text>
 
-        
-
-
-        {/* {gameName} */}
           
       </View>
-
-
-      
-      
-
-      <View style={{flexDirection: 'row'}} >
-
-      <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/>
-
-      
-
       <View style={{flexDirection: 'column', alignItems: 'center'}}>
-      {/* <View style={{flex:1}}></View> */}
       
-      
-      {(applicationImage[(gameSetLevel+1).toString()])?<Image 
-          source={{uri:`${applicationImage[(gameSetLevel+1).toString()]}`,}}
-          style={{...styles.imageContainer, height:180, width: 80}}
+      {/* <Text style={{fontSize: 20, color:'black'}}> {instructionText} </Text> */}
+
+      {/* IMAGE ONLY IN HOME SCREEN */}
+      {/* <Image 
+
+          source={{uri:`${galleryTags[correctTag]}`,}}
+          style={{...styles.imageContainer, height:100, width: 100}}
           placeholder={blurhash}
           contentFit="cover"
           transition={1000}
-        />:<View></View>}
+        /> */}
+        </View>
+      
+      <View style={{padding: 10}}></View>
+      <View style={{flexDirection: 'row'}} >
+      <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/>
+      <View style={{flexDirection: 'column', width:115, marginTop:10}}>
+      <Text style={{fontSize: 20, color:'black'}}> {instructionText} </Text>
+      <View   style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around'}}>
 
-        <Text style={{fontSize: 14, color:'black'}}> {instructionText} </Text>
 
 
-
-
-{/* <View   style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around'}}> */}
-
-
-
-{/* <TouchableOpacity  padding={50}  style={styles.button} onPress={openModal} >
-      <Text style={styles.buttonText}>Hint</Text>
-</TouchableOpacity> */}
-
-{/* <Image 
-  source={{uri:`${galleryTags[correctTag]}`,}}
-  style={{...styles.imageContainer, height:100, width: 100}}
-  placeholder={blurhash}
-  contentFit="cover"
-  transition={1000}
-  /> */}
 {/* Explanation -- if GameComplete: Button NEXT LEVEL. if NOT GameComplete: Progress BAR */}
 
 {(gameComplete&&(!gameSetComplete))? //if between games
-  <TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
-        <Text style={styles.buttonText}>Next Level</Text>
-  </TouchableOpacity>
+<TouchableOpacity  padding={50}  style={styles.button} onPress={nextGameSetLevel} >
+      <Text style={styles.buttonText}>Next Level</Text>
+</TouchableOpacity>
 :(gameSetComplete)? //if at end of game set
 <TouchableOpacity  padding={50}  style={styles.buttonRainbox} onPress={()=>{
-  setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
-  let date_finished = new Date();
-  const finishTimestamp = date_finished.getTime(); 
+setSuccessRate(correctClickCount/(correctClickCount+incorrectClickCount))
+let date_finished = new Date();
+const finishTimestamp = date_finished.getTime(); 
 
-  if ((gameIsThreaded ==1)&&(macroLevel<Object.keys(spoofMacroGameSets[macroName]).length)) {
+if (gameIsThreaded ==1) {
+  navigation.replace(spoofMacroGameSets[macroName][macroLevel+ 1][1], { 
+    name: spoofMacroGameSets[macroName][macroLevel+ 1][0],
+    folder: spoofMacroGameSets[macroName][macroLevel+ 1][2],
+    macroLevel: macroLevel + 1,
+    macroName: macroName,
+    hint: hint, 
+    gameIsThreaded: 1,
+    application: applicationImages,
+    level: gameSetLevel+1, //gameName?
+    data: (auth.currentUser)?userData:0 })
+} else {
 
-    navigation.replace(spoofMacroGameSets[macroName][macroLevel+ 1][1], { 
-      name: spoofMacroGameSets[macroName][macroLevel+ 1][0],
-      folder: spoofMacroGameSets[macroName][macroLevel+ 1][2],
-      macroLevel: macroLevel + 1,
-      macroName: macroName,
-      hint: hint, 
-      gameIsThreaded: 1,
-      // application: applicationImages,
-      level: (auth.currentUser)?userData[gameName]['latestLevel']['gameSetLevel']:0, 
-      data: (auth.currentUser)?userData:0 })
-
-  } else {
-
-    navigation.replace('Score', { 
-      name: selectedGame,
-      lastscore: successRate, 
-      lastdate: finishTimestamp,
-      data:  (auth.currentUser)?userData:0 })
-
-  }
-}}>
-      <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
-: /*else if game is not complete*/
-<Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={130} height={30}/>
+  navigation.replace('Score', { 
+    name: selectedGame,
+    lastscore: successRate, 
+    lastdate: finishTimestamp,
+    data:  (auth.currentUser)?userData:0 })          
 }
 
-        </View>
 
 
+
+
+}}>
+    <Text style={styles.buttonText}>Finish</Text></TouchableOpacity>
+: /*else if game is not complete*/
+<Progress.Bar progress={progressCalculate()} color={'rgb(13, 1, 117)'}  borderRadius={20} marginTop={20} width={110} height={30}/>
+}
+
+<TouchableOpacity  padding={50}  style={{...styles.button, width:100}} onPress={()=>setShowHint(!showHint)} >
+    {showHint?<Image 
+      source={{uri:`${galleryTags[correctTag]}`,}}
+      style={{...styles.imageContainer, height:100, width: 100}}
+      placeholder={blurhash}
+      contentFit="cover"
+      transition={1000}
+      />:<Text style={styles.buttonText}>Hint</Text>}
+</TouchableOpacity>
+
+
+
+</View>
+       </View> 
+
+       <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}></View>
       <View style={{flexDirection: 'column'}}>
         <TouchableHighlight onPress={()=> handlePicSelection(1)}>
           <Image 
@@ -841,7 +809,7 @@ const ApplicationScreen = (props) => {
 
       </View>
 
-
+      
       <View style={{flexDirection: 'column'}}>
 
 
@@ -897,12 +865,52 @@ const ApplicationScreen = (props) => {
 
       <View style={{ flex: 1, width: 20, height: 150*3, backgroundColor: 'rgb(13, 1, 117)' }}/></View>
 
-
+      
+    
 
     
+    {/* <View style={styles.container}>
+      <View style={{padding: 20}}></View>
+
+      <View style={styles.progressBar}>
+      </View>
+      <Text style={styles.text3}>{(100*correctClickCount/(correctClickCount+incorrectClickCount)).toFixed(2)}%</Text>
+
+      <StatusBar style="auto" />
+    </View> */}
 
 
     <View style={styles.container}>
+
+      
+      {/* KEEP THIS STUFF
+      
+      <Text>Email: {auth.currentUser?.email}</Text> */}
+      
+      {/* <TextInput
+      onChangeText={onChangeCustomMetadataInput}
+      value={customMetadataInput}
+      style={styles.input}>
+      </TextInput>  */}
+
+      
+
+     {/* <TouchableOpacity style={styles.button} onPress={pickImage} >
+        <Text style={styles.buttonText}>Choose File</Text>
+      </TouchableOpacity>
+
+      
+
+      <TouchableOpacity style={styles.button} onPress={uploadImage} >
+        <Text style={styles.buttonText}>Upload</Text>
+      </TouchableOpacity> */}
+
+
+
+      {/* <TouchableOpacity style={styles.button} onPress={handleSignOut}>
+        <Text style={styles.buttonText}>Sign Out</Text>
+      </TouchableOpacity> */}
+
 
 
 
@@ -928,21 +936,16 @@ const ApplicationScreen = (props) => {
         <View style ={styles.webContent}>    */}
 
         
+          {/* Is a hint supplied? // Suppressed for ThreadedHomeScreen.*/}
 
       <View  style={{backgroundColor:(webView)?'rgb(46, 204, 113)':'rgba(46, 204, 113, 0.8)'}}> 
-          {/* Is a hint supplied? //*/}
-          {(hint[(gameSetLevel+1).toString()])?
+          {/* {(hint[(gameSetLevel+1).toString()])?
            <Image source={{uri: `${hint[(gameSetLevel+1).toString()]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?300:15, marginBottom:-150}}></Image>
-            : // else: signal button
+            : 
 
             <View></View>
-          // <TouchableOpacity
-          //       style={{...styles.gameSelection, marginBottom:200}}
-          //       onPress={() =>Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}
-          //       >
-          //       <Text color="red">{"No hint was supplied. Click here if you think it's a mistake and you want to signal it."}</Text> 
-          //     </TouchableOpacity>
-        }
+
+        } */}
 
             <View style={styles.modalRow}>
 
@@ -973,10 +976,11 @@ const ApplicationScreen = (props) => {
 // </SafeAreaView>  
 }
 
-export default ApplicationScreen
+export default HomeScreen
 
 
 const styles = StyleSheet.create({
+
       toastPosition: {
         left: '-10%',
         top: '-80%',
@@ -984,6 +988,7 @@ const styles = StyleSheet.create({
         backgroundColor:'rgba(255, 165, 0, 0.8)',
         flexWrap: "wrap"
       },
+
       text1: {
         fontSize: 34
       },

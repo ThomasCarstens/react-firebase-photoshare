@@ -25,6 +25,7 @@ const spoofGameAllocation = {
     "Dog hunting situations": "Application"
 };
 
+// Game sets. Screens Ordered.
 const spoofMacroGameSets = {
     "Dogs": {
         // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
@@ -32,19 +33,21 @@ const spoofMacroGameSets = {
         2: ["Life expectancy", "Comparison", "Dogs", 0],
         3: ["Dog hunting situations", "Application", "Dogs", 0],
     },
-    "MACRO_Hounds_01": {
+    "Hounds": {
         // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
-        1: ["Hounds_01", "Home", "Dogs", 0],        
-        2: ["Hounds_01", "Application", "Dogs", 0],
-
+        1: ["Hounds_02", "Home", "Dogs", 1],        
+        // 2: ["Hounds_01", "Application", "Dogs", 1],
+        2: ["Hounds_01", "Home", "Dogs", 1],        
+        // 4: ["Hounds_02", "Application", "Dogs", 1],
     },
-    "MACRO_Hounds_02": {
+    "Shepherd dogs": {
         // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
-        1: ["Hounds_02", "Application", "Dogs", 2],
-        2: ["Hounds_02", "Home", "Dogs", 0],
+        1: ["Shepherds_01", "Application", "Dogs", 2],
+        2: ["Shepherds_02", "Home", "Dogs", 0],
     },    
 };
 
+// Game Sets. Tags Ordered.
 const spoofGameFolders = {
     "Vegetables": {
         "Beans":    ["Bean" ],
@@ -122,8 +125,6 @@ const spoofGameFolders = {
         "Medium twin engine": ["H155", "H160" ],
         "Heavy twin engine": ["H215", "H225"]
     },
-    // "AS355", "H135", "H145", "H155", "H160", "H175", 
-    // "H215", "H225"]  
     "Africa": {
         "North Coast":      ["Tunisia",   "Morocco",     "Algeria",        "Libya"],
     },    
@@ -160,12 +161,7 @@ const spoofGameMetrics = {
         "Annual food cost": {
             'Italian Greyhound': 324.0, 'Ibizan Hound': 0, 'Pharaoh Hound': 466.0, 'Greyhound': 324.0, 'Bearded Collie': 0, 'Border Collie': 324.0, 'Old English Sheepdog': 710.0, 'Australian Shepherd': 466.0, 'Silky Terrier': 0, 'Irish Terrier': 0, 'Yorkshire Terrier': 324.0, 'Cairn Terrier': 324.0, 'Boston Terrier': 324.0, 'American Staffordshire Terrier': 0, 'Staffordshire Bull Terrier': 466.0, 'Bull Terrier': 466.0, 'Beagle': 324.0, 'Bloodhound': 710.0, 'American Foxhound': 0, 'Basset Hound': 324.0, 'Boxer': 466.0, 'Bullmastiff': 466.0, 'Mastiff': 701.0, 'Field Spaniel': 0, 'Boykin Spaniel': 0, 'American Water Spaniel': 0
         },
-    },
-    // Africa... Removed.
-    // "Population (2022)": {
-    //     "Tunisia":5,   "Morocco":5,     "Algeria":5,        "Libya":5,
-    // },    
-    
+    },    
 };
 
 // for (let i=1; i<56; i++){
@@ -323,12 +319,6 @@ const spoofInstructions = {
         4: 'Can you find the Irish Wolfhound?',
         5: 'Game complete!'
     },
-
-    // "Hounds_01":        ['Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound'],
-    // "Hounds_02":        ['Dachshund',    'Bluetick Coonhound',      'Black and Tan Coonhound',    'Plott Hound'],
-    // "Hounds_03":        ['Afghan Hound',              'Otterhound',       'Basenji',    'Irish Wolfhound'],
-
-
     "Sighthounds": {
         1: 'Level 1: Find all the Greyhounds.',
         2: 'Level 2: Find the Italian Greyhounds.',

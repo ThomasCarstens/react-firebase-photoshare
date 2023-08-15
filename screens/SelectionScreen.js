@@ -83,7 +83,7 @@ const SelectionScreen = ({ navigation }) => {
               res.items.forEach((itemRef) => {
             
             getDownloadURL(itemRef).then((x)=> {
-              console.log(gameKeyList[j], ' : ', x)
+              // console.log(gameKeyList[j], ' : ', x)
                 setOutcomeImage(previous => {
                   previous[gameKeyList[j]]=x
                   return previous});
@@ -114,7 +114,7 @@ const SelectionScreen = ({ navigation }) => {
             res.items.forEach((itemRef) => {
           
           getDownloadURL(itemRef).then((x)=> {
-            console.log(gameKeyList[j], ' : ', x)
+            // console.log(gameKeyList[j], ' : ', x)
             setThumbnailImage(previous => [...previous, x]);
           })
           if (thumbnailImage==undefined) {
@@ -565,17 +565,33 @@ const SelectionScreen = ({ navigation }) => {
                     onPress={() => {
                       setModalVisible(!modalVisible);                      
                       let macroLevel = 0 
-                      navigation.navigate(spoofMacroGameSets["MACRO_Hounds_01"][macroLevel+ 1][1], { 
-                        name: spoofMacroGameSets["MACRO_Hounds_01"][macroLevel+ 1][0],
-                        folder: spoofMacroGameSets["MACRO_Hounds_01"][macroLevel+ 1][2],
-                        macroName: "MACRO_Hounds_01",
+
+                      // Set the latestLevel
+                      if (auth.currentUser) {
+                        set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+folderName+'/'+"Hounds"+'/latestLevel/'), {
+                          gameSetLevel: 1,
+                          folder: spoofMacroGameSets["Hounds"][macroLevel+ 1][2],
+                          gameName: spoofGameFolders[gameName][spoofMacroGameSets["Hounds"][macroLevel+ 1][0]][0],
+                          levelGrouping: spoofMacroGameSets["Hounds"][macroLevel+ 1][0],
+                          macroName: "Hounds",
+                        })                       
+                      }
+ 
+                      // Fetch latestLevel
+                      navigation.navigate(spoofMacroGameSets["Hounds"][macroLevel+ 1][1], { 
+                        name: spoofMacroGameSets["Hounds"][macroLevel+ 1][0],
+                        folder: spoofMacroGameSets["Hounds"][macroLevel+ 1][2],
+                        macroName: "Hounds",
                         gameIsThreaded: 1,
                         macroLevel: 1,
                         application: applicationImages,
                         hint: hintImages, 
-                        level: (auth.currentUser)?userData["MACRO_Hounds_01"]['latestLevel']['gameSetLevel']:0, 
+                        level:   (auth.currentUser)?
+                        (userData["Hounds"])?userData["Hounds"]['latestLevel']['gameSetLevel']:0
+                        :0,
                         data: (auth.currentUser)?userData:0 })
-                    }}>
+
+                      }}>
                       <View flexDirection='row'>
                         <Text style={{fontWeight:"bold", color:'rgb(50, 100, 1000)', fontSize:18, marginTop:-10}}> {"\n Hounds"} </Text>
                         
@@ -622,6 +638,7 @@ const SelectionScreen = ({ navigation }) => {
                       setModalVisible(!modalVisible);
                       navigation.navigate(gameType, { 
                         name: gameName, 
+                        
                         folder: folderName,
                         hint: hintImages, 
                         level: userData[gameName]['latestLevel']['gameSetLevel'], 
