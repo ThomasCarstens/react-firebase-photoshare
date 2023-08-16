@@ -6,24 +6,48 @@ import { useNavigation } from '@react-navigation/core'
 import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as ScreenOrientation from 'expo-screen-orientation';
+import { ref as ref_d, set, get, onValue } from 'firebase/database'
+import { storage, database } from '../firebase'
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigation = useNavigation()
+    const [gameFile, setGameFile] = useState()
+
     const userLoggedIn = (auth.currentUser)
     if (userLoggedIn !== null){
       // We have data!!
-      navigation.replace("Selection")
+      navigation.replace("Selection", {gameFile: gameFile})
       return
     }
+
+    useEffect(()=>{
+      
+      //GameFile loaded on Firebase Realtime Database.
+      const gameFileRef = ref_d(database, "gameFile" );
+ 
+      onValue(gameFileRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data){
+              console.log('Gamefile downloaded and set to state.')
+              // console.log(gameFile.spoofMacroGameSets.Dogs.Hounds[1][0]);
+              setGameFile(data)
+              // import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
+
+
+            }
+            
+          })
+        }, [])
+
     useEffect(() => {
         console.log('Login finds key: ', userLoggedIn)
         ScreenOrientation.lockAsync(2); //LANDSCAPE_LEFT
         const unsubscribe = auth.onAuthStateChanged(user=> {
             if (user) {
                 // AsyncStorage.setItem('@TestUser:key', auth.currentUser);
-                navigation.replace("Selection")
+                navigation.replace("Selection", {gameFile: gameFile})
                 
             }
         })
@@ -53,7 +77,7 @@ const LoginScreen = () => {
     }
 
     const handleAnonUser = () => {
-        navigation.replace("Selection")
+        navigation.replace("Selection", {gameFile: gameFile})
     }
 {/* <SafeAreaView style={{...styles.webContainer}}> 
             <View style={{...styles.webContent}}>     */}

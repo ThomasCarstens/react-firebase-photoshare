@@ -13,8 +13,8 @@ const TableExample = (props) => {
   const navigation = useNavigation();
   const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
   const loggedIn = auth.currentUser
-  const gameName = props.route.params?.name 
-  const macroName = props.route.params?.macroName 
+  const gameName = props.route.params.folder 
+  const macroName = props.route.params.macroName 
   const lastscore = props.route.params?.lastscore  
   let lastdate = props.route.params?.lastdate  
   const data = props.route.params?.data  

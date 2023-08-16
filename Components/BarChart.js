@@ -9,8 +9,14 @@ const colors = {
   bars: {
     1: '#15AD13',
     2: '#223D63',
+    3: '#CC6600',
+    4: '#9933FF',
+    5: '#0066CC',
+    6: '#FF3333',
+    7: '#006633',
   }
 }
+total_bar_colors = Object.keys(colors.bars).length
 
 export default class BarChart extends PureComponent {
   render() {
@@ -130,7 +136,7 @@ export default class BarChart extends PureComponent {
               rx={2.5}
               width={GRAPH_BAR_WIDTH}
               height={y(item.value)}
-              fill={colors.bars[item.level]}
+              fill={colors.bars[item.level%total_bar_colors]}
             />
 
             

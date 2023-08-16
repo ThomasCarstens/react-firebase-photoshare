@@ -27,24 +27,31 @@ const spoofGameAllocation = {
 
 // Game sets. Screens Ordered.
 const spoofMacroGameSets = {
+    // "Dogs": {
+    //     // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+    //     1: ["Sight VS Scent", "Home", "Dogs", 1],
+    //     2: ["Life expectancy", "Comparison", "Dogs", 0],
+    //     3: ["Dog hunting situations", "Application", "Dogs", 0],
+    // },
     "Dogs": {
         // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
-        1: ["Sight VS Scent", "Home", "Dogs", 1],
-        2: ["Life expectancy", "Comparison", "Dogs", 0],
-        3: ["Dog hunting situations", "Application", "Dogs", 0],
+        "Hounds": {
+            2: ["Hounds", "Score", "Dogs", 1],
+            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+            1: ["Hounds_02", "Home", "Dogs", 1],        
+            4: ["Hounds_01", "Home", "Dogs", 1],        
+            3: ["Hounds_03", "Home", "Dogs", 1],
+            
+        },
+        "Shepherd dogs": {
+            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+            3: ["Shepherds_01", "Home", "Dogs", 2],
+            2: ["Shepherds_02", "Home", "Dogs", 4],
+    
+            1: ["Shepherd dogs", "Score", "Dogs", 1],
+        },    
     },
-    "Hounds": {
-        // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
-        1: ["Hounds_02", "Home", "Dogs", 1],        
-        // 2: ["Hounds_01", "Application", "Dogs", 1],
-        2: ["Hounds_01", "Home", "Dogs", 1],        
-        // 4: ["Hounds_02", "Application", "Dogs", 1],
-    },
-    "Shepherd dogs": {
-        // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
-        1: ["Shepherds_01", "Application", "Dogs", 2],
-        2: ["Shepherds_02", "Home", "Dogs", 0],
-    },    
+
 };
 
 // Game Sets. Tags Ordered.
@@ -347,6 +354,27 @@ const spoofInstructions = {
         4: 'Nice work! Can you locate the Old English Sheepdog?',
         5: 'Congratulations! You completed all the levels.',
         },
+    "Shepherds_01": {
+        1: 'Find the Beauceron.',
+        2: 'Locate the Belgian Sheepdog.',
+        3: 'Identify the German Shepherd Dog.',
+        4: 'Can you find the Icelandic Sheepdog?',
+        5: 'Game complete!'
+    },
+    "Shepherds_02": {
+        1: 'Find the Bearded Collie.',
+        2: 'Locate the Border Collie.',
+        3: 'Identify the Old English Sheepdog.',
+        4: 'Can you find the Australian Shepherd?',
+        5: 'Game complete!'
+    },
+    "Shepherds_03": {
+        1: 'Find the Belgian Malinois.',
+        2: 'Locate the Bouvier des Flandres.',
+        3: 'Identify the Briard.',
+        4: 'Can you find the Collie?',
+        5: 'Game complete!'
+    },
     "One rope": {
         1: "Level 1: Find the Overhand Knot.",
         2: "Level 2: Locate the Slip Knot.",
@@ -397,7 +425,6 @@ const spoofInstructions = {
         8: "Great! Now, identify the Viennoise.",
         9: "Game complete!",
     },
-
     "Loaf": {
         1: "Find the Brioche.",
         2: "Locate the Fougasse.",
@@ -604,6 +631,27 @@ const spoofCorrectTag = {
         4: 'Irish Wolfhound',
         5: ''
     },
+    "Shepherds_01": {
+        1: 'Beauceron',
+        2: 'Belgian Sheepdog',
+        3: 'German Shepherd Dog',
+        4: 'Icelandic Sheepdog',
+        5: ''
+    },
+    "Shepherds_02": {
+        1: 'Bearded Collie',
+        2: 'Border Collie',
+        3: 'Old English Sheepdog',
+        4: 'Australian Shepherd',
+        5: ''
+    },
+    "Shepherds_03": {
+        1: 'Belgian Malinois',
+        2: 'Bouvier des Flandres',
+        3: 'Briard',
+        4: 'Collie',
+        5: ''
+    },
 };
 
 const spoofIncorrectTag = {
@@ -787,6 +835,27 @@ const spoofIncorrectTag = {
         2: ['Irish Wolfhound', 'Afghan Hound'],
         3: ['Afghan Hound', 'Irish Wolfhound'],
         4: ['Basenji', 'Otterhound'],
+        5: ['']
+    },
+    "Shepherds_01": {
+        1: ['Belgian Sheepdog', 'German Shepherd Dog'],
+        2: ['Beauceron', 'Icelandic Sheepdog'],
+        3: ['Icelandic Sheepdog', 'Beauceron'],
+        4: ['German Shepherd Dog', 'Belgian Sheepdog'],
+        5: ['']
+    },
+    "Shepherds_02": {
+        1: ['Border Collie', 'Old English Sheepdog'],
+        2: ['Australian Shepherd', 'Bearded Collie'],
+        3: ['Bearded Collie', 'Australian Shepherd'],
+        4: ['Old English Sheepdog', 'Border Collie'],
+        5: ['']
+    },
+    "Shepherds_03": {
+        1: ['Bouvier des Flandres', 'Briard'],
+        2: ['Collie', 'Belgian Malinois'],
+        3: ['Belgian Malinois', 'Collie'],
+        4: ['Briard', 'Bouvier des Flandres'],
         5: ['']
     },
 }

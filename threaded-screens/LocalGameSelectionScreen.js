@@ -15,29 +15,18 @@ import { storage, database } from '../firebase'
 import { Linking } from 'react-native';
 import { getDownloadURL, list, ref } from 'firebase/storage'
 import { SearchBar } from 'react-native-elements'
-// import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFileFromWeb'
+import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Progress from 'react-native-progress';
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
-const SelectionScreen = (props) => {
+const SelectionScreen = ({ navigation }) => {
     // Orientation.lockToLandscape();
-    const navigation = useNavigation();
     const toast = useRef(null);
     const [userData, setUserData] = useState()
     const [gameName, setGameName] = useState()
-    // const [gameFile, setGameFile] = useState()
-
-    // Using gameFile downloaded upon Login.
-    const gameFile = props.route.params.gameFile
-    const spoofGameFolders = props.route.params.gameFile.spoofGameFolders
-    const spoofGameAllocation = props.route.params.gameFile.spoofGameAllocation
-    const spoofGameHashtags = props.route.params.gameFile.spoofGameHashtags
-    const spoofGameMetrics = props.route.params.gameFile.spoofGameMetrics
-    const spoofGameSets = props.route.params.gameFile.spoofGameSets
-    const spoofMacroGameSets = props.route.params.gameFile.spoofMacroGameSets
-
+    const [gameFile, setGameFile] = useState()
     const [gameType, setGameType] = useState()
     const [folderName, setFolderName] = useState()
     const [applicationName, setApplicationName] = useState()
@@ -57,8 +46,6 @@ const SelectionScreen = (props) => {
     if (!webView){
       ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
     } 
-
-
     
     // const userLoggedIn = AsyncStorage.getItem('@TestUser:key');
     // console.log('accountuser: ', userLoggedIn)
@@ -150,22 +137,19 @@ const SelectionScreen = (props) => {
 
     // On Game click, load the next page (Hints)
     useEffect(()=>{
-      
+
       //GameFile loaded on Firebase Realtime Database.
-      // const gameFileRef = ref_d(database, "gameFile" );
+      const gameFileRef = ref_d(database, "gameFile" );
  
-      // onValue(gameFileRef, (snapshot) => {
-      //       const data = snapshot.val();
-      //       if (data){
-      //         console.log('Gamefile downloaded and set to state.')
-      //         // console.log(spoofMacroGameSets.Dogs.Hounds[1][0]);
-      //         setGameFile(data)
-      //         // import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
-
-
-      //       }
+      onValue(gameFileRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data){
+              console.log('Gamefile downloaded and set to state.')
+              // console.log(gameFile.spoofMacroGameSets.Dogs.Hounds[1][0]);
+              setGameFile(data)
+            }
             
-      //     })
+          })
 
       // Query All User Data here.
       if (auth.currentUser) {
@@ -211,18 +195,9 @@ const SelectionScreen = (props) => {
        }
    
        getHintImages()
-       
       }, [gameName])
-    // On Game click, load the next page (Hints)
-    // useEffect(()=>{
-    //   setSpoofMacroGameSets(spoofMacroGameSets)
-    //   setSpoofGameFolders(spoofGameFolders)
-  
-    //   setSpoofGameAllocation(spoofGameAllocation)
-    //   setSpoofGameHashtags(spoofGameHashtags)
-    //   setSpoofGameMetrics(spoofGameMetrics)
-    //   setSpoofGameSets(spoofGameSets)    
-    // }, [gameFile])
+
+
     const handleSignOut = async () => {
       // await AsyncStorage.clear()
       
@@ -294,7 +269,6 @@ const SelectionScreen = (props) => {
       // Navigation
 
       navigation.navigate(spoofMacroGameSets[folderName][threadedGameName][macroLevel+ 1][1], { 
-        gameFile: gameFile,
         name: spoofMacroGameSets[folderName][threadedGameName][macroLevel+ 1][0],
         folder: spoofMacroGameSets[folderName][threadedGameName][macroLevel+ 1][2],
         macroName: threadedGameName,
