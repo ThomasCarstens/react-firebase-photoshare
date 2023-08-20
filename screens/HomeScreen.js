@@ -13,7 +13,6 @@ import { useToast } from 'react-native-fast-toast';
 import Toast from 'react-native-fast-toast';
 import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
-// import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets, spoofGameFolders} from '../gameFile';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Audio } from "expo-av"
 // import Toast, { useToast } from 'react-native-toast-notifications';
@@ -25,22 +24,41 @@ import { Audio } from "expo-av"
 
 // https://www.wineware.co.uk/glassware/beginners-guide-to-different-types-of-wine-glasses
 
+// Local Gamefile.
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets, spoofGameFolders} from '../gameFile';
 
 const HomeScreen = (props) => {
 
   // Using gameFile downloaded upon Login.
-  const gameFile = props.route.params.gameFile
-  const spoofGameFolders = props.route.params.gameFile.spoofGameFolders
-  const spoofGameAllocation = props.route.params.gameFile.spoofGameAllocation
-  const spoofGameHashtags = props.route.params.gameFile.spoofGameHashtags
-  const spoofGameMetrics = props.route.params.gameFile.spoofGameMetrics
-  const spoofGameSets = props.route.params.gameFile.spoofGameSets
-  const spoofInstructions = props.route.params.gameFile.spoofInstructions
-  const spoofIncorrectTag = props.route.params.gameFile.spoofIncorrectTag
-  const spoofCorrectTag = props.route.params.gameFile.spoofCorrectTag
-  const spoofMacroGameSets = props.route.params.gameFile.spoofMacroGameSets
+  // const spoofGameFolders = props.route.params.gameFile.spoofGameFolders
+  // const spoofGameAllocation = props.route.params.gameFile.spoofGameAllocation
+  // const spoofGameHashtags = props.route.params.gameFile.spoofGameHashtags
+  // const spoofGameMetrics = props.route.params.gameFile.spoofGameMetrics
+  // const spoofGameSets = props.route.params.gameFile.spoofGameSets
+  // const spoofInstructions = props.route.params.gameFile.spoofInstructions
+  // const spoofIncorrectTag = props.route.params.gameFile.spoofIncorrectTag
+  // const spoofCorrectTag = props.route.params.gameFile.spoofCorrectTag
+  // const spoofMacroGameSets = props.route.params.gameFile.spoofMacroGameSets
+  const [gameFile, setGameFile] = useState()
 
+  useEffect(()=>{   
+    if (props.route.params.gameFile){
+      setGameFile(props.route.params.gameFile)
+    } else {
+      //GameFile loaded on Firebase Realtime Database.
+      const gameFileRef = ref_d(database, "gameFile" );
 
+      onValue(gameFileRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data){
+              console.log('Gamefile downloaded and set to state.')
+              setGameFile(data)
+            }            
+          })
+
+    }
+
+      }, [])
 
   const selectedGame = props.route.params.name  
   const selectedFolder = props.route.params?.folder
@@ -460,7 +478,9 @@ const HomeScreen = (props) => {
   
 
   const handleSelectionScreen = () => {
-    navigation.replace("Selection")
+    navigation.replace("Selection", { 
+      gameFile: gameFile,
+    })
   }
 
   // progress bar - within the level we are at.

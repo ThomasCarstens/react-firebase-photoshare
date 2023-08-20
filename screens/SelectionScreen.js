@@ -15,9 +15,12 @@ import { storage, database } from '../firebase'
 import { Linking } from 'react-native';
 import { getDownloadURL, list, ref } from 'firebase/storage'
 import { SearchBar } from 'react-native-elements'
-// import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFileFromWeb'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Progress from 'react-native-progress';
+
+
+// Local GameFile
+import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
@@ -27,16 +30,38 @@ const SelectionScreen = (props) => {
     const toast = useRef(null);
     const [userData, setUserData] = useState()
     const [gameName, setGameName] = useState()
-    // const [gameFile, setGameFile] = useState()
+    const [gameFile, setGameFile] = useState()
+
 
     // Using gameFile downloaded upon Login.
-    const gameFile = props.route.params.gameFile
-    const spoofGameFolders = props.route.params.gameFile.spoofGameFolders
-    const spoofGameAllocation = props.route.params.gameFile.spoofGameAllocation
-    const spoofGameHashtags = props.route.params.gameFile.spoofGameHashtags
-    const spoofGameMetrics = props.route.params.gameFile.spoofGameMetrics
-    const spoofGameSets = props.route.params.gameFile.spoofGameSets
-    const spoofMacroGameSets = props.route.params.gameFile.spoofMacroGameSets
+    // setGameFile(props.route.params?.gameFile)
+    // const spoofGameFolders = props.route.params?.gameFile?.spoofGameFolders
+    // const spoofGameAllocation = props.route.params?.gameFile?.spoofGameAllocation
+    // const spoofGameHashtags = props.route.params?.gameFile?.spoofGameHashtags
+    // const spoofGameMetrics = props.route.params?.gameFile?.spoofGameMetrics
+    // const spoofGameSets = props.route.params?.gameFile?.spoofGameSets
+    // const spoofMacroGameSets = props.route.params?.gameFile?.spoofMacroGameSets
+
+    useEffect(()=>{   
+      if (props.route.params.gameFile){
+        setGameFile(props.route.params.gameFile)
+        console.log('Gamefile passed through navigator.')
+      } else {
+        //GameFile loaded on Firebase Realtime Database.
+        const gameFileRef = ref_d(database, "gameFile" );
+  
+        onValue(gameFileRef, (snapshot) => {
+              const data = snapshot.val();
+              if (data){
+                console.log('Gamefile downloaded and set to state.')
+                setGameFile(data)
+              }            
+            })
+
+      }
+
+        }, [])
+
 
     const [gameType, setGameType] = useState()
     const [folderName, setFolderName] = useState()
@@ -352,6 +377,71 @@ const SelectionScreen = (props) => {
     }
 
 
+    function FamiliesBlock() {
+      let FamiliesButtons = [];
+      // console.log('#### folder name is ', folderName)
+      let familyList = Object.keys(spoofMacroGameSets[folderName])
+      // console.log('### metricList: ', metricList)
+      for (var family_i of familyList) {
+        let nextButton =      (  
+        
+          <TouchableOpacity
+          style={styles.gameSelectionModal}
+          onPress={() => {
+            setModalVisible(!modalVisible);                      
+            startThreadedGame(family_i)
+
+            }}>
+            <View flexDirection='row'>
+              <Text style={{fontWeight:"bold", color:'rgb(50, 100, 1000)', fontSize:18, marginTop:-10}}> {"\n"+family_i} </Text>
+              
+              <Progress.Bar progress={0.8} color='rgb(13, 1, 117)' borderRadius={20} marginLeft={10} marginTop={10} width={140} height={30}>
+                <Text style={styles.modalProgressBarText}>12 Species</Text>
+              </Progress.Bar>
+            </View>
+            
+        </TouchableOpacity> 
+
+        // <TouchableOpacity
+
+        //         style={styles.gameSelectionModal}
+
+        //         onPress={() => {
+        //           setApplicationName("Dog hunting situations")
+        //           setApplicationModalVisible(!applicationModalVisible);
+        //           // Navigate if game is allocated.
+
+        //           if (spoofGameAllocation[familyList[family_i]]){
+
+        //             navigation.navigate(spoofGameAllocation[familyList[family_i]], { 
+        //               name: familyList[family_i],
+        //               folder: folderName,
+        //               gameIsThreaded: 0,
+        //               hint: hintImages, 
+        //               level: (auth.currentUser)?userData[gameName]['latestLevel']['gameSetLevel']:0, 
+        //               application: applicationImages,
+        //               applicationName: familyList[family_i],
+        //               data: (auth.currentUser)?userData:0 })
+        //           } else 
+        //           { plsAwaitRelease()
+        //           }
+        //         }}>
+        //           <Text style={{fontWeight:"bold"}}> {"\n"+familyList[family_i]} </Text>
+        //   </TouchableOpacity>  
+          
+          )
+        
+          FamiliesButtons.push(nextButton)
+
+    }
+
+      return(
+        FamiliesButtons
+      )
+    
+    }
+
+
 //  <SafeAreaView style={{...styles.webContainer}}> 
 //              <View style={{...styles.webContent}}>    
     return (
@@ -457,13 +547,14 @@ const SelectionScreen = (props) => {
           if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={{uri:`${thumbnailImage[3]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Animal tracks'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
+            <Text style ={styles.gameText}> {'Footprints'} </Text>
+            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
+            
+            {/* {!auth.currentUser?<Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>:<View></View>} */}
           </ImageBackground>  
         </TouchableOpacity>        
 
         <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          
           // setGameName('Knots')
           // setGameType('Home')
           // setModalVisible(true)}}>
@@ -473,7 +564,8 @@ const SelectionScreen = (props) => {
           <ImageBackground source={{uri:`${thumbnailImage[4]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Knots'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
+            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
+            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
           </ImageBackground>  
         </TouchableOpacity>        
 
@@ -486,8 +578,9 @@ const SelectionScreen = (props) => {
           onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={{uri:`${thumbnailImage[5]}`}}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Timelines'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
+            <Text style ={styles.gameText}> {'Inventions'} </Text>
+            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
+            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
           </ImageBackground>  
         </TouchableOpacity>    
 
@@ -499,7 +592,8 @@ const SelectionScreen = (props) => {
           <ImageBackground source={require('../assets/thumbnails/helicopter.jpg')}
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Helicopters'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
+            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
+            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
           </ImageBackground>  
         </TouchableOpacity> 
 
@@ -518,8 +612,9 @@ const SelectionScreen = (props) => {
         <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
           <ImageBackground source={require('../assets/thumbnails/crabs.jpg')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Crabs'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
+            <Text style ={styles.gameText}> {'Sea Life'} </Text>
+            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
+            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
           </ImageBackground>  
         </TouchableOpacity>     
   
@@ -527,7 +622,8 @@ const SelectionScreen = (props) => {
           <ImageBackground source={require('../assets/thumbnails/berries.png')} 
           style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
             <Text style ={styles.gameText}> {'Berries'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
+            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
+            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
           </ImageBackground> 
         </TouchableOpacity>   
   
@@ -634,7 +730,8 @@ const SelectionScreen = (props) => {
                       <Text style={{fontWeight:"bold"}}> {"\n BACK"} </Text>
             </TouchableOpacity> 
             
-            <TouchableOpacity
+            <FamiliesBlock></FamiliesBlock>
+            {/* <TouchableOpacity
                     style={styles.gameSelectionModal}
                     onPress={() => {
                       setModalVisible(!modalVisible);                      
@@ -664,7 +761,7 @@ const SelectionScreen = (props) => {
                           <Text style={styles.modalProgressBarText}>{spoofGameFolders["Dogs"]["Shepherd dogs_ALL"].length} Species</Text>
                         </Progress.Bar>
                       </View>
-            </TouchableOpacity> 
+            </TouchableOpacity>  */}
 
             {/* <TouchableOpacity
                     style={styles.gameSelectionModal}
@@ -1032,6 +1129,7 @@ var styles = StyleSheet.create({
     gameText: {
     //   fontFamily:"Cochin", 
       fontSize:13,
+      marginLeft:15,
       top:'25%',
       color: 'black',
       backgroundColor: 'rgba(255, 255, 255, 0.6)', 
@@ -1214,6 +1312,15 @@ var styles = StyleSheet.create({
       width:90,
       height: 90,
       marginLeft: 40,
+      
+    },
+    soon: {
+      width: "100%",
+      width:62,
+      height: 62,
+      marginLeft: 2,
+
+      borderRadius: 30
       
     },
     button: {

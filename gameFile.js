@@ -12,9 +12,9 @@ const spoofGameSets = {
     "Life expectancy": ['BigSmall1', 'BigSmall2', 'BigSmall3'],
     "Dog hunting situations": ['Sighthound VS Scenthounds', 'Spaniel VS Others', 'Shepherd Dog VS Others'],
     "French Bread": [ 'Loaf', 'Baguette'],
-    "Helicopters": ["Light twin engine"],
+    "Helicopters":  ["Light twin engine"],
     "Sight VS Scent":  ["Hounds", "Sighthounds"],
-    "Hounds_01": ["Hounds_01"],
+    "Hounds_01":    ["Hounds_01"],
 
 };
 
@@ -36,22 +36,64 @@ const spoofMacroGameSets = {
     "Dogs": {
         // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
         "Hounds": {
-            2: ["Hounds", "Score", "Dogs", 1],
+            1: ["Hounds", "Score", "Dogs", 1],
             // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
-            1: ["Hounds_02", "Home", "Dogs", 1],        
+            2: ["Hounds_02", "Home", "Dogs", 1],        
             4: ["Hounds_01", "Home", "Dogs", 1],        
-            3: ["Hounds_03", "Home", "Dogs", 1],
-            
+            5: ["Hounds_03", "Home", "Dogs", 1],
+            6: ["Hounds", "Score", "Dogs", 1],
+
         },
         "Shepherd dogs": {
+            1: ["Shepherd dogs", "Score", "Dogs", 1],
             // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
             3: ["Shepherds_01", "Home", "Dogs", 2],
             2: ["Shepherds_02", "Home", "Dogs", 4],
     
+            4: ["Shepherd dogs", "Score", "Dogs", 1],
+        },    
+    },
+    "French Bread": {
+        // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+        "Roots": {
+            1: ["Hounds", "Score", "Dogs", 1],
+            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+            2: ["Hounds_02", "Home", "Dogs", 1],        
+            4: ["Hounds_01", "Home", "Dogs", 1],        
+            5: ["Hounds_03", "Home", "Dogs", 1],
+            6: ["Hounds", "Score", "Dogs", 1],
+
+        },
+        "Legumes": {
             1: ["Shepherd dogs", "Score", "Dogs", 1],
+            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+            3: ["Shepherds_01", "Home", "Dogs", 2],
+            2: ["Shepherds_02", "Home", "Dogs", 4],
+    
+            4: ["Shepherd dogs", "Score", "Dogs", 1],
         },    
     },
 
+    "Cheeses": {
+        // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+        "Goat": {
+            1: ["Hounds", "Score", "Dogs", 1],
+            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+            2: ["Hounds_02", "Home", "Dogs", 1],        
+            4: ["Hounds_01", "Home", "Dogs", 1],        
+            5: ["Hounds_03", "Home", "Dogs", 1],
+            6: ["Hounds", "Score", "Dogs", 1],
+
+        },
+        "Cow": {
+            1: ["Shepherd dogs", "Score", "Dogs", 1],
+            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
+            3: ["Shepherds_01", "Home", "Dogs", 2],
+            2: ["Shepherds_02", "Home", "Dogs", 4],
+    
+            4: ["Shepherd dogs", "Score", "Dogs", 1],
+        },    
+    },
 };
 
 // Game Sets. Tags Ordered.

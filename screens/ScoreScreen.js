@@ -3,27 +3,30 @@ import React from 'react';
 import { Dimensions, Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { spoofGameFolders, spoofGameSets } from '../gameFile';
 import { auth } from '../firebase';
 import { Svg, G, Rect } from 'react-native-svg'
 import BarChart from '../Components/BarChart.js';
 // import { LineChart } from "react-native-gifted-charts";
+// Local Gamefile.
+import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets, spoofGameFolders} from '../gameFile';
 
 const TableExample = (props) => {
   const navigation = useNavigation();
   const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
   const loggedIn = auth.currentUser
   const gameName = props.route.params.folder 
+  const gameFile = props.route.params.gameFile
+  var macroLevel = props.route.params?.macroLevel 
   const macroName = props.route.params.macroName 
   const lastscore = props.route.params?.lastscore  
   let lastdate = props.route.params?.lastdate  
-  const data = props.route.params?.data  
+  const userData = props.route.params?.data  
   let latestRecords = [];
   let latestRecordDates = [];
   let overallSuccess = 0
-  if (data){
-    const spoofAccuracy = data[gameName]['accuracy']
-    const allAccuracyAttempts = data[gameName][macroName]['accuracy']
+  if (userData){
+    const spoofAccuracy = userData[gameName]['accuracy']
+    const allAccuracyAttempts = userData[gameName][macroName]['accuracy']
     
     var spoofGameData = []
     for (let level=1 ; level<Object.keys(allAccuracyAttempts).length+1 ; level++) {
@@ -182,22 +185,45 @@ const TableExample = (props) => {
         <Text>
           <Text style={{color: 'black', fontSize:40, marginLeft:30}}> {gameName} </Text><Text style={{color: 'black', fontSize:20}}> SCORE</Text>
         </Text>
-        {(!data)?<Text style={{color: 'black', fontSize:20, marginLeft:30}}> (No user data detected)</Text>:<View></View>}
+        {(!userData)?<Text style={{color: 'black', fontSize:20, marginLeft:30}}> (No user data detected)</Text>:<View></View>}
         <View padding={5}></View>
 
         {/* <Text style={{color: 'white', fontSize:20, marginLeft:30}}>{spoofGameFolders[gameName][gameName+"_ALL"].join(false?' ✔️':' 🔲')}</Text> */}
         {/* <SpeciesTableGenerator></SpeciesTableGenerator> */}
       <View style={styles.graphContainer}>
-        <BarChart data={data} gameName={gameName} macroName={macroName} round={1} unit="€"/>
+        <BarChart data={userData} gameName={gameName} macroName={macroName} round={1} unit="€"/>
       </View>
         {/* <TableRowGenerator></TableRowGenerator> */}
         <View padding={80}></View>
       <TouchableOpacity
                 style={styles.gameSelection}
                 onPress={() => {
-                  navigation.replace("Selection")
+                  navigation.replace("Selection", { 
+                    gameFile: gameFile,
+                  })
                 }}>
-                  <Text style={{color: 'white', fontWeight:"bold"}}> {"\n CHANGE GAME"} </Text>
+                  <Text style={{color: 'white', fontWeight:"bold"}}> {"\n BACK TO SELECTION"} </Text>
+      </TouchableOpacity>  
+      <TouchableOpacity
+                style={styles.gameSelection}
+                
+                onPress={() => {
+                  // macroLevel=macroLevel+1
+                  navigation.navigate(spoofMacroGameSets[gameName][macroName][macroLevel+ 1][1], { 
+                    gameFile: gameFile,
+                    name: spoofMacroGameSets[gameName][macroName][macroLevel+ 1][0],
+                    folder: spoofMacroGameSets[gameName][macroName][macroLevel+ 1][2],
+                    macroName: macroName,
+                    gameIsThreaded: 1,
+                    macroLevel: macroLevel+1,
+                    // application: applicationImages,
+                    // hint: hintImages, 
+                    level:   (auth.currentUser)?
+                    (userData[macroName])?userData[macroName]['latestLevel']['gameSetLevel']:1
+                    :1,
+                    data: (auth.currentUser)?userData:0 })
+                }}>
+                  <Text style={{color: 'white', fontWeight:"bold"}}> {"\n START GAME"} </Text>
       </TouchableOpacity>  
       <View padding={500}></View>
       {/* </View> */}
