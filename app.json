@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "FirebaseAuth",
+    "name": "Cultivate",
     "slug": "FirebaseAuth",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -20,13 +20,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "io.cognitivegen.cultivate"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "logo.png"
     },
     "extra": {
       "eas": {

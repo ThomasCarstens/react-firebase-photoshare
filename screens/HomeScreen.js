@@ -113,13 +113,13 @@ const HomeScreen = (props) => {
   var gameName = spoofMacroGameSets[selectedFolder][macroName][gameSetLevel][0]//spoofGameSets[selectedGame][gameSetLevel]
   console.log(gameName, "is the game noww.")
   // const [gameName, setGameName ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
-  const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
-  const [instructionText, setInstructionText] = useState(spoofInstructions[gameName][learningLevel])
-  const [correctTag, setCorrectTag] = useState(spoofCorrectTag[gameName][learningLevel])
+  const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[selectedGame][learningLevel]) // this is an issue upon first load.
+  const [instructionText, setInstructionText] = useState(spoofInstructions[selectedGame][learningLevel])
+  const [correctTag, setCorrectTag] = useState(spoofCorrectTag[selectedGame][learningLevel])
   const [sort, setSort] = useState(false)
   
   // const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
-  const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofInstructions[gameName]).pop()))
+  const [progressInGame, setProgressInGame] = useState(learningLevel/(Object.keys(spoofInstructions[selectedGame]).pop()))
   const [gameComplete, setGameComplete] = useState(false)
   const [gameSetComplete, setGameSetComplete] = useState(false)
   const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
@@ -136,11 +136,11 @@ const HomeScreen = (props) => {
     setGallery([]) 
     setGalleryTags({})
     // at end of mini game, update text / Next Game button
-    if (learningLevel == Object.keys(spoofInstructions[gameName]).length) {
+    if (learningLevel == Object.keys(spoofInstructions[selectedGame]).length) {
       
       setGameComplete(true)
       let averageCorrectRate = (correctClickCount == 0)? 0: (correctClickCount/(correctClickCount+incorrectClickCount))
-      setInstructionText(spoofInstructions[gameName][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
+      setInstructionText(spoofInstructions[selectedGame][learningLevel] + ' Rating: '+ (100*averageCorrectRate).toFixed(0) + '%'); //TBD. Database.
 
       // gameSetComplete when gameSetLevel of MacroGameSets reaches full length.
       if (gameSetLevel+1 == spoofMacroGameSets[selectedFolder][macroName].length){
@@ -162,13 +162,13 @@ const HomeScreen = (props) => {
     }
 
     // within mini game, update text / tags / hint
-    setInstructionText(spoofInstructions[gameName][learningLevel]); //Triggers toastmessage (Hook)
-    setCorrectTag(spoofCorrectTag[gameName][learningLevel]) 
-    setIncorrectTag(spoofIncorrectTag[gameName][learningLevel]) //Triggers DB Download (Hook)
+    setInstructionText(spoofInstructions[selectedGame][learningLevel]); //Triggers toastmessage (Hook)
+    setCorrectTag(spoofCorrectTag[selectedGame][learningLevel]) 
+    setIncorrectTag(spoofIncorrectTag[selectedGame][learningLevel]) //Triggers DB Download (Hook)
     setShowHint(false)
   
     // within mini game, update progress bar
-    setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[gameName]).pop()) )
+    setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[selectedGame]).pop()) )
     
   }, [learningLevel, gameSetLevel])
 
@@ -457,6 +457,23 @@ const HomeScreen = (props) => {
       }
       
     }
+
+  }
+
+  const findLabelOfPic = (picNb) => {
+    if (galleryTags[correctTag]?.includes(gallery[picNb-1])){
+      return correctTag
+    } else {
+
+      for (let i=0; i<incorrectTag.length; i++){
+        if (galleryTags[incorrectTag[i]]?.includes(gallery[picNb-1])){
+          let feedbackTag = incorrectTag[i]
+          return feedbackTag
+        }
+      }      
+
+    }
+
 
   }
 
@@ -797,26 +814,154 @@ const HomeScreen = (props) => {
       }}
       >
 
-      <View  style={{backgroundColor:(webView)?'rgb(46, 204, 113)':'rgba(46, 204, 113, 0.8)'}}> 
+      <View  style={{backgroundColor:colors.background}}> 
           {/* {(hint[(gameSetLevel+1).toString()])?
            <Image source={{uri: `${hint[(gameSetLevel+1).toString()]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?300:15, marginBottom:-150}}></Image>
             : 
             <View></View>
         } */}
+        <View style={{flexDirection: 'row'}} >
+        <View style={{flexDirection: 'column'}}>
+                <TouchableOpacity >
+                  <Image 
+
+                    source={{uri:`${gallery[0]}`,}}
+                    style={styles.imageContainer}
+                    placeholder={blurhash}
+                    contentFit="cover"
+                    transition={1000}
+                  />
+                  <View style={styles.cardLabel}>
+                    <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(1)}</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity >
+                <Image 
+                  source={{uri:`${gallery[3]}`,}}
+                  style={styles.imageContainer}
+                  placeholder={blurhash}
+                  contentFit="cover"
+                  transition={1000}
+                />
+                  <View style={styles.cardLabel}>
+                    <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(4)}</Text>
+                  </View>
+                </TouchableOpacity>    
+
+              </View>
+
+              
+              <View style={{flexDirection: 'column'}}>
+
+
+                <TouchableOpacity >
+                <Image 
+                  source={{uri:`${gallery[1]}`,}}
+                  style={styles.imageContainer}
+                  placeholder={blurhash}
+                  contentFit="cover"
+                  transition={1000}
+                />
+                  <View style={styles.cardLabel}>
+                    <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(2)}</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity >
+                  <Image 
+                    source={{uri:`${gallery[4]}`,}}
+                    style={styles.imageContainer}
+                    placeholder={blurhash}
+                    contentFit="cover"
+                    transition={1000}
+                  />    
+                  <View style={styles.cardLabel}>
+                    <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(5)}</Text>
+                  </View>    
+                </TouchableOpacity>
+                
+              </View>
+
+              <View style={{flexDirection: 'column'}}>
+
+
+                <TouchableOpacity >
+                <Image 
+                  source={{uri:`${gallery[2]}`,}}
+                  style={styles.imageContainer}
+                  placeholder={blurhash}
+                  contentFit="cover"
+                  transition={1000}
+                />
+                  <View style={styles.cardLabel}>
+                    <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(3)}</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity >
+                  <Image 
+                    source={{uri:`${gallery[5]}`,}}
+                    style={styles.imageContainer}
+                    placeholder={blurhash}
+                    contentFit="cover"
+                    transition={1000}
+                  />
+                  <View style={styles.cardLabel}>
+                    <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(6)}</Text>
+                  </View>        
+                </TouchableOpacity>
+              </View>
+              {/* <View style={{flexDirection: 'column'}}> */}
 
             <View style={styles.modalRow}>
+                    <TouchableOpacity
+                  style={{...styles.gameSelection}}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                    // console.log(hint)
+                  }}>
+                    <Text style={{fontWeight:"bold"}}> {"\n START"} </Text>
+                </TouchableOpacity> 
 
-              <TouchableOpacity
-                style={{...styles.gameSelection, marginBottom:100}}
+                <TouchableOpacity
+                  style={{...styles.gameSelection}}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                    navigation.replace(spoofMacroGameSets[selectedFolder][macroName][macroLevel+ 1][1], { 
+                      gameFile: gameFile,
+                      name: spoofMacroGameSets[selectedFolder][macroName][macroLevel+ 1][0],
+                      folder: spoofMacroGameSets[selectedFolder][macroName][macroLevel+ 1][2],
+                      macroLevel: macroLevel + 1,
+                      macroName: macroName,
+                      hint: hint, 
+                      gameIsThreaded: 1,
+                      application: applicationImages,
+                      level: gameSetLevel, //gameName?
+                      data: (auth.currentUser)?userData:0 })
+                  }}>
+                    <Text style={{fontWeight:"bold"}}> {"\n SKIP LEVEL"} </Text>
+                </TouchableOpacity>   
+              {/* <TouchableOpacity
+                style={{...styles.gameSelection, marginBottom:10}}
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  console.log(hint)
+                  // console.log(hint)
                 }}>
                   <Text style={{fontWeight:"bold"}}> {"\n OK"} </Text>
-              </TouchableOpacity>  
+              </TouchableOpacity>   */}
 
               
             </View>
+
+
+              {/* </View> */}
+
+      
+        </View>
+
+
+
       </View>
       </Modal>
     </View>
@@ -826,9 +971,27 @@ const HomeScreen = (props) => {
 
 export default HomeScreen
 
+const colors = {
+  background: 'rgba(102, 0, 102, 0.8)',
+  cardTag: '	rgb(128,128,128)',
+  modalButtonText: 'rgb(50, 200, 1000)',
+  bars: {
+    1: '#15AD13',
+    2: '#223D63',
+    3: '#0066CC',
+    4: '#9933FF',
+    5: '#0066CC',
+    6: '#FF3333',
+    7: '#006633',
+  }
+}
 
 const styles = StyleSheet.create({
 
+
+      cardLabel: {
+        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-end', alignItems: 'flex-end', 
+      },
       toastPosition: {
         left: '-10%',
         top: '-80%',
@@ -995,22 +1158,22 @@ const styles = StyleSheet.create({
     gameSelection: {
 
       // fontWeight: "bold",
-      left: '4%',
-      top: '57%',
+      // left: '4%',
+      // top: '57%',
       justifyContent: "flex-start",
       alignItems: 'center',
-      width: 300,
-      height: 100,
-      marginTop:160,
-      // backgroundColor:'rgba(144, 144, 0, 0.8)',
+      width: 150,
+      height: 50,
+      // marginTop:30,
+      // marginLeft:20,
       backgroundColor:'rgba(102, 140, 190, 1)',
       borderRadius: 50
     },
 
     modalRow: {
-      top: '-60%',
-      width: '600%',
-      height: '100%', 
+      // top: '-60%',
+      // width: '600%',
+      // height: '100%', 
       flexDirection : 'column', 
       justifyContent: 'space-evenly',
     },

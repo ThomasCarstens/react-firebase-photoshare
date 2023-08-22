@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react'
 import { Svg, G, Line, Rect, Text } from 'react-native-svg'
+import { Image, Text as RNText } from 'react-native-elements' 
+
 import * as d3 from 'd3'
+import { View } from 'react-native'
 
 const GRAPH_MARGIN = 40
 const GRAPH_BAR_WIDTH = 10
@@ -28,7 +31,10 @@ export default class BarChart extends PureComponent {
     const mydata = this.props.data
 
     const allAccuracyAttempts = mydata[this.props.gameName][this.props.macroName]['accuracy']
-    
+    if (!allAccuracyAttempts){
+      console.log('Game has not been attempted yet.')
+      return
+    }
     var data = []
     var revisedData = []
     var timestamps = []
@@ -164,14 +170,7 @@ export default class BarChart extends PureComponent {
                 height={5}
                 fill={colors.bars[2]}
               />
-            {/* <Text
-            key={'label' + item.label}
-            fontSize="10"
-            fill="black"
-            x={x(item.label)}
-            y={10}
-            textAnchor="middle"
-            >2</Text> */}
+
 
           {/* x labels */}
           {data.map(item => (

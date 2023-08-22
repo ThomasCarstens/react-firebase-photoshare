@@ -382,7 +382,7 @@ const SelectionScreen = (props) => {
       // console.log('#### folder name is ', folderName)
       let familyList = Object.keys(spoofMacroGameSets[folderName])
       // console.log('### metricList: ', metricList)
-      for (var family_i of familyList) {
+      for (let family_i of familyList) {
         let nextButton =      (  
         
           <TouchableOpacity
@@ -393,7 +393,7 @@ const SelectionScreen = (props) => {
 
             }}>
             <View flexDirection='row'>
-              <Text style={{fontWeight:"bold", color:'rgb(50, 100, 1000)', fontSize:18, marginTop:-10}}> {"\n"+family_i} </Text>
+              <Text style={{fontWeight:"bold", color:colors.modalButtonText, fontSize:18, marginTop:-10}}> {"\n"+family_i} </Text>
               
               <Progress.Bar progress={0.8} color='rgb(13, 1, 117)' borderRadius={20} marginLeft={10} marginTop={10} width={140} height={30}>
                 <Text style={styles.modalProgressBarText}>12 Species</Text>
@@ -402,32 +402,6 @@ const SelectionScreen = (props) => {
             
         </TouchableOpacity> 
 
-        // <TouchableOpacity
-
-        //         style={styles.gameSelectionModal}
-
-        //         onPress={() => {
-        //           setApplicationName("Dog hunting situations")
-        //           setApplicationModalVisible(!applicationModalVisible);
-        //           // Navigate if game is allocated.
-
-        //           if (spoofGameAllocation[familyList[family_i]]){
-
-        //             navigation.navigate(spoofGameAllocation[familyList[family_i]], { 
-        //               name: familyList[family_i],
-        //               folder: folderName,
-        //               gameIsThreaded: 0,
-        //               hint: hintImages, 
-        //               level: (auth.currentUser)?userData[gameName]['latestLevel']['gameSetLevel']:0, 
-        //               application: applicationImages,
-        //               applicationName: familyList[family_i],
-        //               data: (auth.currentUser)?userData:0 })
-        //           } else 
-        //           { plsAwaitRelease()
-        //           }
-        //         }}>
-        //           <Text style={{fontWeight:"bold"}}> {"\n"+familyList[family_i]} </Text>
-        //   </TouchableOpacity>  
           
           )
         
@@ -719,7 +693,7 @@ const SelectionScreen = (props) => {
             {/* <View padding={400} ></View> */}
           
             <View style={styles.modalRow}>
-
+            <ScrollView  contentContainerStyle= {styles.gameRow}>
             <View flexDirection='column' marginBottom={3300}>
 
             <TouchableOpacity
@@ -829,7 +803,7 @@ const SelectionScreen = (props) => {
 
                       <Text style={{fontWeight:"bold"}}> {"\n Image Recognition"} </Text>
                   </TouchableOpacity>  
-            
+                  
 
                   <TouchableOpacity
                     style={styles.gameSelectionModal}
@@ -907,7 +881,7 @@ const SelectionScreen = (props) => {
 
 
             </View>
-
+            </ScrollView>
           
             
             
@@ -1061,8 +1035,20 @@ const SelectionScreen = (props) => {
 export default SelectionScreen
 // this is an issue. Inside(...) is for android and SelectionScreen is for web.
 
-
-
+// TBD | CSS FILE
+const colors = {
+  background: 'rgba(102, 0, 102, 0.8)',
+  modalButtonText: 'rgb(50, 200, 1000)',
+  bars: {
+    1: '#15AD13',
+    2: '#223D63',
+    3: '#0066CC',
+    4: '#9933FF',
+    5: '#0066CC',
+    6: '#FF3333',
+    7: '#006633',
+  }
+}
 
 
 var styles = StyleSheet.create({
@@ -1104,7 +1090,7 @@ var styles = StyleSheet.create({
       alignContent: 'space-around',
       width: 170,
       height: 90,
-      backgroundColor:'rgba(251, 192, 147, 0.8)',
+      backgroundColor: colors.background,
       // justifyContent: 'space-evenly',
       borderRadius: 50,
       flexWrap: "wrap"
@@ -1120,7 +1106,7 @@ var styles = StyleSheet.create({
       alignContent: 'space-around',
       width: 300,
       height: 50,
-      backgroundColor:'rgba(251, 192, 147, 0.8)',
+      backgroundColor: colors.background,
       // justifyContent: 'space-evenly',
       borderRadius: 50,
       flexWrap: "wrap"

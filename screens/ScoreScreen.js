@@ -24,43 +24,43 @@ const TableExample = (props) => {
   let latestRecords = [];
   let latestRecordDates = [];
   let overallSuccess = 0
-  if (userData){
-    const spoofAccuracy = userData[gameName]['accuracy']
-    const allAccuracyAttempts = userData[gameName][macroName]['accuracy']
+  // if (userData){
+  //   const spoofAccuracy = userData[gameName]['accuracy']
+  //   const allAccuracyAttempts = userData[gameName][macroName]['accuracy']
     
-    var spoofGameData = []
-    for (let level=1 ; level<Object.keys(allAccuracyAttempts).length+1 ; level++) {
-      levelAttempts = allAccuracyAttempts[level]
-      for (const [key, value] of Object.entries(levelAttempts)) {
-        console.log(levelAttempts[key]['time'], levelAttempts[key]['correct'])
-        spoofGameData.push({label: levelAttempts[key]['time'], value: levelAttempts[key]['correct']})
-      }
-    }
+  //   var spoofGameData = []
+  //   for (let level=1 ; level<Object.keys(allAccuracyAttempts).length+1 ; level++) {
+  //     levelAttempts = allAccuracyAttempts[level]
+  //     for (const [key, value] of Object.entries(levelAttempts)) {
+  //       console.log(levelAttempts[key]['time'], levelAttempts[key]['correct'])
+  //       spoofGameData.push({label: levelAttempts[key]['time'], value: levelAttempts[key]['correct']})
+  //     }
+  //   }
 
 
 
-    // if (spoofAccuracy){
-    //   for (let level=0; level<Object.keys(spoofAccuracy).length; level++){
-    //     let timeArray = Object.keys(spoofAccuracy[level]).map(each=> parseInt(each))
-    //     timeArray.sort();
-    //     latestRecords.push(100*spoofAccuracy[level][timeArray[0]])
-    //     let latestDate = new Date(timeArray[0])
+  //   // if (spoofAccuracy){
+  //   //   for (let level=0; level<Object.keys(spoofAccuracy).length; level++){
+  //   //     let timeArray = Object.keys(spoofAccuracy[level]).map(each=> parseInt(each))
+  //   //     timeArray.sort();
+  //   //     latestRecords.push(100*spoofAccuracy[level][timeArray[0]])
+  //   //     let latestDate = new Date(timeArray[0])
 
-    //     latestRecordDates.push(latestDate.getDate()+'/'+(latestDate.getMonth()+1)+'/'+latestDate.getFullYear())
+  //   //     latestRecordDates.push(latestDate.getDate()+'/'+(latestDate.getMonth()+1)+'/'+latestDate.getFullYear())
 
-    //   }
-    //   latestRecords.forEach(item => {overallSuccess += item;});
-    // } 
+  //   //   }
+  //   //   latestRecords.forEach(item => {overallSuccess += item;});
+  //   // } 
 
-    console.log('RECORDS', latestRecords)
-    console.log('DATES', latestRecordDates)
-    console.log(spoofAccuracy)
-  } else {
-      overallSuccess = 100*lastscore
-      let timeFinished = new Date(lastdate)
-      let formattedDate = timeFinished.getDate()+'/'+(timeFinished.getMonth()+1)+'/'+timeFinished.getFullYear()
-      lastdate = formattedDate
-    }
+  //   console.log('RECORDS', latestRecords)
+  //   console.log('DATES', latestRecordDates)
+  //   console.log(spoofAccuracy)
+  // } else {
+  //     overallSuccess = 100*lastscore
+  //     let timeFinished = new Date(lastdate)
+  //     let formattedDate = timeFinished.getDate()+'/'+(timeFinished.getMonth()+1)+'/'+timeFinished.getFullYear()
+  //     lastdate = formattedDate
+  //   }
 
 
 
@@ -79,6 +79,16 @@ const TableExample = (props) => {
       },
     ],
   };
+
+  const handleLogin = async () => {
+
+    navigation.replace('Login')
+    // await AsyncStorage.clear()
+    // AsyncStorage.getAllKeys().then(data => console.log('AsyncStorage is ', data));
+    // clearAsyncStorage().then(()=>{
+    // navigation.replace('Login')})
+  }
+
   const testData3 = [
     { label: 'Jan', value: 500 },
     { label: 'Feb', value: 312 },
@@ -183,18 +193,34 @@ const TableExample = (props) => {
     <View >
         <View padding={20}></View>
         <Text>
-          <Text style={{color: 'black', fontSize:40, marginLeft:30}}> {gameName} </Text><Text style={{color: 'black', fontSize:20}}> SCORE</Text>
+          <Text style={{color: 'black', fontSize:40, marginLeft:30}}> {macroName} </Text><Text style={{color: 'black', fontSize:20}}> SCORE</Text>
         </Text>
-        {(!userData)?<Text style={{color: 'black', fontSize:20, marginLeft:30}}> (No user data detected)</Text>:<View></View>}
+
+        {/* Graph else tell user to make account */}
+        {(!userData)?<Text style={{color: 'black', fontSize:20, marginLeft:30}}> Press start. Score history available for logged in users.</Text>:      
+        <View style={styles.graphContainer}>
+        <BarChart data={userData} gameName={gameName} macroName={macroName} round={1} unit="€"/>
+      </View>}
+
+
         <View padding={5}></View>
 
         {/* <Text style={{color: 'white', fontSize:20, marginLeft:30}}>{spoofGameFolders[gameName][gameName+"_ALL"].join(false?' ✔️':' 🔲')}</Text> */}
         {/* <SpeciesTableGenerator></SpeciesTableGenerator> */}
-      <View style={styles.graphContainer}>
-        <BarChart data={userData} gameName={gameName} macroName={macroName} round={1} unit="€"/>
-      </View>
+
+        {!(auth.currentUser)?
+
+            <TouchableOpacity style={styles.button}  onPress={handleLogin}> 
+                  <Text style={styles.buttonText}>{"Login"}</Text>
+            </TouchableOpacity>:<View padding={80}></View>}
+
         {/* <TableRowGenerator></TableRowGenerator> */}
-        <View padding={80}></View>
+        
+        <View style={{flex: 1, flexDirection:"row"}}>
+          
+
+
+
       <TouchableOpacity
                 style={styles.gameSelection}
                 onPress={() => {
@@ -225,7 +251,8 @@ const TableExample = (props) => {
                 }}>
                   <Text style={{color: 'white', fontWeight:"bold"}}> {"\n START GAME"} </Text>
       </TouchableOpacity>  
-      <View padding={500}></View>
+      </View>
+      {/* <View padding={500}></View> */}
       {/* </View> */}
     </View>
 
@@ -238,6 +265,8 @@ const TableExample = (props) => {
   
 export default TableExample;
   
+
+
 const styles = StyleSheet.create({
   graphContainer: {
     flex: 1,
@@ -277,4 +306,19 @@ const styles = StyleSheet.create({
       maxWidth: 400,
       maxHeight: 1000,
     },
+    button: {
+      // flex:1,
+      backgroundColor: '#0782F9',
+      width: '20%',
+      // height: '100%',
+      padding: 10,
+      borderRadius: 30,
+      // alignItems: 'center',
+  },
+  buttonText: {
+      padding: 10,
+      color: 'white',
+      fontWeight: '700', 
+      fontSize: 20,
+  },
 });
