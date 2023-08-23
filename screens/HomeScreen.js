@@ -520,6 +520,17 @@ const HomeScreen = (props) => {
     // END OF GAME When no more left in gallery.
     if (correctLeftInGallery.length == 0){
       setLoading(true)
+      const currentDate = new Date();
+      const timestamp = currentDate.getTime(); 
+      // Update correctTag Accuracy (set by timestamp to prevent resetting)
+      if (auth.currentUser) {
+        set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/tags/'+correctTag + '/'+timestamp), {
+          correct: averageCorrectRate,
+          time: currentDate.getDate()+'/'+(currentDate.getMonth()+1)+'@'+currentDate.getHours()+':'+currentDate.getMinutes()
+        }).catch(error =>alert(error.message));           
+      }
+
+
 
       // TECHNICALLY A REPEAT HERE.
       if (gameComplete && (gameSetLevel >= Object.keys(spoofMacroGameSets[selectedFolder][macroName]).length)){
@@ -825,20 +836,23 @@ const HomeScreen = (props) => {
                 <TouchableOpacity >
                   <Image 
 
-                    source={{uri:`${gallery[0]}`,}}
+                    source={{uri:`${galleryTags[spoofGameFolders[selectedFolder][selectedGame][3]]}`,}}
                     style={styles.imageContainer}
                     placeholder={blurhash}
                     contentFit="cover"
                     transition={1000}
                   />
                   <View style={styles.cardLabel}>
-                    <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(1)}</Text>
+                    <Text style={{backgroundColor:colors.cardTag}}>{spoofGameFolders[selectedFolder][selectedGame][3]}</Text>
                   </View>
                 </TouchableOpacity>
-
-                <TouchableOpacity >
+                <Progress.Bar progress= {0.2} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <View style={styles.percentLabel}>
+                    <Text >{0.2*100+'%'}</Text>
+                  </View>
+                {/* <TouchableOpacity >
                 <Image 
-                  source={{uri:`${gallery[3]}`,}}
+                  source={{uri:`${galleryTags[incorrectTag[2]]}`,}}
                   style={styles.imageContainer}
                   placeholder={blurhash}
                   contentFit="cover"
@@ -847,7 +861,7 @@ const HomeScreen = (props) => {
                   <View style={styles.cardLabel}>
                     <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(4)}</Text>
                   </View>
-                </TouchableOpacity>    
+                </TouchableOpacity>     */}
 
               </View>
 
@@ -855,22 +869,25 @@ const HomeScreen = (props) => {
               <View style={{flexDirection: 'column'}}>
 
 
-                <TouchableOpacity >
+                <TouchableOpacity onPress={()=>console.log(galleryTags[incorrectTag[0]][0])}>
                 <Image 
-                  source={{uri:`${gallery[1]}`,}}
+                  source={{uri:`${galleryTags[spoofGameFolders[selectedFolder][selectedGame][2]]}`,}}
                   style={styles.imageContainer}
                   placeholder={blurhash}
                   contentFit="cover"
                   transition={1000}
                 />
                   <View style={styles.cardLabel}>
-                    <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(2)}</Text>
+                    <Text style={{backgroundColor:colors.cardTag}}>{spoofGameFolders[selectedFolder][selectedGame][2]}</Text>
                   </View>
                 </TouchableOpacity>
-
-                <TouchableOpacity >
+                <Progress.Bar progress= {0.2} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <View style={styles.percentLabel}>
+                    <Text >{0.2*100+'%'}</Text>
+                  </View>
+                {/* <TouchableOpacity >
                   <Image 
-                    source={{uri:`${gallery[4]}`,}}
+                    source={{uri:`${galleryTags[incorrectTag[1]]}`,}}
                     style={styles.imageContainer}
                     placeholder={blurhash}
                     contentFit="cover"
@@ -879,7 +896,7 @@ const HomeScreen = (props) => {
                   <View style={styles.cardLabel}>
                     <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(5)}</Text>
                   </View>    
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 
               </View>
 
@@ -888,20 +905,23 @@ const HomeScreen = (props) => {
 
                 <TouchableOpacity >
                 <Image 
-                  source={{uri:`${gallery[2]}`,}}
+                  source={{uri:`${galleryTags[spoofGameFolders[selectedFolder][selectedGame][1]]}`,}}
                   style={styles.imageContainer}
                   placeholder={blurhash}
                   contentFit="cover"
                   transition={1000}
                 />
                   <View style={styles.cardLabel}>
-                    <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(3)}</Text>
+                    <Text style={{backgroundColor:colors.cardTag}}>{spoofGameFolders[selectedFolder][selectedGame][1]}</Text>
                   </View>
                 </TouchableOpacity>
-
-                <TouchableOpacity >
+                <Progress.Bar progress= {0.2} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <View style={styles.percentLabel}>
+                    <Text >{0.2*100+'%'}</Text>
+                  </View>                
+                {/* <TouchableOpacity >
                   <Image 
-                    source={{uri:`${gallery[5]}`,}}
+                    source={{uri:`${galleryTags[incorrectTag[0]]}`,}}
                     style={styles.imageContainer}
                     placeholder={blurhash}
                     contentFit="cover"
@@ -910,8 +930,45 @@ const HomeScreen = (props) => {
                   <View style={styles.cardLabel}>
                     <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(6)}</Text>
                   </View>        
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
+
+              <View style={{flexDirection: 'column'}}>
+
+
+              <TouchableOpacity >
+                <Image 
+                  source={{uri:`${galleryTags[spoofGameFolders[selectedFolder][selectedGame][0]]}`,}}
+                  style={styles.imageContainer}
+                  placeholder={blurhash}
+                  contentFit="cover"
+                  transition={1000}
+                />
+                  <View style={styles.cardLabel}>
+                    <Text style={{backgroundColor:colors.cardTag}}>{spoofGameFolders[selectedFolder][selectedGame][0]}</Text>
+                  </View>
+                </TouchableOpacity>
+
+                  <Progress.Bar progress= {0.2} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                  <View style={styles.percentLabel}>
+                      <Text >{'No score'}</Text>
+                    </View>         
+
+
+                {/* <TouchableOpacity >
+                  <Image 
+                    source={{uri:`${galleryTags[correctTag]}`,}}
+                    style={styles.imageContainer}
+                    placeholder={blurhash}
+                    contentFit="cover"
+                    transition={1000}
+                  />
+                <View style={styles.cardLabel}>
+                  <Text style={{backgroundColor:colors.cardTag}}>{findLabelOfPic(6)}</Text>
+                </View>        
+              </TouchableOpacity> */}
+              </View>
+
               {/* <View style={{flexDirection: 'column'}}> */}
 
             <View style={styles.modalRow}>
@@ -991,6 +1048,9 @@ const styles = StyleSheet.create({
 
       cardLabel: {
         position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-end', alignItems: 'flex-end', 
+      },
+      percentLabel: {
+        position: 'absolute', top: 0, left: 0, right: 0, bottom: 5, justifyContent: 'flex-end', alignItems: 'center', 
       },
       toastPosition: {
         left: '-10%',
