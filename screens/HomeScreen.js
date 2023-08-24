@@ -116,6 +116,7 @@ const HomeScreen = (props) => {
   const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[selectedGame][learningLevel]) // this is an issue upon first load.
   const [instructionText, setInstructionText] = useState(spoofInstructions[selectedGame][learningLevel])
   const [correctTag, setCorrectTag] = useState(spoofCorrectTag[selectedGame][learningLevel])
+  const [tagList, setTagList] = useState(spoofGameFolders[selectedFolder][selectedGame])
   const [sort, setSort] = useState(false)
   
   // const [outcomeImage, setOutcomeImage] = useState(spoofOutcomeImages[gameName][learningLevel])
@@ -166,6 +167,7 @@ const HomeScreen = (props) => {
     setCorrectTag(spoofCorrectTag[selectedGame][learningLevel]) 
     setIncorrectTag(spoofIncorrectTag[selectedGame][learningLevel]) //Triggers DB Download (Hook)
     setShowHint(false)
+    setGallery(old => [])
   
     // within mini game, update progress bar
     setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[selectedGame]).pop()) )
@@ -181,6 +183,23 @@ const HomeScreen = (props) => {
   useEffect(()=> {
 
     // LOCATIONS REFERENCES: Download locations using the tags from Gamefile
+
+    // Empty the gallery in preparation for Download
+    const myTags = spoofGameFolders[selectedFolder][selectedGame]
+    allTags = spoofGameFolders[selectedFolder][selectedGame]
+    setTagList(myTags)
+    // next_ref = ref(storage, selectedFolder + '/'+correctTag+'/');
+    // allTags.filter(tag => tag !== correctTag);
+    // getImagesFromRef(next_ref, correctTag, 4)
+    
+    // for (let i_ref=0; i_ref<allTags.length; i_ref++){
+    //   nextTag = allTags[i_ref]
+    //   next_ref = ref(storage, selectedFolder + '/'+nextTag+'/');
+    //   getImagesFromRef(next_ref, allTags, 4)
+    // }
+    console.log('gathering images for: ', selectedGame)
+    getImagesRecursively(allTags)
+  
     const correctListRef = ref(storage, selectedFolder + '/'+correctTag+'/');
     console.log(incorrectTag)
     const incorrectListRef = ref(storage, selectedFolder + '/'+incorrectTag[0]+'/');
@@ -189,20 +208,17 @@ const HomeScreen = (props) => {
       var incorrectListRef2 = ref(storage, selectedFolder + '/'+incorrectTag[1]+'/');
       var incorrectListRef3 = ref(storage, selectedFolder + '/'+incorrectTag[2]+'/');
     }
-   
-    // Empty the gallery in preparation for Download
-    setGallery(old => [])
 
     // Download from DB storage to gallery
-    getImagesFromRef(incorrectListRef, incorrectTag[0], 4).then(()=>{
-      getImagesFromRef(correctListRef, correctTag, 4)?.then(()=> {
-          getImagesFromRef(incorrectListRef2, incorrectTag[1], 4)?.then(()=> {
-            if (incorrectListRef3){
-              getImagesFromRef(incorrectListRef3, incorrectTag[2], 4)
-            }  
-        })
-      })
-    })     
+    // getImagesFromRef(incorrectListRef, incorrectTag[0], 4).then(()=>{
+    //   getImagesFromRef(correctListRef, correctTag, 4)?.then(()=> {
+    //       getImagesFromRef(incorrectListRef2, incorrectTag[1], 4)?.then(()=> {
+    //         if (incorrectListRef3){
+    //           getImagesFromRef(incorrectListRef3, incorrectTag[2], 4)
+    //         }  
+    //     })
+    //   })
+    // })     
 
   }, [incorrectTag]) //TEST
 
@@ -217,8 +233,20 @@ const HomeScreen = (props) => {
       await sound.playAsync().then(()=>console.log('sound has been played.'))
     })
   }
-  
-  const getImagesFromRef = async(ref, tag, upperLimit=5) => {
+  const getImagesRecursively = (allTags) => {
+      console.log("CURRENT TAGS:", allTags)
+      nextTag = allTags[0]
+      next_ref = ref(storage, selectedFolder + '/'+nextTag+'/');
+      let shiftedAllTags= allTags.filter((tag => tag!==nextTag))
+      
+      getImagesFromRef(next_ref, nextTag, 3).then(()=>{
+        if (shiftedAllTags.length > 0) {
+          getImagesRecursively(shiftedAllTags)
+        }
+      })
+  }
+
+  const getImagesFromRef = async(ref, tagLabel, upperLimit=5) => {
     if (ref==undefined){
       console.log('skipping ref because storage is undefined:', ref)
       return
@@ -246,18 +274,18 @@ const HomeScreen = (props) => {
                               /* (1) Ordering urls by Tag */
                               setGalleryTags(old => {
                                 let tagDict = {...old}
-                                // if tag is in tagDict: add url. Else: create key-value pair.
-                                if (Object.keys(tagDict).includes(metadata.customMetadata['tag'])){ 
-                                  old[metadata.customMetadata['tag']].push(y)
+                                // if tag is in tagDict: add url. Else: create key-value pair. metadata.customMetadata['tag']
+                                if (Object.keys(tagDict).includes(tagLabel)){ 
+                                  old[tagLabel].push(y)
                                   // if galleryTags urls reach the upperLimit argument: push them to gallery
-                                  if (old[metadata.customMetadata['tag']].length == upperLimit){
+                                  if (old[tagLabel].length == upperLimit){
 
                                     
                                     /* (2) Displaying urls on Page */
                                     
                                     setSortingGallery(gallery => {
                                       // gallery urls taken from galleryTags[tag] of length upperLimit
-                                      galleryVal = [...gallery, ...old[metadata.customMetadata['tag']]] 
+                                      galleryVal = [...gallery, ...old[tagLabel]] 
                                       console.log('val length:'+galleryVal.length)
                                       // sorting Gallery: if 12 urls reached, shuffle until only 2 correct in the visible portion.
 
@@ -283,7 +311,7 @@ const HomeScreen = (props) => {
                                     });
                                   };                                   
                                 } else {
-                                  tagDict[metadata.customMetadata['tag']]=[y]
+                                  tagDict[tagLabel]=[y]
                                 }
                                 return tagDict
                                 
@@ -768,7 +796,7 @@ const HomeScreen = (props) => {
         />
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={()=> handlePicSelection(6)}>
+        <TouchableHighlight onPress={()=> console.log(tagList)}>
           <Image 
             source={{uri:`${gallery[5]}`,}}
             style={styles.imageContainer}
@@ -825,7 +853,7 @@ const HomeScreen = (props) => {
       }}
       >
 
-      <View  style={{backgroundColor:colors.background}}> 
+      <View  style={{backgroundColor:colors.background, marginTop: 50}}> 
           {/* {(hint[(gameSetLevel+1).toString()])?
            <Image source={{uri: `${hint[(gameSetLevel+1).toString()]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?300:15, marginBottom:-150}}></Image>
             : 
@@ -836,7 +864,7 @@ const HomeScreen = (props) => {
                 <TouchableOpacity >
                   <Image 
 
-                    source={{uri:`${galleryTags[spoofGameFolders[selectedFolder][selectedGame][3]]}`,}}
+                    source={{uri:`${galleryTags[tagList[3]]}`,}}
                     style={styles.imageContainer}
                     placeholder={blurhash}
                     contentFit="cover"
@@ -869,9 +897,9 @@ const HomeScreen = (props) => {
               <View style={{flexDirection: 'column'}}>
 
 
-                <TouchableOpacity onPress={()=>console.log(galleryTags[incorrectTag[0]][0])}>
+                <TouchableOpacity >
                 <Image 
-                  source={{uri:`${galleryTags[spoofGameFolders[selectedFolder][selectedGame][2]]}`,}}
+                  source={{uri:`${galleryTags[tagList[2]]}`,}}
                   style={styles.imageContainer}
                   placeholder={blurhash}
                   contentFit="cover"
@@ -905,7 +933,7 @@ const HomeScreen = (props) => {
 
                 <TouchableOpacity >
                 <Image 
-                  source={{uri:`${galleryTags[spoofGameFolders[selectedFolder][selectedGame][1]]}`,}}
+                  source={{uri:`${galleryTags[tagList[1]]}`,}}
                   style={styles.imageContainer}
                   placeholder={blurhash}
                   contentFit="cover"
@@ -938,7 +966,7 @@ const HomeScreen = (props) => {
 
               <TouchableOpacity >
                 <Image 
-                  source={{uri:`${galleryTags[spoofGameFolders[selectedFolder][selectedGame][0]]}`,}}
+                  source={{uri:`${galleryTags[tagList[0]]}`,}}
                   style={styles.imageContainer}
                   placeholder={blurhash}
                   contentFit="cover"

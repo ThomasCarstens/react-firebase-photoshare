@@ -36,15 +36,15 @@ const spoofMacroGameSets = {
     "Dogs": {
         // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
         "Hounds": {
-            1: ["Hounds", "Score", "Dogs", 1],
+            // 1: ["Hounds", "Score", "Dogs", 1],
             // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
             2: ["Hounds_02", "Home", "Dogs", 1],  
-            3: ["Hounds_03", "Home", "Dogs", 1],   
+            1: ["Hounds_03", "Home", "Dogs", 1],   
             
-            5: ["Hounds", "Score", "Dogs", 1],   
-            4: ["Hounds_01", "Home", "Dogs", 1],        
+            // 5: ["Hounds", "Score", "Dogs", 1],   
+            3: ["Hounds_01", "Home", "Dogs", 1],        
             
-            6: ["Hounds", "Score", "Dogs", 1],
+            // 6: ["Hounds", "Score", "Dogs", 1],
 
         },
         "Shepherd dogs": {
