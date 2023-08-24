@@ -149,8 +149,8 @@ const HomeScreen = (props) => {
         setGameSetComplete(true)
       }
       if (auth.currentUser){
-        // Update Latest Level (is reset for every level)
-        set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/'+macroName+'/latestLevel/'), {
+        // Update Latest Level (is reset for every level) //auth.currentUser.email.split('.')[0]
+        set(ref_d(database, `userdata/${auth.currentUser.uid}/`+selectedFolder+'/'+macroName+'/latestLevel/'), {
           gameSetLevel: gameSetLevel,
           folder: selectedFolder,
           gameName: spoofGameFolders[selectedFolder][selectedGame][0],
@@ -454,7 +454,7 @@ const HomeScreen = (props) => {
     }
 
     setLoading(false)
-    console.log('TAGS\n', galleryTags, picNb-1)
+    console.log('TAG ',picNb,':', findLabelOfPic(picNb) )
 
     // TRUE CASE: Correct Picture selected.       
 
@@ -553,7 +553,7 @@ const HomeScreen = (props) => {
       const timestamp = currentDate.getTime(); 
       // Update correctTag Accuracy (set by timestamp to prevent resetting)
       if (auth.currentUser) {
-        set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/tags/'+correctTag + '/'+timestamp), {
+        set(ref_d(database, `userdata/${ auth.currentUser.uid}/`+selectedFolder+'/tags/'+correctTag + '/'+timestamp), {
           correct: averageCorrectRate,
           time: currentDate.getDate()+'/'+(currentDate.getMonth()+1)+'@'+currentDate.getHours()+':'+currentDate.getMinutes()
         }).catch(error =>alert(error.message));           
@@ -598,8 +598,8 @@ const HomeScreen = (props) => {
           //   macroName: macroName,
           // }).catch(error =>alert(error.message));       
 
-          // Update Level Accuracy (set by timestamp to prevent resetting)
-          set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+selectedFolder+'/'+macroName+'/accuracy/'+(gameSetLevel) + '/'+timestamp), {
+          // Update Level Accuracy (set by timestamp to prevent resetting)//auth.currentUser.email.split('.')[0]
+          set(ref_d(database, `userdata/${auth.currentUser.uid}/`+selectedFolder+'/'+macroName+'/accuracy/'+(gameSetLevel) + '/'+timestamp), {
             correct: averageCorrectRate,
             time: currentDate.getDate()+'/'+(currentDate.getMonth()+1)+'@'+currentDate.getHours()+':'+currentDate.getMinutes()
           }).catch(error =>alert(error.message));    
@@ -628,10 +628,33 @@ const HomeScreen = (props) => {
   const openModal = () => {
     setModalVisible(true)
   }
-  const determineTagProgress = (tagId) => {
-    let latestRecordingId = Math.max(Object.keys(userData[selectedFolder]['tags'][tagList[tagId]]))
+  const ifUserAttempted = (tagId) => {
 
-    return (userData[selectedFolder]['tags'][tagList[tagId]][latestRecordingId]['correct'])
+    try {
+      // if (userData[selectedFolder]['tags']==true){
+      return (Object.keys(userData[selectedFolder]['tags']).includes(tagList[tagId]))
+      // }
+      
+    } catch {
+      console.log('No data, no attempt.')
+      return (false)
+    }
+
+  }
+  const determineTagProgress = (tagId) => {
+
+
+    try {
+      let latestRecordingId = Math.max(Object.keys(userData[selectedFolder]['tags'][tagList[tagId]]))
+
+      return (userData[selectedFolder]['tags'][tagList[tagId]][latestRecordingId]['correct'])
+      
+    } catch {
+      console.log('No score.')
+      return (false)
+    }
+
+    
   }
   return (
     
@@ -801,7 +824,7 @@ const HomeScreen = (props) => {
         />
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={()=> console.log(tagList)}>
+        <TouchableHighlight onPress={()=> handlePicSelection(5)}>
           <Image 
             source={{uri:`${gallery[5]}`,}}
             style={styles.imageContainer}
@@ -883,9 +906,9 @@ const HomeScreen = (props) => {
 
                 {auth.currentUser?
                 <View>
-                <Progress.Bar progress= {userData[selectedFolder]['tags'][tagList[3]]?determineTagProgress(3):'Start recording.' } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <Progress.Bar progress= {ifUserAttempted(3)?determineTagProgress(3):0.05 } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text style={{color: 'orange'}}>{determineTagProgress(3).toFixed(2)*100+'%'}</Text>
+                    <Text style={{color: 'orange'}}>{ifUserAttempted(3)?determineTagProgress(3).toFixed(2)*100+'%':'Start recording.'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
                     <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
@@ -926,9 +949,9 @@ const HomeScreen = (props) => {
 
                 {auth.currentUser?
                 <View>
-                <Progress.Bar progress= {userData[selectedFolder]['tags'][tagList[2]]?determineTagProgress(2):'Start recording.' } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <Progress.Bar progress= {ifUserAttempted(2)?determineTagProgress(2):0.05 } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text style={{color: 'orange'}}>{determineTagProgress(2).toFixed(2)*100+'%'}</Text>
+                    <Text style={{color: 'orange'}}>{ifUserAttempted(2)?determineTagProgress(2).toFixed(2)*100+'%':'Start recording.'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
                     <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
@@ -967,9 +990,9 @@ const HomeScreen = (props) => {
 
                 {auth.currentUser?
                 <View>
-                <Progress.Bar progress= {userData[selectedFolder]['tags'][tagList[1]]?determineTagProgress(1):'Start recording.' } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <Progress.Bar progress= {ifUserAttempted(1)?determineTagProgress(1):0.05 } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text style={{color: 'orange'}}>{determineTagProgress(1).toFixed(2)*100+'%'}</Text>
+                    <Text style={{color: 'orange'}}>{ifUserAttempted(1)?determineTagProgress(1).toFixed(2)*100+'%':'Start recording.'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
                     <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
@@ -1007,9 +1030,9 @@ const HomeScreen = (props) => {
 
                 {auth.currentUser?
                 <View>
-                <Progress.Bar progress= {userData[selectedFolder]['tags'][tagList[0]]?determineTagProgress(0):'Start recording.' } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <Progress.Bar progress= {ifUserAttempted(0)?determineTagProgress(0):0.05 } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text style={{color: 'orange'}}>{determineTagProgress(0).toFixed(2)*100+'%'}</Text>
+                    <Text style={{color: 'orange'}}>{ifUserAttempted(0)?determineTagProgress(0).toFixed(2)*100+'%':'Start recording.'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
                     <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
@@ -1096,7 +1119,7 @@ const HomeScreen = (props) => {
       
         </View>
         <View>
-                    <Text style={{fontSize:25, color: 'orange', marginLeft: 200}}>{'Learning progress'}</Text>
+                    <Text style={{fontSize:25, color: 'orange', marginLeft: 150}}>{'Learning progress scores'}</Text>
         </View>
 
 

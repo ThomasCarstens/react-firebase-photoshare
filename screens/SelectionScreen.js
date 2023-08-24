@@ -196,7 +196,7 @@ const SelectionScreen = (props) => {
 
       // Query All User Data here.
       if (auth.currentUser) {
-       const userDataRef = ref_d(database, auth.currentUser.email.split('.')[0] );
+       const userDataRef = ref_d(database, 'userdata/'+auth.currentUser.uid ); //auth.currentUser.email.split('.')[0]
  
        onValue(userDataRef, (snapshot) => {
              const data = snapshot.val();
@@ -307,8 +307,8 @@ const SelectionScreen = (props) => {
 
       // Set the latestLevel
       if (auth.currentUser) {
-        // Auth user does a first attempt: setup latestLevel.
-        set(ref_d(database, `${auth.currentUser.email.split('.')[0]}/`+folderName+'/'+threadedGameName+'/latestLevel/'), {
+        // Auth user does a first attempt: setup latestLevel. //auth.currentUser.email.split('.')[0]
+        set(ref_d(database, `userdata/${auth.currentUser.uid}/`+folderName+'/'+threadedGameName+'/latestLevel/'), {
           gameSetLevel: 1,
           folder: spoofMacroGameSets[folderName][threadedGameName][macroLevel+ 1][2],
           gameName: spoofGameFolders[gameName][spoofMacroGameSets[folderName][threadedGameName][macroLevel+ 1][0]][0],
@@ -329,9 +329,7 @@ const SelectionScreen = (props) => {
         macroLevel: 1,
         application: applicationImages,
         hint: hintImages, 
-        level:   (auth.currentUser)?
-        (userData[threadedGameName])?userData[threadedGameName]['latestLevel']['gameSetLevel']:1
-        :1,
+        level:   1,
         data: (auth.currentUser)?userData:0 })
     }
 
@@ -769,7 +767,7 @@ const SelectionScreen = (props) => {
                       </View>
             </TouchableOpacity>  */}
 
-              {(auth.currentUser)?
+              {/* {(auth.currentUser)?
               <TouchableOpacity
                     style={styles.gameSelectionModal}
 
@@ -786,7 +784,7 @@ const SelectionScreen = (props) => {
 
                       <Text style={{fontWeight:"bold"}}> {"\n CONTINUE GAME"} </Text>
                   </TouchableOpacity>  
-:<View></View>}
+:<View></View>} */}
 
                   {/* <TouchableOpacity
                     style={styles.gameSelectionModal}
