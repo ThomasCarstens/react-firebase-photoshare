@@ -199,7 +199,7 @@ const SelectionScreen = (props) => {
        onValue(userDataRef, (snapshot) => {
              const data = snapshot.val();
              if (data){
-               console.log('User Data is now:', data)
+              //  console.log('User Data is now:', data)
                setUserData(data)
              }
              

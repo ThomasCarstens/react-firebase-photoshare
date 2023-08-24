@@ -627,7 +627,11 @@ const HomeScreen = (props) => {
   const openModal = () => {
     setModalVisible(true)
   }
+  const determineTagProgress = (tagId) => {
+    let latestRecordingId = Math.max(Object.keys(userData[selectedFolder]['tags'][tagList[tagId]]))
 
+    return (userData[selectedFolder]['tags'][tagList[tagId]][latestRecordingId]['correct'])
+  }
   return (
     
 
@@ -874,10 +878,19 @@ const HomeScreen = (props) => {
                     <Text style={{backgroundColor:colors.cardTag}}>{spoofGameFolders[selectedFolder][selectedGame][3]}</Text>
                   </View>
                 </TouchableOpacity>
-                <Progress.Bar progress= {0.2} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+
+
+                {auth.currentUser?
+                <View>
+                <Progress.Bar progress= {userData[selectedFolder]['tags'][tagList[3]]?determineTagProgress(3):'Start recording.' } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text >{0.2*100+'%'}</Text>
-                  </View>
+                    <Text style={{color: 'orange'}}>{determineTagProgress(3).toFixed(2)*100+'%'}</Text>
+                  </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <View style={styles.percentLabel}>
+                    <Text>{'Login for progress bar.'}</Text>
+                  </View></View>
+                }
+                
                 {/* <TouchableOpacity >
                 <Image 
                   source={{uri:`${galleryTags[incorrectTag[2]]}`,}}
@@ -909,10 +922,17 @@ const HomeScreen = (props) => {
                     <Text style={{backgroundColor:colors.cardTag}}>{spoofGameFolders[selectedFolder][selectedGame][2]}</Text>
                   </View>
                 </TouchableOpacity>
-                <Progress.Bar progress= {0.2} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+
+                {auth.currentUser?
+                <View>
+                <Progress.Bar progress= {userData[selectedFolder]['tags'][tagList[2]]?determineTagProgress(2):'Start recording.' } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text >{0.2*100+'%'}</Text>
-                  </View>
+                    <Text style={{color: 'orange'}}>{determineTagProgress(2).toFixed(2)*100+'%'}</Text>
+                  </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <View style={styles.percentLabel}>
+                    <Text>{'Login for progress bar.'}</Text>
+                  </View></View>
+                }
                 {/* <TouchableOpacity >
                   <Image 
                     source={{uri:`${galleryTags[incorrectTag[1]]}`,}}
@@ -943,10 +963,17 @@ const HomeScreen = (props) => {
                     <Text style={{backgroundColor:colors.cardTag}}>{spoofGameFolders[selectedFolder][selectedGame][1]}</Text>
                   </View>
                 </TouchableOpacity>
-                <Progress.Bar progress= {0.2} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+
+                {auth.currentUser?
+                <View>
+                <Progress.Bar progress= {userData[selectedFolder]['tags'][tagList[1]]?determineTagProgress(1):'Start recording.' } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text >{0.2*100+'%'}</Text>
-                  </View>                
+                    <Text style={{color: 'orange'}}>{determineTagProgress(1).toFixed(2)*100+'%'}</Text>
+                  </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <View style={styles.percentLabel}>
+                    <Text>{'Login for progress bar.'}</Text>
+                  </View></View>
+                }                
                 {/* <TouchableOpacity >
                   <Image 
                     source={{uri:`${galleryTags[incorrectTag[0]]}`,}}
@@ -977,10 +1004,16 @@ const HomeScreen = (props) => {
                   </View>
                 </TouchableOpacity>
 
-                  <Progress.Bar progress= {0.2} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
-                  <View style={styles.percentLabel}>
-                      <Text >{'No score'}</Text>
-                    </View>         
+                {auth.currentUser?
+                <View>
+                <Progress.Bar progress= {userData[selectedFolder]['tags'][tagList[0]]?determineTagProgress(0):'Start recording.' } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <View style={styles.percentLabel}>
+                    <Text style={{color: 'orange'}}>{determineTagProgress(0).toFixed(2)*100+'%'}</Text>
+                  </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
+                <View style={styles.percentLabel}>
+                    <Text>{'Login for progress bar.'}</Text>
+                  </View></View>
+                }      
 
 
                 {/* <TouchableOpacity >
@@ -1044,7 +1077,9 @@ const HomeScreen = (props) => {
 
       
         </View>
-
+        <View>
+                    <Text style={{fontSize:25, color: 'orange', marginLeft: 200}}>{'Learning progress'}</Text>
+        </View>
 
 
       </View>
