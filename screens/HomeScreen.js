@@ -26,6 +26,7 @@ import { Audio } from "expo-av"
 
 // Local Gamefile.
 import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets, spoofGameFolders} from '../gameFile';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 const HomeScreen = (props) => {
 
@@ -97,7 +98,7 @@ const HomeScreen = (props) => {
     // }
 
   }, []);
-
+  const netInfo = useNetInfo();
   const toast = useRef(null);
   const [url, setUrl] = useState();
   const navigation = useNavigation();
@@ -887,7 +888,7 @@ const HomeScreen = (props) => {
                     <Text style={{color: 'orange'}}>{determineTagProgress(3).toFixed(2)*100+'%'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text>{'Login for progress bar.'}</Text>
+                    <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
                   </View></View>
                 }
                 
@@ -930,7 +931,7 @@ const HomeScreen = (props) => {
                     <Text style={{color: 'orange'}}>{determineTagProgress(2).toFixed(2)*100+'%'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text>{'Login for progress bar.'}</Text>
+                    <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
                   </View></View>
                 }
                 {/* <TouchableOpacity >
@@ -971,7 +972,7 @@ const HomeScreen = (props) => {
                     <Text style={{color: 'orange'}}>{determineTagProgress(1).toFixed(2)*100+'%'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text>{'Login for progress bar.'}</Text>
+                    <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
                   </View></View>
                 }                
                 {/* <TouchableOpacity >
@@ -1011,7 +1012,7 @@ const HomeScreen = (props) => {
                     <Text style={{color: 'orange'}}>{determineTagProgress(0).toFixed(2)*100+'%'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text>{'Login for progress bar.'}</Text>
+                    <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
                   </View></View>
                 }      
 
@@ -1029,19 +1030,33 @@ const HomeScreen = (props) => {
                 </View>        
               </TouchableOpacity> */}
               </View>
-
-              {/* <View style={{flexDirection: 'column'}}> */}
+              <View style={{padding: 20}}></View>
 
             <View style={styles.modalRow}>
-                    <TouchableOpacity
+                  <Text style={{fontWeight:"bold", color:"white"}}> ⚠️ Wifi required to play.</Text>  
+                <TouchableOpacity
                   style={{...styles.gameSelection}}
                   onPress={() => {
                     setModalVisible(!modalVisible);
-                    // console.log(hint)
-                  }}>
+                  //   if (Platform.OS === "android") {
+                  //     // netInfo.isConnected.fetch().then(isConnected => {
+                  //       if (netInfo.isConnected) {
+                  //         toast.current.show("You are online!");
+                  //         setModalVisible(!modalVisible);
+                  //       } else {
+                  //         toast.current.show("You are offline!");
+                  //       }
+                  //     // })
+                    
+                  //   // console.log(hint)
+                  // } else {
+                  //     toast.current.show("You are online!");
+                  //     setModalVisible(!modalVisible);
+                  // }
+                }}>
                     <Text style={{fontWeight:"bold"}}> {"\n START"} </Text>
                 </TouchableOpacity> 
-
+                
                 <TouchableOpacity
                   style={{...styles.gameSelection}}
                   onPress={() => {
@@ -1060,14 +1075,17 @@ const HomeScreen = (props) => {
                   }}>
                     <Text style={{fontWeight:"bold"}}> {"\n SKIP LEVEL"} </Text>
                 </TouchableOpacity>   
-              {/* <TouchableOpacity
-                style={{...styles.gameSelection, marginBottom:10}}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                  // console.log(hint)
-                }}>
-                  <Text style={{fontWeight:"bold"}}> {"\n OK"} </Text>
-              </TouchableOpacity>   */}
+                {(auth.currentUser)?<View></View>: 
+                      <TouchableOpacity
+                    style={{...styles.gameSelection, backgroundColor: 'blue'}}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      navigation.replace('Login')
+                    }}>
+                      <Text style={{fontWeight:"bold", color:'white'}}> {"\n LOGIN"} </Text>
+                  </TouchableOpacity>            
+              }
+
 
               
             </View>

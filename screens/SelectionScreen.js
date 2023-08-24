@@ -21,18 +21,20 @@ import * as Progress from 'react-native-progress';
 
 // Local GameFile
 import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
+import { useNetInfo } from '@react-native-community/netinfo'
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
 const SelectionScreen = (props) => {
     // Orientation.lockToLandscape();
     const navigation = useNavigation();
+    const netInfo = useNetInfo();
     const toast = useRef(null);
     const [userData, setUserData] = useState()
     const [gameName, setGameName] = useState()
     const [gameFile, setGameFile] = useState()
 
-
+    
     // Using gameFile downloaded upon Login.
     // setGameFile(props.route.params?.gameFile)
     // const spoofGameFolders = props.route.params?.gameFile?.spoofGameFolders
@@ -382,21 +384,37 @@ const SelectionScreen = (props) => {
       // console.log('#### folder name is ', folderName)
       let familyList = Object.keys(spoofMacroGameSets[folderName])
       // console.log('### metricList: ', metricList)
+      FamiliesButtons.push(
+        <View>
+        <View style={{position: 'absolute'}}>
+        <Text style={{fontWeight:"bold", color:"white", marginTop:50}}> ⚠️ Wifi required to play.</Text>  
+        
+        </View>
+        <View padding={20}></View>
+        </View>
+      )
       for (let family_i of familyList) {
         let nextButton =      (  
         
           <TouchableOpacity
           style={styles.gameSelectionModal}
-          onPress={() => {
-            setModalVisible(!modalVisible);                      
-            startThreadedGame(family_i)
+          onPress={() => {                    
+            // netInfo.isConnected.fetch().then(isConnected => {
+              if (netInfo.isConnected) {
+                toast.current.show("You are online!");
+                setModalVisible(!modalVisible);                      
+                startThreadedGame(family_i)                
+              } else {
+                toast.current.show("You are offline!");
+              }
+
 
             }}>
             <View flexDirection='row'>
-              <Text style={{fontWeight:"bold", color:colors.modalButtonText, fontSize:18, marginTop:-10}}> {"\n"+family_i} </Text>
+              <Text style={{flex:1, fontWeight:"bold", color:colors.modalButtonText, fontSize:18, marginTop:-10, marginLeft:10}}> {"\n"+family_i} </Text>
               
-              <Progress.Bar progress={0.8} color='rgb(13, 1, 117)' borderRadius={20} marginLeft={10} marginTop={10} width={140} height={30}>
-                <Text style={styles.modalProgressBarText}>12 Species</Text>
+              <Progress.Bar progress={0.8} flex={1} color='rgb(13, 1, 117)' justifyContent={"space-between"} style={{backgroundColor:'white'}} borderRadius={30} marginRight={10} marginTop={10} width={140} height={30}>
+                <Text style={styles.modalProgressBarText}>12 Total</Text>
               </Progress.Bar>
             </View>
             
@@ -770,7 +788,7 @@ const SelectionScreen = (props) => {
                   </TouchableOpacity>  
 :<View></View>}
 
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={styles.gameSelectionModal}
 
                     onPress={() => {
@@ -822,7 +840,7 @@ const SelectionScreen = (props) => {
                     >
 
                       <Text style={{fontWeight:"bold"}}> {"\n APPLICATIONS"} </Text>
-                  </TouchableOpacity>              
+                  </TouchableOpacity>               */}
                   
                   {/* <TouchableOpacity
                     style={styles.gameSelectionModal}
@@ -856,7 +874,7 @@ const SelectionScreen = (props) => {
                       <Text style={{fontWeight:"bold"}}> {"\n COMPARISON??"} </Text>
                   </TouchableOpacity>   */}
 
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     style={styles.gameSelectionModal}
 
                     onPress={() => {
@@ -875,7 +893,7 @@ const SelectionScreen = (props) => {
                     }}>
 
                       <Text style={{fontWeight:"bold"}}> {"\n THREAD"} </Text>
-                  </TouchableOpacity>  
+                  </TouchableOpacity>   */}
 
 
 
@@ -1068,10 +1086,10 @@ var styles = StyleSheet.create({
       flex: 1, width: '100%', left: '0%',  height: '80%', top: '0%', borderRadius: 4
     },
     modalProgressBar: {
-      color:'rgb(13, 1, 117)', borderRadius:20, marginLeft:10, marginTop:10, width:140, height:30
+      color:'rgb(13, 1, 117)', borderRadius:20, marginLeft:10, marginTop:10, width:140, height:30, justifyContent:'flex-end'
     },
     modalProgressBarText: {
-      position:'absolute', flex:0, color:'rgb(255, 255, 255)', marginLeft:15, marginTop:5
+      position:'absolute', flexDirection:'row', color:'rgb(255, 255, 255)', marginLeft:15, marginTop:5
     },
     toastPosition: {
       left: '0%',

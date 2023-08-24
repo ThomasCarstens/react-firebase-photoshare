@@ -3,7 +3,7 @@ import React from 'react'
 import {useState, useEffect} from 'react'
 import { auth, firebase } from '../firebase'
 import { useNavigation } from '@react-navigation/core'
-import { browserLocalPersistence, browserSessionPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
+import { browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { ref as ref_d, set, get, onValue } from 'firebase/database'
@@ -55,13 +55,13 @@ const LoginScreen = () => {
     }, [])
 
     const handleSignUp = () => {
-        auth
-          .createUserWithEmailAndPassword(email, password)
-          .then(userCredentials => {
+        createUserWithEmailAndPassword(auth, email, password)
+        .then(userCredentials => {
             const user = userCredentials.user;
             console.log('Registered with: ', user.email);
-          
-          }).catch(error => alert(error.message))
+        
+        }).catch(error => alert(error.message))
+
     }
 
     const  handleLogin = () => {
