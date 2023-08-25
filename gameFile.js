@@ -25,6 +25,14 @@ const spoofGameAllocation = {
     "Dog hunting situations": "Application"
 };
 
+const spoofReleaseStatus = {
+    // [Visible, Released]
+    "Dogs": {'visible': 1, 'released': 1},
+    "French Bread": {'visible': 1, 'released': 1},
+    "Vegetables": {'visible': 1, 'released': 0},
+    "Footprints": {'visible': 1, 'released': 0},
+};
+
 // Game sets. Screens Ordered.
 const spoofMacroGameSets = {
     // "Dogs": {
@@ -34,65 +42,60 @@ const spoofMacroGameSets = {
     //     3: ["Dog hunting situations", "Application", "Dogs", 0],
     // },
     "Dogs": {
-        // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
         "Hounds": {
-            // 1: ["Hounds", "Score", "Dogs", 1],
-            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
             2: ["Hounds_02", "Home", "Dogs", 1],  
-            1: ["Hounds_03", "Home", "Dogs", 1],   
-            
-            // 5: ["Hounds", "Score", "Dogs", 1],   
+            1: ["Hounds_03", "Home", "Dogs", 1],    
             3: ["Hounds_01", "Home", "Dogs", 1],        
-            
-            // 6: ["Hounds", "Score", "Dogs", 1],
-
         },
         "Shepherd dogs": {
-            // 1: ["Shepherd dogs", "Score", "Dogs", 1],
-            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
             3: ["Shepherds_01", "Home", "Dogs", 2],
             1: ["Shepherds_02", "Home", "Dogs", 4],
-    
             2: ["Shepherds_02", "Home", "Dogs", 1],
         },    
     },
     "French Bread": {
-        // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
         "Loaf": {
             1: ["Loaf_01", "Home", "French Bread", 1],
             2: ["Loaf_02", "Home", "French Bread", 1],
             3: ["Loaf_03", "Home", "French Bread", 1],
-            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
-
-
         },
         "Baguette": {
             1: ["Shepherd dogs", "Home", "Dogs", 1],
-            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
             3: ["Shepherds_01", "Home", "Dogs", 2],
             2: ["Shepherds_02", "Home", "Dogs", 4],
-    
             4: ["Shepherd dogs", "Score", "Dogs", 1],
         },    
     },
-
+    "Vegetables": {
+        "Roots": {
+        },
+        "Legumes": {
+        },    
+    },
+    "Footprints": {
+        "Straddlers": {
+        },
+        "Waddlers": {
+        },    
+    },
+    "Cereal": {
+        "Straddlers": {
+        },
+        "Waddlers": {
+        },    
+    },
     "Cheeses": {
-        // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
         "Goat": {
             1: ["Hounds", "Score", "Dogs", 1],
-            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
             2: ["Hounds_02", "Home", "Dogs", 1],        
             4: ["Hounds_01", "Home", "Dogs", 1],        
             5: ["Hounds_03", "Home", "Dogs", 1],
             6: ["Hounds", "Score", "Dogs", 1],
-
         },
         "Cow": {
             1: ["Shepherd dogs", "Score", "Dogs", 1],
-            // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
             3: ["Shepherds_01", "Home", "Dogs", 2],
             2: ["Shepherds_02", "Home", "Dogs", 4],
-    
             4: ["Shepherd dogs", "Score", "Dogs", 1],
         },    
     },
@@ -904,4 +907,4 @@ const spoofIncorrectTag = {
     },
 }
 
-export {spoofGameAllocation, spoofGameSets, spoofMacroGameSets, spoofGameMetrics, spoofUnits, spoofGameFolders, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}
+export {spoofReleaseStatus, spoofGameAllocation, spoofGameSets, spoofMacroGameSets, spoofGameMetrics, spoofUnits, spoofGameFolders, spoofGameHashtags, spoofOutcomeImages, spoofInstructions, spoofCorrectTag, spoofIncorrectTag}

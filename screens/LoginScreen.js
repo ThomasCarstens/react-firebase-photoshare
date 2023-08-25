@@ -1,6 +1,6 @@
 import { Image, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import { auth, firebase } from '../firebase'
 import { useNavigation } from '@react-navigation/core'
 import { browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, setPersistence, signInWithEmailAndPassword } from 'firebase/auth'
@@ -8,16 +8,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import { storage, database } from '../firebase'
+import Toast from 'react-native-fast-toast';
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigation = useNavigation()
+    const toast = useRef(null);
     const [gameFile, setGameFile] = useState()
-
     const userLoggedIn = (auth.currentUser)
+
+    // Automatic login: if there is a current user
     if (userLoggedIn !== null){
-      // We have data!!
       navigation.replace("Selection", {gameFile: gameFile})
       return
     }
@@ -39,10 +41,10 @@ const LoginScreen = () => {
             }
             
           })
-        }, [])
+    //     }, [])
 
-    useEffect(() => {
-        console.log('Login finds key: ', userLoggedIn)
+    // useEffect(() => {
+        console.log('Is the user logged in? ', userLoggedIn)
         ScreenOrientation.lockAsync(2); //LANDSCAPE_LEFT
         const unsubscribe = auth.onAuthStateChanged(user=> {
             if (user) {
@@ -65,19 +67,28 @@ const LoginScreen = () => {
     }
 
     const  handleLogin = () => {
-
-        signInWithEmailAndPassword(auth,email, password)
+        if (gameFile) {
+            signInWithEmailAndPassword(auth,email, password)
         .then(userCredentials => {
             const user = userCredentials.user;
             console.log('logged in with:', user.email);
             
         
-        }).catch(error => alert(error.message))            
+        }).catch(error => alert(error.message))  
+        } else {
+            toast.current.show('Cannot load app. Wifi issues?', { type: "success" });
+        }
+                  
             
     }
 
     const handleAnonUser = () => {
-        navigation.replace("Selection", {gameFile: gameFile})
+        if (gameFile) {
+            navigation.replace("Selection", {gameFile: gameFile})
+        } else {
+            toast.current.show('Still loading app. Wifi issues?', { type: "success" });
+        }
+        
     }
 {/* <SafeAreaView style={{...styles.webContainer}}> 
             <View style={{...styles.webContent}}>     */}
@@ -89,6 +100,7 @@ const LoginScreen = () => {
         behavior="padding">
         <Image source={require("../assets/bg/cultivate.png")} style={{height:150, width:300, marginLeft:0, borderRadius: 20}}></Image>
         <View padding={20}></View>
+        <Toast ref={toast} />
         <View style={styles.inputContainer}>
             <TextInput
                 placeholder="Email"

@@ -15,6 +15,7 @@ import * as Progress from 'react-native-progress';
 import { SafeAreaView } from 'react-native-web';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Audio } from "expo-av"
+import { useNetInfo } from '@react-native-community/netinfo';
 // import Toast, { useToast } from 'react-native-toast-notifications';
 // import { Platform } from 'react-native/types';
 // import Toast from 'react-native-fast-toast/lib/typescript/toast';
@@ -25,21 +26,22 @@ import { Audio } from "expo-av"
 // https://www.wineware.co.uk/glassware/beginners-guide-to-different-types-of-wine-glasses
 
 // Local Gamefile.
-import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets, spoofGameFolders} from '../gameFile';
-import { useNetInfo } from '@react-native-community/netinfo';
+// import { spoofGameSets, spoofOutcomeImages, spoofInstructions, spoofIncorrectTag, spoofCorrectTag, spoofMacroGameSets, spoofGameFolders} from '../gameFile';
+
 
 const HomeScreen = (props) => {
 
   // Using gameFile downloaded upon Login.
-  // const spoofGameFolders = props.route.params.gameFile.spoofGameFolders
-  // const spoofGameAllocation = props.route.params.gameFile.spoofGameAllocation
-  // const spoofGameHashtags = props.route.params.gameFile.spoofGameHashtags
-  // const spoofGameMetrics = props.route.params.gameFile.spoofGameMetrics
-  // const spoofGameSets = props.route.params.gameFile.spoofGameSets
-  // const spoofInstructions = props.route.params.gameFile.spoofInstructions
-  // const spoofIncorrectTag = props.route.params.gameFile.spoofIncorrectTag
-  // const spoofCorrectTag = props.route.params.gameFile.spoofCorrectTag
-  // const spoofMacroGameSets = props.route.params.gameFile.spoofMacroGameSets
+  const spoofGameFolders = props.route.params.gameFile.spoofGameFolders
+  const spoofGameAllocation = props.route.params.gameFile.spoofGameAllocation
+  const spoofGameHashtags = props.route.params.gameFile.spoofGameHashtags
+  const spoofGameMetrics = props.route.params.gameFile.spoofGameMetrics
+  const spoofGameSets = props.route.params.gameFile.spoofGameSets
+  const spoofInstructions = props.route.params.gameFile.spoofInstructions
+  const spoofIncorrectTag = props.route.params.gameFile.spoofIncorrectTag
+  const spoofCorrectTag = props.route.params.gameFile.spoofCorrectTag
+  const spoofMacroGameSets = props.route.params.gameFile.spoofMacroGameSets
+  const spoofReleaseStatus = props.route.params?.gameFile?.spoofReleaseStatus
   const [gameFile, setGameFile] = useState()
 
   useEffect(()=>{   

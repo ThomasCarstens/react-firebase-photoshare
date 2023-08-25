@@ -2,18 +2,86 @@
     "spoofMacroGameSets": {
         "Dogs": {
             "Hounds": {
-                "2": ["Hounds", "Score", "Dogs", 1],
-                "1": ["Hounds_02", "Home", "Dogs", 1],
-                "4": ["Hounds_01", "Home", "Dogs", 1],
-                "3": ["Hounds_03", "Home", "Dogs", 1]
+                "2": ["Hounds_02", "Home", "Dogs", 1],  
+                "1": ["Hounds_03", "Home", "Dogs", 1],    
+                "3": ["Hounds_01", "Home", "Dogs", 1]        
             },
             "Shepherd dogs": {
                 "3": ["Shepherds_01", "Home", "Dogs", 2],
+                "1": ["Shepherds_02", "Home", "Dogs", 4],
+                "2": ["Shepherds_02", "Home", "Dogs", 1]
+            }  
+        },
+        "French Bread": {
+            "Loaf": {
+                "1": ["Loaf_01", "Home", "French Bread", 1],
+                "2": ["Loaf_02", "Home", "French Bread", 1],
+                "3": ["Loaf_03", "Home", "French Bread", 1]
+            },
+            "Baguette": {
+                "1": ["Shepherd dogs", "Home", "Dogs", 1],
+                "3": ["Shepherds_01", "Home", "Dogs", 2],
                 "2": ["Shepherds_02", "Home", "Dogs", 4],
-                "1": ["Shepherd dogs", "Score", "Dogs", 1]
-            }
+                "4": ["Shepherd dogs", "Score", "Dogs", 1]
+            }  
+        },
+        "Vegetables": {
+            "Roots": {
+                "2": ["Hounds_02", "Home", "Dogs", 1],  
+                "1": ["Hounds_03", "Home", "Dogs", 1],    
+                "3": ["Hounds_01", "Home", "Dogs", 1]  
+            },
+            "Legumes": {
+                "2": ["Hounds_02", "Home", "Dogs", 1],  
+                "1": ["Hounds_03", "Home", "Dogs", 1],    
+                "3": ["Hounds_01", "Home", "Dogs", 1]  
+            }   
+        },
+        "Footprints": {
+            "Straddlers": {
+                "2": ["Hounds_02", "Home", "Dogs", 1],  
+                "1": ["Hounds_03", "Home", "Dogs", 1],    
+                "3": ["Hounds_01", "Home", "Dogs", 1]  
+            },
+            "Waddlers": {
+                "2": ["Hounds_02", "Home", "Dogs", 1],  
+                "1": ["Hounds_03", "Home", "Dogs", 1],    
+                "3": ["Hounds_01", "Home", "Dogs", 1]  
+            } 
+        },
+        "Cereal": {
+            "Straddlers": {
+                "2": ["Hounds_02", "Home", "Dogs", 1],  
+                "1": ["Hounds_03", "Home", "Dogs", 1],    
+                "3": ["Hounds_01", "Home", "Dogs", 1]  
+            },
+            "Waddlers": {
+                "2": ["Hounds_02", "Home", "Dogs", 1],  
+                "1": ["Hounds_03", "Home", "Dogs", 1],    
+                "3": ["Hounds_01", "Home", "Dogs", 1]  
+            }   
+        },
+        "Cheeses": {
+            "Goat": {
+                "2": ["Hounds_02", "Home", "Dogs", 1],  
+                "1": ["Hounds_03", "Home", "Dogs", 1],    
+                "3": ["Hounds_01", "Home", "Dogs", 1]  
+            },
+            "Cow": {
+                "2": ["Hounds_02", "Home", "Dogs", 1],  
+                "1": ["Hounds_03", "Home", "Dogs", 1],    
+                "3": ["Hounds_01", "Home", "Dogs", 1]  
+            }   
         }
     },
+    
+    "spoofReleaseStatus" : {
+        "Dogs": {"visible": 1, "released": 1},
+        "French Bread": {"visible": 1, "released": 1},
+        "Vegetables": {"visible": 1, "released": 0},
+        "Footprints": {"visible": 1, "released": 0}
+    },
+
     "spoofGameFolders": {
 
         "Vegetables": {

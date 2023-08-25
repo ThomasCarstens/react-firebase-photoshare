@@ -17,11 +17,11 @@ import { getDownloadURL, list, ref } from 'firebase/storage'
 import { SearchBar } from 'react-native-elements'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Progress from 'react-native-progress';
-
+import { useNetInfo } from '@react-native-community/netinfo'
 
 // Local GameFile
-import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
-import { useNetInfo } from '@react-native-community/netinfo'
+// import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets, spoofReleaseStatus } from '../gameFile'
+
 
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
@@ -37,12 +37,13 @@ const SelectionScreen = (props) => {
     
     // Using gameFile downloaded upon Login.
     // setGameFile(props.route.params?.gameFile)
-    // const spoofGameFolders = props.route.params?.gameFile?.spoofGameFolders
-    // const spoofGameAllocation = props.route.params?.gameFile?.spoofGameAllocation
-    // const spoofGameHashtags = props.route.params?.gameFile?.spoofGameHashtags
-    // const spoofGameMetrics = props.route.params?.gameFile?.spoofGameMetrics
-    // const spoofGameSets = props.route.params?.gameFile?.spoofGameSets
-    // const spoofMacroGameSets = props.route.params?.gameFile?.spoofMacroGameSets
+    const spoofGameFolders = props.route.params?.gameFile?.spoofGameFolders
+    const spoofGameAllocation = props.route.params?.gameFile?.spoofGameAllocation
+    const spoofGameHashtags = props.route.params?.gameFile?.spoofGameHashtags
+    const spoofGameMetrics = props.route.params?.gameFile?.spoofGameMetrics
+    const spoofGameSets = props.route.params?.gameFile?.spoofGameSets
+    const spoofMacroGameSets = props.route.params?.gameFile?.spoofMacroGameSets
+    const spoofReleaseStatus = props.route.params?.gameFile?.spoofReleaseStatus
 
     useEffect(()=>{   
       if (props.route.params.gameFile){
@@ -141,8 +142,8 @@ const SelectionScreen = (props) => {
         }
         }
 
-       
-    getOutcomeImages()
+    //DEACTIVATED
+    // getOutcomeImages()
 
     const getThumbnailImage = async() => {
       let gameKeyList = Object.keys(spoofGameSets)
@@ -169,8 +170,8 @@ const SelectionScreen = (props) => {
         // }
       }
       }
-  
-    getThumbnailImage()
+    //DEACTIVATED
+    // getThumbnailImage()
     
 
     }, [])
@@ -236,8 +237,8 @@ const SelectionScreen = (props) => {
        })
 
        }
-   
-       getHintImages()
+       //DEACTIVATED
+      //  getHintImages()
        
       }, [gameName])
     // On Game click, load the next page (Hints)
@@ -376,6 +377,84 @@ const SelectionScreen = (props) => {
     
     }
 
+    // Had to. JSON will not carry a pointer.
+    const spoofThumbnailretrieval = {
+      "Dogs": require('../assets/thumbnails/dogs.jpg'),
+      "French Bread": require('../assets/thumbnails/frenchbread.jpg'),
+      "Vegetables": require('../assets/thumbnails/vegetables.jpg'),
+      "Footprints": require('../assets/thumbnails/footprints.jpg'),
+      "Cereal": require('../assets/thumbnails/cereal.jpg'),
+      "Cheeses": require('../assets/thumbnails/cheeses.jpg'),
+    };
+
+    const ifGameReleased = ( each_game ) => {
+      try {
+        
+        return (spoofReleaseStatus[each_game]['released'])
+      } catch {
+        return (false)
+      }
+    }
+
+    const ifGameVisible = ( each_game ) => {
+      
+      try {
+        return (spoofReleaseStatus['Vegetables']['visible'])
+      } catch {
+        return (false)
+      }
+
+    }
+
+
+    function ThumbnailsBlock() {
+      let ThumbnailsButtons = [];
+      let thumbnailList = Object.keys(spoofMacroGameSets)
+      
+      for (let each_game of thumbnailList) {
+        // console.log(spoofReleaseStatus["Vegetables"])
+        // console.log(ifGameVisible(each_game))
+
+        let nextButton =      (  
+
+          <TouchableOpacity style={styles.gameSelection}  
+          key={"label "+each_game}
+          onPress={() => {
+            if (ifGameReleased(each_game)){
+              setGameName(each_game)
+              setFolderName(each_game)
+              setGameType('Home') 
+              setModalVisible(true)
+            } else { (auth.currentUser)?plsAwaitRelease():plsCreateAccount() }
+
+            }}>
+            <ImageBackground source={ spoofThumbnailretrieval[each_game] } 
+              style={thumbnailBg} imageStyle={thumbnailStyle}>
+              <Text style ={styles.gameText}> {each_game} </Text>
+              {!ifGameReleased(each_game)?<Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>:<View></View>}
+            </ImageBackground>     
+            
+          </TouchableOpacity> 
+
+          )
+
+          if (ifGameVisible(each_game)){
+            ThumbnailsButtons.push(nextButton)
+          } else {
+            console.log(each_game, ' hidden.')
+          }
+          
+
+    }
+
+      return(
+        ThumbnailsButtons
+      )
+    
+    }
+    
+
+
 
     function FamiliesBlock() {
       let FamiliesButtons = [];
@@ -384,11 +463,11 @@ const SelectionScreen = (props) => {
       // console.log('### metricList: ', metricList)
       FamiliesButtons.push(
         <View>
-        <View style={{position: 'absolute'}}>
+        <View key={'FamiliesBlock Wifi'} style={{position: 'absolute'}}>
         <Text style={{fontWeight:"bold", color:"white", marginTop:50}}> ⚠️ Wifi required to play.</Text>  
         
-        </View>
-        <View padding={20}></View>
+        </View >
+        <View key={'FamiliesBlock padding'} padding={20}></View>
         </View>
       )
       for (let family_i of familyList) {
@@ -492,196 +571,7 @@ const SelectionScreen = (props) => {
             /> */}
             
       <ScrollView  contentContainerStyle= {styles.gameRow}>
-
-      
-        {/* <Image source={{outcomeImage}} style={{height:170, width:130}}></Image> */}
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          // setGameName('Dogs')
-          // setGameType("Home") 
-
-          setGameName("Dogs")
-          setFolderName("Dogs")
-          setGameType('Home') //Sequence also possible / spoofMacroGameSets["Dogs"][1][1]
-          setModalVisible(true)}}>
-          <ImageBackground source={require('../assets/thumbnails/dogs.jpg')} 
-            style={thumbnailBg} imageStyle={thumbnailStyle}>
-            <Text style ={styles.gameText}> {'Dogs'} </Text>
-          </ImageBackground>     
-        </TouchableOpacity>      
-
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          setGameName('Cheeses')
-          setFolderName("Cheeses")
-          setGameType('Home')
-          setModalVisible(true)}}>
-          <ImageBackground source={{uri:`${thumbnailImage[1]}`}} 
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Cheeses'} </Text>
-          </ImageBackground>
-        </TouchableOpacity>          
-  
-        {/* <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          setGameName('Africa')
-          setGameType('Home')
-          setModalVisible(true)}}>
-          <ImageBackground source={{uri:`${thumbnailImage[2]}`}}
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Africa'} </Text>
-          </ImageBackground>    
-        </TouchableOpacity> */}
-  
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          // setGameName('Animal tracks')
-          // setGameType('Home')
-          // setModalVisible(true)}}
-          //LOCKED
-          if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={{uri:`${thumbnailImage[3]}`}}
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Footprints'} </Text>
-            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
-            
-            {/* {!auth.currentUser?<Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>:<View></View>} */}
-          </ImageBackground>  
-        </TouchableOpacity>        
-
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          // setGameName('Knots')
-          // setGameType('Home')
-          // setModalVisible(true)}}>
-            //LOCKED
-            if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-
-          <ImageBackground source={{uri:`${thumbnailImage[4]}`}}
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Knots'} </Text>
-            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
-            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
-          </ImageBackground>  
-        </TouchableOpacity>        
-
-        <TouchableOpacity style={styles.gameSelection} 
-        // onPress={() => {
-        //   setGameName('History')
-        //   setGameType('Sequence')
-        //   setModalVisible(true)}}>
-          //LOCKED
-          onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={{uri:`${thumbnailImage[5]}`}}
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Inventions'} </Text>
-            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
-            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
-          </ImageBackground>  
-        </TouchableOpacity>    
-
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          setGameName('Helicopters')
-          setFolderName("Helicopters")
-          setGameType('Home')
-          setModalVisible(true)}}>
-          <ImageBackground source={require('../assets/thumbnails/helicopter.jpg')}
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Helicopters'} </Text>
-            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
-            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
-          </ImageBackground>  
-        </TouchableOpacity> 
-
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {
-          setGameName('French Bread')
-          setFolderName("French Bread")
-          setGameType('Home')
-          setModalVisible(true)}}>
-          <ImageBackground source={require('../assets/thumbnails/breads.png')}
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'French Bread'} </Text>
-            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
-          </ImageBackground>  
-        </TouchableOpacity>  
-
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/thumbnails/crabs.jpg')} 
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Sea Life'} </Text>
-            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
-            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
-          </ImageBackground>  
-        </TouchableOpacity>     
-  
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/thumbnails/berries.png')} 
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Berries'} </Text>
-            <Image source={require('../assets/bg/soon.jpeg')} style={styles.soon}/>
-            {/* {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>} */}
-          </ImageBackground> 
-        </TouchableOpacity>   
-  
-        {/* <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={{uri:`${outcomeImage[0]}`}} 
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Engines'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
-          </ImageBackground>
-        </TouchableOpacity>  
-  
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Cars'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
-          </ImageBackground>
-        </TouchableOpacity>  
-  
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Turtles'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
-          </ImageBackground>
-        </TouchableOpacity>  
-  
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}> 
-            <Text style ={styles.gameText}> {'Weaponry'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
-          </ImageBackground>
-        </TouchableOpacity>    
-  
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/bg/loadingscreen02.png')} 
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Pokemon'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
-          </ImageBackground>
-        </TouchableOpacity>    
-  
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
-          style={styles.imageBackgroundMobile}  imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Fish'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
-          </ImageBackground>
-        </TouchableOpacity>    
-  
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'Mustaches'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
-          </ImageBackground>
-        </TouchableOpacity>    
-  
-        <TouchableOpacity style={styles.gameSelection} onPress={() => {if (auth.currentUser) {plsAwaitRelease()} else {plsCreateAccount()}}}>
-          <ImageBackground source={require('../assets/bg/loadingscreen01.png')} 
-          style={styles.imageBackgroundMobile} imageStyle={styles.imageStyleMobile}>
-            <Text style ={styles.gameText}> {'LivingRoom'} </Text>
-            {!auth.currentUser?<Image source={require('../assets/lock.png')} style={styles.lock}/>:<View></View>}
-          </ImageBackground>
-        </TouchableOpacity> 
-   */}
+        <ThumbnailsBlock></ThumbnailsBlock>
       </ScrollView>
       
       </View>
