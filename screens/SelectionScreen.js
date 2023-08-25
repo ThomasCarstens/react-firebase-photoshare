@@ -395,6 +395,7 @@ const SelectionScreen = (props) => {
         let nextButton =      (  
         
           <TouchableOpacity
+          key={'FamiliesBlock ' + family_i}
           style={styles.gameSelectionModal}
           onPress={() => {                    
             // netInfo.isConnected.fetch().then(isConnected => {
@@ -714,6 +715,7 @@ const SelectionScreen = (props) => {
 
             <TouchableOpacity
                     style={styles.gameSelectionModal}
+                    key={'BackButton'}
                     onPress={() => {
                       setModalVisible(!modalVisible);
                     }}>

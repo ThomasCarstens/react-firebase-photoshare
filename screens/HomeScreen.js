@@ -201,14 +201,14 @@ const HomeScreen = (props) => {
     console.log('gathering images for: ', selectedGame)
     getImagesRecursively(allTags)
   
-    const correctListRef = ref(storage, selectedFolder + '/'+correctTag+'/');
-    console.log(incorrectTag)
-    const incorrectListRef = ref(storage, selectedFolder + '/'+incorrectTag[0]+'/');
+    // const correctListRef = ref(storage, selectedFolder + '/'+correctTag+'/');
+    // console.log(incorrectTag)
+    // const incorrectListRef = ref(storage, selectedFolder + '/'+incorrectTag[0]+'/');
     
-    if (incorrectTag.length>1){
-      var incorrectListRef2 = ref(storage, selectedFolder + '/'+incorrectTag[1]+'/');
-      var incorrectListRef3 = ref(storage, selectedFolder + '/'+incorrectTag[2]+'/');
-    }
+    // if (incorrectTag.length>1){
+    //   var incorrectListRef2 = ref(storage, selectedFolder + '/'+incorrectTag[1]+'/');
+    //   var incorrectListRef3 = ref(storage, selectedFolder + '/'+incorrectTag[2]+'/');
+    // }
 
     // Download from DB storage to gallery
     // getImagesFromRef(incorrectListRef, incorrectTag[0], 4).then(()=>{
@@ -478,32 +478,28 @@ const HomeScreen = (props) => {
 
       setIncorrectClickCount(prevState=> prevState+1)
 
-      for (let i=0; i<incorrectTag.length; i++){
-        if (galleryTags[incorrectTag[i]]?.includes(gallery[picNb-1])){
-          let feedbackTag = incorrectTag[i]
-          toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
-        }
-      }
+      // for (let i=0; i<incorrectTag.length; i++){
+      //   if (galleryTags[incorrectTag[i]]?.includes(gallery[picNb-1])){
+      //     let feedbackTag = incorrectTag[i]
+      //     toast.current.show("Correction: "+feedbackTag+".", { type: "error" });
+      //   }
+      // }
+
+      toast.current.show("Correction: "+findLabelOfPic(picNb)+".", { type: "error" });
+      
       
     }
 
   }
 
   const findLabelOfPic = (picNb) => {
-    if (galleryTags[correctTag]?.includes(gallery[picNb-1])){
-      return correctTag
-    } else {
 
-      for (let i=0; i<incorrectTag.length; i++){
-        if (galleryTags[incorrectTag[i]]?.includes(gallery[picNb-1])){
-          let feedbackTag = incorrectTag[i]
-          return feedbackTag
-        }
-      }      
-
-    }
-
-
+    for (let i=0; i<tagList.length; i++){
+      if (galleryTags[tagList[i]]?.includes(gallery[picNb-1])){
+        let feedbackTag = tagList[i]
+        return feedbackTag
+      }
+    }      
   }
 
   const handleSignOut = () => {
@@ -643,18 +639,17 @@ const HomeScreen = (props) => {
   }
   const determineTagProgress = (tagId) => {
 
-
     try {
-      let latestRecordingId = Math.max(Object.keys(userData[selectedFolder]['tags'][tagList[tagId]]))
-
+      // console.log(Object.keys(userData[selectedFolder]['tags'][tagList[tagId]]))
+      let latestRecordingId = Object.keys(userData[selectedFolder]['tags'][tagList[tagId]]).pop()
+      // console.log(tagList[tagId], latestRecordingId)
+      // console.log(userData[selectedFolder]['tags'][tagList[tagId]][String(latestRecordingId)]['correct'])
       return (userData[selectedFolder]['tags'][tagList[tagId]][latestRecordingId]['correct'])
       
     } catch {
       console.log('No score.')
-      return (false)
+      return (0)
     }
-
-    
   }
   return (
     
@@ -908,7 +903,7 @@ const HomeScreen = (props) => {
                 <View>
                 <Progress.Bar progress= {ifUserAttempted(3)?determineTagProgress(3):0.05 } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text style={{color: 'orange'}}>{ifUserAttempted(3)?determineTagProgress(3).toFixed(2)*100+'%':'Start recording.'}</Text>
+                    <Text style={{color: 'orange'}}>{ifUserAttempted(3)?Math.round(determineTagProgress(3)*100)+'%':'Start recording.'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
                     <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
@@ -951,7 +946,7 @@ const HomeScreen = (props) => {
                 <View>
                 <Progress.Bar progress= {ifUserAttempted(2)?determineTagProgress(2):0.05 } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text style={{color: 'orange'}}>{ifUserAttempted(2)?determineTagProgress(2).toFixed(2)*100+'%':'Start recording.'}</Text>
+                    <Text style={{color: 'orange'}}>{ifUserAttempted(2)?Math.round(determineTagProgress(2)*100)+'%':'Start recording.'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
                     <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
@@ -992,12 +987,14 @@ const HomeScreen = (props) => {
                 <View>
                 <Progress.Bar progress= {ifUserAttempted(1)?determineTagProgress(1):0.05 } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text style={{color: 'orange'}}>{ifUserAttempted(1)?determineTagProgress(1).toFixed(2)*100+'%':'Start recording.'}</Text>
+                    <Text style={{color: 'orange'}}>{ifUserAttempted(1)?Math.round(determineTagProgress(1)*100)+'%':'Start recording.'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
                     <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>
                   </View></View>
                 }                
+
+                
                 {/* <TouchableOpacity >
                   <Image 
                     source={{uri:`${galleryTags[incorrectTag[0]]}`,}}
@@ -1032,7 +1029,7 @@ const HomeScreen = (props) => {
                 <View>
                 <Progress.Bar progress= {ifUserAttempted(0)?determineTagProgress(0):0.05 } color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
-                    <Text style={{color: 'orange'}}>{ifUserAttempted(0)?determineTagProgress(0).toFixed(2)*100+'%':'Start recording.'}</Text>
+                    <Text style={{color: 'orange'}}>{ifUserAttempted(0)?Math.round(determineTagProgress(0)*100)+'%':'Start recording.'}</Text>
                   </View></View>: <View><Progress.Bar progress= {0.1} color={'rgb(13, 1, 117)'} style={{backgroundColor:'white'}} borderRadius={20} marginTop={20} width={110} height={30}/>
                 <View style={styles.percentLabel}>
                     <Text style={{marginBottom:-4}}>{'Login for progress bar.'}</Text>

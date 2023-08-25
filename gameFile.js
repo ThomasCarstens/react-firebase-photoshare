@@ -48,10 +48,10 @@ const spoofMacroGameSets = {
 
         },
         "Shepherd dogs": {
-            1: ["Shepherd dogs", "Score", "Dogs", 1],
+            // 1: ["Shepherd dogs", "Score", "Dogs", 1],
             // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
             3: ["Shepherds_01", "Home", "Dogs", 2],
-            4: ["Shepherds_02", "Home", "Dogs", 4],
+            1: ["Shepherds_02", "Home", "Dogs", 4],
     
             2: ["Shepherds_02", "Home", "Dogs", 1],
         },    
@@ -59,17 +59,15 @@ const spoofMacroGameSets = {
     "French Bread": {
         // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
         "Loaf": {
-            1: ["Loaf", "Score", "French Bread", 1],
+            1: ["Loaf_01", "Home", "French Bread", 1],
+            2: ["Loaf_02", "Home", "French Bread", 1],
+            3: ["Loaf_03", "Home", "French Bread", 1],
             // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
-            2: ["Hounds_02", "Home", "French Bread", 1],  
-            3: ["Hounds", "Score", "Dogs", 1],      
-            4: ["Hounds_01", "Home", "Dogs", 1],        
-            5: ["Hounds_03", "Home", "Dogs", 1],
-            6: ["Hounds", "Score", "Dogs", 1],
+
 
         },
         "Baguette": {
-            1: ["Shepherd dogs", "Score", "Dogs", 1],
+            1: ["Shepherd dogs", "Home", "Dogs", 1],
             // ORDER: [Name in Dict, Type of Game, Folder Name, Stage of Dict], 
             3: ["Shepherds_01", "Home", "Dogs", 2],
             2: ["Shepherds_02", "Home", "Dogs", 4],

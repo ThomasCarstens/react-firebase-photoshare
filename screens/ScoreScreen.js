@@ -230,6 +230,7 @@ const TableExample = (props) => {
                 }}>
                   <Text style={{color: 'white', fontWeight:"bold"}}> {"\n BACK TO SELECTION"} </Text>
       </TouchableOpacity>  
+      
       <TouchableOpacity
                 style={styles.gameSelection}
                 
