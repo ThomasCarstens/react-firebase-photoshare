@@ -1,13 +1,14 @@
 {
+  "version": "2.0.0",
   "expo": {
     "name": "Cultivate",
     "slug": "FirebaseAuth",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "logo.png",
+      "image": "cultivate-header.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,7 +24,8 @@
         "foregroundImage": "logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "io.cognitivegen.cultivate"
+      "package": "io.cognitivegen.cultivate",
+      "versionCode": 3
     },
     "web": {
       "favicon": "logo.png"

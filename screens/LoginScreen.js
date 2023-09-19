@@ -1,5 +1,5 @@
 import { Image, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import {useState, useEffect, useRef} from 'react'
 import { auth, firebase } from '../firebase'
 import { useNavigation } from '@react-navigation/core'
@@ -10,14 +10,17 @@ import { ref as ref_d, set, get, onValue } from 'firebase/database'
 import { storage, database } from '../firebase'
 import Toast from 'react-native-fast-toast';
 
-const LoginScreen = () => {
+const LoginScreen = (props) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigation = useNavigation()
     const toast = useRef(null);
+    // const UserContext = React.createContext()
     const [gameFile, setGameFile] = useState()
     const userLoggedIn = (auth.currentUser)
-
+    // const gameFileContext1= useContext(gameFileContext);
+    // console.log('gamefile context:', gameFileContext1)
+    console.log('from initialParams: ', props.route.params.gameFileContext)
     // Automatic login: if there is a current user
     if (userLoggedIn !== null){
       navigation.replace("Selection", {gameFile: gameFile})
@@ -32,11 +35,15 @@ const LoginScreen = () => {
       onValue(gameFileRef, (snapshot) => {
             const data = snapshot.val();
             if (data){
-              console.log('Gamefile downloaded and set to state.')
-              // console.log(gameFile.spoofMacroGameSets.Dogs.Hounds[1][0]);
-              setGameFile(data)
-              // import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
-
+                console.log('Gamefile downloaded and set to state.')
+                // console.log(gameFile.spoofMacroGameSets.Dogs.Hounds[1][0]);
+                setGameFile(data)
+                // import { spoofGameAllocation, spoofGameFolders, spoofGameHashtags, spoofGameMetrics, spoofGameSets, spoofMacroGameSets } from '../gameFile'
+                try {
+                    AsyncStorage.setItem("user", JSON.stringify(data));
+                } catch (error) {
+                    console.log('GAME STORED ERROR: ', error);
+                }
 
             }
             
@@ -69,17 +76,16 @@ const LoginScreen = () => {
     const  handleLogin = () => {
         if (gameFile) {
             signInWithEmailAndPassword(auth,email, password)
-        .then(userCredentials => {
-            const user = userCredentials.user;
-            console.log('logged in with:', user.email);
-            
+            .then(userCredentials => {
+                const user = userCredentials.user;
+                console.log('logged in with:', user.email);
+                // navigation.replace("Selection", {gameFile: gameFile})
         
         }).catch(error => alert(error.message))  
         } else {
             toast.current.show('Cannot load app. Wifi issues?', { type: "success" });
         }
                   
-            
     }
 
     const handleAnonUser = () => {

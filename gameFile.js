@@ -86,17 +86,8 @@ const spoofMacroGameSets = {
     },
     "Cheeses": {
         "Goat": {
-            1: ["Hounds", "Score", "Dogs", 1],
-            2: ["Hounds_02", "Home", "Dogs", 1],        
-            4: ["Hounds_01", "Home", "Dogs", 1],        
-            5: ["Hounds_03", "Home", "Dogs", 1],
-            6: ["Hounds", "Score", "Dogs", 1],
         },
         "Cow": {
-            1: ["Shepherd dogs", "Score", "Dogs", 1],
-            3: ["Shepherds_01", "Home", "Dogs", 2],
-            2: ["Shepherds_02", "Home", "Dogs", 4],
-            4: ["Shepherd dogs", "Score", "Dogs", 1],
         },    
     },
 };
@@ -143,8 +134,9 @@ const spoofGameFolders = {
         "Hounds":           ['Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound'],
 
         "Hounds_ALL":       ['Beagle',              'Bloodhound',           'American Foxhound',        'Basset Hound',
-                             'Dachshund',        'Bluetick Coonhound',   'Black and Tan Coonhound',  'Plott Hound',
-                             'Afghan Hound',     'Otterhound',           'Basenji',                  'Irish Wolfhound'],
+                             
+                             'Afghan Hound',     'Otterhound',           'Basenji',                  'Irish Wolfhound',
+                             'Dachshund',        'Bluetick Coonhound',   'Black and Tan Coonhound',  'Plott Hound',],
 
         "Hounds_01":        ['Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound'],
         "Hounds_02":        ['Dachshund',    'Bluetick Coonhound',      'Black and Tan Coonhound',    'Plott Hound'],

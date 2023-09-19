@@ -32,19 +32,31 @@ import { useNetInfo } from '@react-native-community/netinfo';
 const HomeScreen = (props) => {
 
   // Using gameFile downloaded upon Login.
-  const spoofGameFolders = props.route.params.gameFile.spoofGameFolders
-  const spoofGameAllocation = props.route.params.gameFile.spoofGameAllocation
-  const spoofGameHashtags = props.route.params.gameFile.spoofGameHashtags
-  const spoofGameMetrics = props.route.params.gameFile.spoofGameMetrics
-  const spoofGameSets = props.route.params.gameFile.spoofGameSets
-  const spoofInstructions = props.route.params.gameFile.spoofInstructions
-  const spoofIncorrectTag = props.route.params.gameFile.spoofIncorrectTag
-  const spoofCorrectTag = props.route.params.gameFile.spoofCorrectTag
-  const spoofMacroGameSets = props.route.params.gameFile.spoofMacroGameSets
-  const spoofReleaseStatus = props.route.params?.gameFile?.spoofReleaseStatus
+  
+  const spoofGameFolders = props.route.params.gameFileContext.spoofGameFolders
+  const spoofGameAllocation = props.route.params.gameFileContext.spoofGameAllocation
+  const spoofGameHashtags = props.route.params.gameFileContext.spoofGameHashtags
+  const spoofGameMetrics = props.route.params.gameFileContext.spoofGameMetrics
+  const spoofGameSets = props.route.params.gameFileContext.spoofGameSets
+  const spoofInstructions = props.route.params.gameFileContext.spoofInstructions
+  const spoofIncorrectTag = props.route.params.gameFileContext.spoofIncorrectTag
+  const spoofCorrectTag = props.route.params.gameFileContext.spoofCorrectTag
+  const spoofMacroGameSets = props.route.params.gameFileContext.spoofMacroGameSets
+  const spoofReleaseStatus = props.route.params?.gameFileContext?.spoofReleaseStatus
+  const savedMacroTags = props.route.params?.galleryTags
+  console.log('savedMacroTags: ', savedMacroTags)
   const [gameFile, setGameFile] = useState()
+  const [gameDownloaded, setGameDownloaded] = useState()
+  const [tagDictionary, setTagDictionary] = useState()
 
+  const selectedGame = props.route.params.name  
+  const selectedFolder = props.route.params?.folder
   useEffect(()=>{   
+
+
+
+    // First if-else attributes the gameFile.
+
     if (props.route.params.gameFile){
       setGameFile(props.route.params.gameFile)
     } else {
@@ -61,10 +73,82 @@ const HomeScreen = (props) => {
 
     }
 
-      }, [])
+      // }, [])
 
-  const selectedGame = props.route.params.name  
-  const selectedFolder = props.route.params?.folder
+      // useEffect(()=>{
+
+        // Second if-else attributes game tags:
+
+        if (props.route.params.gameDownloaded){ //if exists and true.
+          // Get allTags from passed parameter.
+          
+          // setGalleryTags(savedMacroTags)
+          console.log("Doing Shuffle.")
+          doShuffleAndLay(savedMacroTags)
+          setTagDictionary(savedMacroTags)
+          setGalleryTags(savedMacroTags)
+
+        } else {
+          //GetImagesRecursively from Firebase Realtime Database.
+          macroTags = spoofGameFolders[selectedFolder][macroName+'_ALL'] //4 tags
+          console.log('gathering images for: ', macroName)
+          getImagesRecursively(macroTags) //gameDownloaded set at end
+        }
+
+        // if (gameDownloaded){ //galleryVal.length>8 && 
+        //   doShuffleAndLay()
+        // }
+    }, []) 
+
+    useEffect(()=>{
+
+
+      if (gameDownloaded){ //galleryVal.length>8 && 
+        // doShuffleAndLay()
+      }
+  }, [gameDownloaded]) 
+
+  const doShuffleAndLay = async(allGalleryTags) => {
+    // setGalleryTags(allGalleryTags)
+    // console.log('taglist is: ', tagList, '\n and ')
+    // console.log(allGalleryTags)
+    let tagUrls = []
+    
+    for (let tag_i=0; tag_i<tagList.length ; tag_i++) {
+      console.log('tag is', tagList[tag_i])
+      // console.log('entry is', allGalleryTags)
+      if (tagUrls.length == 0){
+        tagUrls = [...allGalleryTags[tagList[tag_i]]]
+      } else {
+        tagUrls = [...tagUrls, ...allGalleryTags[tagList[tag_i]]]
+      }
+      
+    }
+    // .then(()=>{
+
+    // })
+
+    do {
+      console.log('Shuffling -')
+
+      
+      
+      tagUrls.sort( () => .3 - Math.random() );
+      
+      visibleGallery = tagUrls.slice(2, 10)
+      tagDict = {...allGalleryTags}
+      correctLeftInGallery = tagDict[correctTag].filter((url) => visibleGallery.includes(url) )
+      
+    } while (correctLeftInGallery.length != 2)
+    // validation
+    // console.log('correctLeftInGallery: '+correctLeftInGallery.length)
+
+    // Render late to prevent visible reshuffling.
+    setGallery([...visibleGallery])
+    console.log(visibleGallery)
+    // setSortingGallery([])
+  }
+    
   const userData = props.route.params?.data  
   const hint = props.route.params?.hint
   const applicationImages = props.route.params?.application
@@ -114,7 +198,7 @@ const HomeScreen = (props) => {
   const [modalVisible, setModalVisible] = useState(true)
   
   var gameName = spoofMacroGameSets[selectedFolder][macroName][gameSetLevel][0]//spoofGameSets[selectedGame][gameSetLevel]
-  console.log(gameName, "is the game noww.")
+  console.log(macroName, "is the game noww.")
   // const [gameName, setGameName ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[selectedGame][learningLevel]) // this is an issue upon first load.
   const [instructionText, setInstructionText] = useState(spoofInstructions[selectedGame][learningLevel])
@@ -128,7 +212,7 @@ const HomeScreen = (props) => {
   const [gameSetComplete, setGameSetComplete] = useState(false)
   const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
   const [showHint, setShowHint] = useState(false)
-  
+  const [galleryTags, setGalleryTags] = useState({})
   // Locking in Landscape Mode.
   if (!webView){
     ScreenOrientation.lockAsync(6); //LANDSCAPE_LEFT
@@ -138,7 +222,7 @@ const HomeScreen = (props) => {
   useEffect(() => {
     // Reset gallery no matter if game still going / has ended.
     setGallery([]) 
-    setGalleryTags({})
+    // setGalleryTags({}) // Keeping saved.
     // at end of mini game, update text / Next Game button
     if (learningLevel == Object.keys(spoofInstructions[selectedGame]).length) {
       
@@ -168,10 +252,15 @@ const HomeScreen = (props) => {
     // within mini game, update text / tags / hint
     setInstructionText(spoofInstructions[selectedGame][learningLevel]); //Triggers toastmessage (Hook)
     setCorrectTag(spoofCorrectTag[selectedGame][learningLevel]) 
-    setIncorrectTag(spoofIncorrectTag[selectedGame][learningLevel]) //Triggers DB Download (Hook)
+    setIncorrectTag(spoofIncorrectTag[selectedGame][learningLevel]) //Triggers DB Download + myTags (Hook)
     setShowHint(false)
     setGallery(old => [])
-  
+    doShuffleAndLay(tagDictionary)
+    // if (gameDownloaded) {
+    //   doShuffleAndLay()
+    // }
+    
+    // setGameDownloaded(old => old+1) // Triggers shuffle (Hook)
     // within mini game, update progress bar
     setProgressInGame ( learningLevel/(Object.keys(spoofInstructions[selectedGame]).pop()) )
     
@@ -189,7 +278,8 @@ const HomeScreen = (props) => {
 
     // Empty the gallery in preparation for Download
     const myTags = spoofGameFolders[selectedFolder][selectedGame]
-    allTags = spoofGameFolders[selectedFolder][selectedGame]
+    allTags = spoofGameFolders[selectedFolder][selectedGame] //4 tags
+    // allTags = spoofGameFolders[selectedFolder][selectedGame] //all macro tags
     setTagList(myTags)
     // next_ref = ref(storage, selectedFolder + '/'+correctTag+'/');
     // allTags.filter(tag => tag !== correctTag);
@@ -200,8 +290,8 @@ const HomeScreen = (props) => {
     //   next_ref = ref(storage, selectedFolder + '/'+nextTag+'/');
     //   getImagesFromRef(next_ref, allTags, 4)
     // }
-    console.log('gathering images for: ', selectedGame)
-    getImagesRecursively(allTags)
+
+    
   
     // const correctListRef = ref(storage, selectedFolder + '/'+correctTag+'/');
     // console.log(incorrectTag)
@@ -237,18 +327,30 @@ const HomeScreen = (props) => {
     })
   }
   const getImagesRecursively = (allTags) => {
-      console.log("CURRENT TAGS:", allTags)
+      // console.log("CURRENT TAGS:", allTags)
       nextTag = allTags[0]
+      // console.log('Calling tag: ', nextTag)
       next_ref = ref(storage, selectedFolder + '/'+nextTag+'/');
       let shiftedAllTags= allTags.filter((tag => tag!==nextTag))
       
       getImagesFromRef(next_ref, nextTag, 3).then(()=>{
         if (shiftedAllTags.length > 0) {
-          getImagesRecursively(shiftedAllTags)
+          // sleep(100).then(() => { getImagesRecursively(shiftedAllTags); });
+          getImagesRecursively(shiftedAllTags);
+        } else {
+          console.log(galleryTags)
+          // setGameDownloaded(true) // This is now a hook
+          // getImagesFromRef(next_ref, nextTag, 4).then(()=>{
+          //   doShuffleAndLay(galleryTags)
+          // })
+          // console.log(galleryTags)
+          
         }
       })
   }
-
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
   const getImagesFromRef = async(ref, tagLabel, upperLimit=5) => {
     if (ref==undefined){
       console.log('skipping ref because storage is undefined:', ref)
@@ -258,7 +360,7 @@ const HomeScreen = (props) => {
     await list(ref)
     .then((res) => { 
       // Start index of download can choose in a safe range "window"
-      let window = (((res.items).length) > upperLimit)? ((res.items).length-upperLimit-1) : 0; 
+      let window = (((res.items).length) > upperLimit)? ((res.items).length-upperLimit-2) : 0; 
       // Start index chosen as random int in range (0, safe length)
       const randomDatabaseImageIndex = Math.floor(Math.random() * (window));
       // Download list length constrained to upperLimit or smaller if less at location
@@ -266,48 +368,51 @@ const HomeScreen = (props) => {
       // Start download
       let galleryVal = []
       // setSort(true)
+      console.log('Cutting', tagLabel, ' from ', randomDatabaseImageIndex, ' to ', randomDatabaseImageIndex+upperLimit, 'with max at', (res.items).length-1)
       res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
       
 
                         getDownloadURL(itemRef).then((y)=> {
-                        
-                          getMetadata(itemRef)
-                            .then((metadata) => {
+                          console.log(y)
+                          // getMetadata(itemRef)
+                          //   .then((metadata) => {
                               
                               /* (1) Ordering urls by Tag */
                               setGalleryTags(old => {
                                 let tagDict = {...old}
                                 // if tag is in tagDict: add url. Else: create key-value pair. metadata.customMetadata['tag']
                                 if (Object.keys(tagDict).includes(tagLabel)){ 
-                                  old[tagLabel].push(y)
-                                  // if galleryTags urls reach the upperLimit argument: push them to gallery
-                                  if (old[tagLabel].length == upperLimit){
+                                  tagDict[tagLabel].push(y)
 
-                                    
+                                  // if galleryTags urls reach the upperLimit argument: push them to gallery
+                                  console.log(tagLabel, 'is or is not in', tagList, ': ', tagList.includes(tagLabel) )
+                                  
+                                  // if ( tagLabel == tagList[3] ){ 
+                                  //   upperLimit = upperLimit - 2
+                                  // }                                  
+                                  console.log(tagLabel, 'length to beat: ', upperLimit, 'ie.', upperLimit*tagList.length, 'and we have ', tagDict[tagLabel].length)
+
+
+                                  if ((tagList.includes(tagLabel) && tagDict[tagLabel].length >= upperLimit)) {
+                                    console.log('detected true')
                                     /* (2) Displaying urls on Page */
                                     
                                     setSortingGallery(gallery => {
                                       // gallery urls taken from galleryTags[tag] of length upperLimit
-                                      galleryVal = [...gallery, ...old[tagLabel]] 
-                                      console.log('val length:'+galleryVal.length)
+                                      galleryVal = [...gallery, ...tagDict[tagLabel]] 
+                                      console.log('val length: '+galleryVal.length)
+                                      if (galleryVal.length==(upperLimit*tagList.length)){
+                                        setTagDictionary(tagDict)
+                                      }
                                       // sorting Gallery: if 12 urls reached, shuffle until only 2 correct in the visible portion.
 
-                                      if (galleryVal.length==12){
-                                        do {
-                                          console.log('Shuffling -')
-                                          galleryVal.sort( () => .3 - Math.random() );
-                                          visibleGallery = galleryVal.slice(2, 10)
+                                      // if ((galleryVal.length>=(upperLimit*tagList.length))||( tagLabel == tagList[3] )){ // && gameDownloaded(upperLimit*tagList.length)
+                                      //   console.log(galleryVal)
+                                      //   tagReady = tagDict
+                                      //   doShuffleAndLay(tagReady)
 
-                                          correctLeftInGallery = tagDict[correctTag].filter((url) => visibleGallery.includes(url) )
-                                          
-                                        } while (correctLeftInGallery.length != 2)
-                                        // validation
-                                        // console.log('correctLeftInGallery: '+correctLeftInGallery.length)
-
-                                        // Render late to prevent visible reshuffling.
-                                        setGallery([...visibleGallery])
-                                        setSortingGallery([])
-                                      }
+                                      // }
+                                      
                                       
                                       
                                       return galleryVal
@@ -315,6 +420,10 @@ const HomeScreen = (props) => {
                                   };                                   
                                 } else {
                                   tagDict[tagLabel]=[y]
+                                  // if (tagLabel == tagList[3]){
+                                  //   tagReady = tagDict
+                                  //   doShuffleAndLay(tagReady)
+                                  // }
                                 }
                                 return tagDict
                                 
@@ -323,15 +432,16 @@ const HomeScreen = (props) => {
                               
                               
 
-                            }).catch((error) => { // metadata error
-                              console.log(error)
-                            });
+                            // }).catch((error) => { // metadata error
+                            //   console.log(error)
+                            // });
 
                         }).catch((error) => { // download error
                           console.log('Error in CatList.')
                           console.log(error)
                         });
                     }) 
+                    
       }) 
       
   }
@@ -380,7 +490,7 @@ const HomeScreen = (props) => {
   //sorted before render 
   const [sortingGallery, setSortingGallery] = useState([]) 
   const [gallery, setGallery] = useState([null])
-  const [galleryTags, setGalleryTags] = useState({'Test': 'test'})
+  
   console.log('LENGTH: ', onlineGallery.length)
 
   const pushImage = (y) => {
@@ -721,6 +831,8 @@ const HomeScreen = (props) => {
         macroName: macroName,
         hint: hint, 
         gameIsThreaded: 1,
+        gameDownloaded: 1,
+        galleryTags: galleryTags,
         application: applicationImages,
         level: gameSetLevel+1, //gameName?
         data: (auth.currentUser)?userData:0 })
@@ -1059,7 +1171,11 @@ const HomeScreen = (props) => {
                 <TouchableOpacity
                   style={{...styles.gameSelection}}
                   onPress={() => {
-                    setModalVisible(!modalVisible);
+                    
+                    doShuffleAndLay(tagDictionary).then(()=>{
+                      setModalVisible(!modalVisible)
+                    })
+                    
                   //   if (Platform.OS === "android") {
                   //     // netInfo.isConnected.fetch().then(isConnected => {
                   //       if (netInfo.isConnected) {
@@ -1083,6 +1199,8 @@ const HomeScreen = (props) => {
                   style={{...styles.gameSelection}}
                   onPress={() => {
                     setModalVisible(!modalVisible);
+                    // console.log(galleryTags)
+                    console.log(gameDownloaded, 'is gameDownloaded')
                     navigation.replace(spoofMacroGameSets[selectedFolder][macroName][macroLevel+ 1][1], { 
                       gameFile: gameFile,
                       name: spoofMacroGameSets[selectedFolder][macroName][macroLevel+ 1][0],
@@ -1091,6 +1209,8 @@ const HomeScreen = (props) => {
                       macroName: macroName,
                       hint: hint, 
                       gameIsThreaded: 1,
+                      gameDownloaded: 1,
+                      galleryTags: tagDictionary,
                       application: applicationImages,
                       level: gameSetLevel, //gameName?
                       data: (auth.currentUser)?userData:0 })

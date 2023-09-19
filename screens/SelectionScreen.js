@@ -26,41 +26,57 @@ import { useNetInfo } from '@react-native-community/netinfo'
 const webView = (Platform.OS == 'web') // testing with 'web' or 'android'
 
 const SelectionScreen = (props) => {
+    // console.log(props)
     // Orientation.lockToLandscape();
     const navigation = useNavigation();
     const netInfo = useNetInfo();
     const toast = useRef(null);
     const [userData, setUserData] = useState()
     const [gameName, setGameName] = useState()
-    const [gameFile, setGameFile] = useState()
-
+    const [gameFile, setGameFile] =   useState()
+    const [gameFileLoad, setGameFileLoad] =   useState(true)
+    // const [spoofMacroGameSetsTitles, setspoofMacroGameSetsTitles] = useState()
     
     // Using gameFile downloaded upon Login.
     // setGameFile(props.route.params?.gameFile)
-    const spoofGameFolders = props.route.params?.gameFile?.spoofGameFolders
-    const spoofGameAllocation = props.route.params?.gameFile?.spoofGameAllocation
-    const spoofGameHashtags = props.route.params?.gameFile?.spoofGameHashtags
-    const spoofGameMetrics = props.route.params?.gameFile?.spoofGameMetrics
-    const spoofGameSets = props.route.params?.gameFile?.spoofGameSets
-    const spoofMacroGameSets = props.route.params?.gameFile?.spoofMacroGameSets
-    const spoofReleaseStatus = props.route.params?.gameFile?.spoofReleaseStatus
+    // console.log('Gamefile ',props.route.params.gameFile)
+    const spoofGameFolders = props.route.params.gameFileContext.spoofGameFolders
+    const spoofGameAllocation = props.route.params.gameFileContext.spoofGameAllocation
+    const spoofGameHashtags = props.route.params.gameFileContext.spoofGameHashtags
+    const spoofGameMetrics = props.route.params.gameFileContext.spoofGameMetrics
+    const spoofGameSets = props.route.params.gameFileContext.spoofGameSets
+    const spoofMacroGameSets = props.route.params.gameFileContext.spoofMacroGameSets
+    const spoofReleaseStatus = props.route.params.gameFileContext.spoofReleaseStatus
 
     useEffect(()=>{   
-      if (props.route.params.gameFile){
-        setGameFile(props.route.params.gameFile)
+      if (props.route.params.gameFile !== undefined){
+        setGameFile(props.route.params.gameFileContext)
         console.log('Gamefile passed through navigator.')
       } else {
         //GameFile loaded on Firebase Realtime Database.
-        const gameFileRef = ref_d(database, "gameFile" );
-  
-        onValue(gameFileRef, (snapshot) => {
-              const data = snapshot.val();
-              if (data){
-                console.log('Gamefile downloaded and set to state.')
-                setGameFile(data)
-              }            
-            })
 
+        // const gameFileRef = ref_d(database, "gameFile" );
+  
+        // onValue(gameFileRef, (snapshot) => {
+        //       const data = snapshot.val();
+        //       if (data){
+        //         console.log('REDOWNLOAD: Gamefile downloaded and set to state.')
+        //         setGameFile(data)
+        //         setGameFileLoad(false)
+        //         // setspoofMacroGameSetsTitles(data.spoofMacroGameSets)
+        //       }            
+        //     })
+
+        
+        // Attempt to AsyncStorage. Parse error
+                // try {
+        //   const savedUser = AsyncStorage.getItem("user");
+        //   const currentUser = JSON.parse(savedUser);
+        //   console.log('CURRENT ASYNCSTORAGE:', currentUser);
+        //   setGameFile(currentUser)
+        // } catch (error) {
+        //   console.log(error);
+        // }
       }
 
         }, [])
@@ -315,6 +331,7 @@ const SelectionScreen = (props) => {
           gameName: spoofGameFolders[gameName][spoofMacroGameSets[folderName][threadedGameName][macroLevel+ 1][0]][0],
           levelGrouping: spoofMacroGameSets[folderName][threadedGameName][macroLevel+ 1][0],
           macroName: threadedGameName,
+          // gameDownloaded: False // Depending on input.
         })    
         // Auth user does a non-first attempt: find latestLevel.                  
       }
@@ -327,6 +344,7 @@ const SelectionScreen = (props) => {
         folder: spoofMacroGameSets[folderName][threadedGameName][macroLevel+ 1][2],
         macroName: threadedGameName,
         gameIsThreaded: 1,
+        gameDownloaded: 0,
         macroLevel: 1,
         application: applicationImages,
         hint: hintImages, 
@@ -389,7 +407,6 @@ const SelectionScreen = (props) => {
 
     const ifGameReleased = ( each_game ) => {
       try {
-        
         return (spoofReleaseStatus[each_game]['released'])
       } catch {
         return (false)
@@ -397,18 +414,17 @@ const SelectionScreen = (props) => {
     }
 
     const ifGameVisible = ( each_game ) => {
-      
       try {
-        return (spoofReleaseStatus['Vegetables']['visible'])
+        return (spoofReleaseStatus[each_game]['visible'])
       } catch {
         return (false)
       }
-
     }
-
 
     function ThumbnailsBlock() {
       let ThumbnailsButtons = [];
+      // console.log("GAMESET: ", spoofMacroGameSets)
+      
       let thumbnailList = Object.keys(spoofMacroGameSets)
       
       for (let each_game of thumbnailList) {
@@ -513,7 +529,8 @@ const SelectionScreen = (props) => {
 
 
 //  <SafeAreaView style={{...styles.webContainer}}> 
-//              <View style={{...styles.webContent}}>    
+//              <View style={{...styles.webContent}}>  
+
     return (
         
       

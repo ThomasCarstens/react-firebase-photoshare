@@ -17,12 +17,14 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "autoIncrement": true
+    }
   },
   "submit": {
     "production": {
     "android": {
-        "serviceAccountKeyPath": "../credentials.json",
+        "serviceAccountKeyPath": "/home/txa/keys/credentials.json"
         }
 
       }
