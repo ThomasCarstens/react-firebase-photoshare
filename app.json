@@ -8,9 +8,9 @@
     "icon": "logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "cultivate-header.png",
+      "image": "logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#E6E6FA"
     },
     "assetBundlePatterns": [
       "**/*"

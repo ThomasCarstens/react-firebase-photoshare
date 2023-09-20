@@ -557,14 +557,17 @@ const SelectionScreen = (props) => {
       <View style={{flex: 6, flexDirection: 'row', justifyContent: 'center'}}>
       
       <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
-      <Text  style={{color: '#b6dbd8', fontSize:20}} marginTop={135} marginLeft={(webView)?200:20} >
+
+      <Image source={require("../logo.png")} style={{height:50, width:50, marginTop:135, marginLeft:35, borderRadius: 0}}></Image>
+
+      <Text  style={{color: '#b6dbd8', fontSize:20}}  marginLeft={(webView)?200:20} >
         {'Cultivate'} 
       </Text>
 
-      <Text  style={{color: '#b6dbd8'}} marginTop={45} marginLeft={(webView)?200:20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
+      {/* <Text  style={{color: '#b6dbd8'}} marginTop={45} marginLeft={(webView)?200:20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>
         {'Send suggestions \n to the team'} 
-      </Text>
-      <View padding={20}></View>
+      </Text> */}
+      <View padding={40}></View>
       {/* <TouchableOpacity style={styles.button} onPress={handleLogin}> <!--(auth.currentUser)?handleSignOut: */}
       
       <TouchableOpacity style={{...styles.button, marginLeft:(webView)?15:1}} onPress={(auth.currentUser)?handleSignOut:handleLogin}> 

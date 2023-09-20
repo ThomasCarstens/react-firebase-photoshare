@@ -44,7 +44,7 @@ const HomeScreen = (props) => {
   const spoofMacroGameSets = props.route.params.gameFileContext.spoofMacroGameSets
   const spoofReleaseStatus = props.route.params?.gameFileContext?.spoofReleaseStatus
   const savedMacroTags = props.route.params?.galleryTags
-  console.log('savedMacroTags: ', savedMacroTags)
+  // console.log('savedMacroTags: ', savedMacroTags)
   const [gameFile, setGameFile] = useState()
   const [gameDownloaded, setGameDownloaded] = useState()
   const [tagDictionary, setTagDictionary] = useState()
@@ -156,7 +156,7 @@ const HomeScreen = (props) => {
   const macroName = props.route.params?.macroName
 
   const sound = new Audio.Sound()
-  const macroLevel = props.route.params?.macroLevel 
+  var macroLevel = props.route.params?.macroLevel 
   
 
 
@@ -980,8 +980,8 @@ const HomeScreen = (props) => {
 
       {/* MODAL IF modalVisible */}
       <Modal
-      animationType="slide"
-      transparent={true}
+      animationType="fade"
+      transparent={false}
       // backgroundColor='rgba(22, 160, 133, 0.8)'
       visible={modalVisible} //instead of on state change modalVisible
       onRequestClose={() => {
@@ -990,7 +990,17 @@ const HomeScreen = (props) => {
       }}
       >
 
-      <View  style={{backgroundColor:colors.background, marginTop: 50}}> 
+      <View  style={{backgroundColor:colors.background, marginTop: 20}}> 
+      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'flex-start'}}>
+        <TouchableOpacity  onPress={handleSelectionScreen}>
+          <Text style={{...styles.buttonText, color:'black'}}>{"< Back"}</Text>
+        </TouchableOpacity>
+        <Text style={{fontSize: 13, alignContent: 'flex-end', marginLeft: 20}} > 
+        {macroName.toUpperCase()} Game </Text>
+
+          
+      </View>
+      <View style={{padding: 3}}></View>
           {/* {(hint[(gameSetLevel+1).toString()])?
            <Image source={{uri: `${hint[(gameSetLevel+1).toString()]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?300:15, marginBottom:-150}}></Image>
             : 
@@ -1171,10 +1181,13 @@ const HomeScreen = (props) => {
                 <TouchableOpacity
                   style={{...styles.gameSelection}}
                   onPress={() => {
-                    
+                  if (tagDictionary){
                     doShuffleAndLay(tagDictionary).then(()=>{
                       setModalVisible(!modalVisible)
                     })
+                  } else {
+                    toast.current.show("Loading game.");
+                  }
                     
                   //   if (Platform.OS === "android") {
                   //     // netInfo.isConnected.fetch().then(isConnected => {
@@ -1192,15 +1205,23 @@ const HomeScreen = (props) => {
                   //     setModalVisible(!modalVisible);
                   // }
                 }}>
-                    <Text style={{fontWeight:"bold"}}> {"\n START"} </Text>
+                    <Text style={{fontWeight:"bold"}}> {(tagDictionary)?"\n START":"\n LOADING..."}</Text>
                 </TouchableOpacity> 
                 
                 <TouchableOpacity
                   style={{...styles.gameSelection}}
                   onPress={() => {
+                    if (tagDictionary){ // Making sure game is downloaded.
                     setModalVisible(!modalVisible);
-                    // console.log(galleryTags)
-                    console.log(gameDownloaded, 'is gameDownloaded')
+                    
+
+                    // Loop around macroGameSet
+                    macroGameSetLength = Object.keys(spoofMacroGameSets[selectedFolder][macroName]).length
+                    macroLevel = macroLevel%macroGameSetLength
+
+                    
+                    console.log('updated macroLevel is: ', macroLevel, 'and length: ', Object.keys(spoofMacroGameSets[selectedFolder][macroName]).length)
+
                     navigation.replace(spoofMacroGameSets[selectedFolder][macroName][macroLevel+ 1][1], { 
                       gameFile: gameFile,
                       name: spoofMacroGameSets[selectedFolder][macroName][macroLevel+ 1][0],
@@ -1214,8 +1235,12 @@ const HomeScreen = (props) => {
                       application: applicationImages,
                       level: gameSetLevel, //gameName?
                       data: (auth.currentUser)?userData:0 })
+                    // setGameSetLevel(previous => previous+1)
+                    } else {
+                      toast.current.show("Loading game.");
+                    }
                   }}>
-                    <Text style={{fontWeight:"bold"}}> {"\n SKIP LEVEL"} </Text>
+                    <Text style={{fontWeight:"bold"}}> {(tagDictionary)?"\n SKIP LEVEL":"\n LOADING..."} </Text>
                 </TouchableOpacity>   
                 {(auth.currentUser)?<View></View>: 
                       <TouchableOpacity
@@ -1223,6 +1248,7 @@ const HomeScreen = (props) => {
                     onPress={() => {
                       setModalVisible(!modalVisible);
                       navigation.replace('Login')
+                      
                     }}>
                       <Text style={{fontWeight:"bold", color:'white'}}> {"\n LOGIN"} </Text>
                   </TouchableOpacity>            
@@ -1238,7 +1264,7 @@ const HomeScreen = (props) => {
       
         </View>
         <View>
-                    <Text style={{fontSize:25, color: 'orange', marginLeft: 150}}>{'Learning progress scores'}</Text>
+                    <Text style={{fontSize:15, color: 'orange', marginLeft: 100, marginTop: 10}}>{'Learning progress scores'.toUpperCase()}</Text>
         </View>
 
 
