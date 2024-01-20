@@ -106,7 +106,7 @@ const LoginScreen = (props) => {
         behavior="padding">
         <Image source={require("../logo.png")} style={{height:200, width:200, marginLeft:0, borderRadius: 20}}></Image>
         <Text  style={{color: 'black', fontSize:20}}  marginLeft={20} >
-        {'Cultivate'} 
+        {'Cognitive Gen'} 
         </Text>
         <View padding={20}></View>
         <Toast ref={toast} />

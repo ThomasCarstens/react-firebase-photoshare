@@ -1,5 +1,1039 @@
 
 
+// JSON for AI.
+// "spoofCorrectTag": {
+
+//     "Baguette": [
+//       null,
+//       "Baguette classique",
+//       "Ficelle",
+//       "Flute",
+//       "Fournee",
+//       "Viennoise",
+//       "Baguette classique",
+//       "Ficelle",
+//       "Viennoise",
+//       ""
+//     ],
+
+//     "Hounds": [
+//       null,
+//       "Basset Hound",
+//       "Beagle",
+//       "Bloodhound",
+//       "American Foxhound",
+//       ""
+//     ],
+//     "Hounds_01": [
+//       null,
+//       "Beagle",
+//       "Bloodhound",
+//       "American Foxhound",
+//       "Basset Hound",
+//       ""
+//     ],
+//     "Hounds_02": [
+//       null,
+//       "Dachshund",
+//       "Bluetick Coonhound",
+//       "Black and Tan Coonhound",
+//       "Plott Hound",
+//       ""
+//     ],
+//     "Hounds_03": [
+//       null,
+//       "Afghan Hound",
+//       "Otterhound",
+//       "Basenji",
+//       "Irish Wolfhound",
+//       ""
+//     ],
+
+//     "Shepherd dogs": [
+//       null,
+//       "Australian Shepherd",
+//       "Bearded Collie",
+//       "Border Collie",
+//       "Old English Sheepdog",
+//       ""
+//     ],
+//     "Shepherds_01": [
+//       null,
+//       "Beauceron",
+//       "Belgian Sheepdog",
+//       "German Shepherd Dog",
+//       "Icelandic Sheepdog",
+//       ""
+//     ],
+//     "Shepherds_02": [
+//       null,
+//       "Bearded Collie",
+//       "Border Collie",
+//       "Old English Sheepdog",
+//       "Australian Shepherd",
+//       ""
+//     ],
+//     "Shepherds_03": [
+//       null,
+//       "Belgian Malinois",
+//       "Bouvier des Flandres",
+//       "Briard",
+//       "Collie",
+//       ""
+//     ]
+
+//   },
+//   "spoofGameFolders": {
+//     "Dogs": {
+//       "BigSmall1": [
+//         "Boxer",
+//         "Bull Terrier"
+//       ],
+//       "BigSmall2": [
+//         "Silky Terrier",
+//         "Bloodhound"
+//       ],
+//       "BigSmall3": [
+//         "Pharaoh Hound",
+//         "Beagle"
+//       ],
+//       "Dogs": [
+//         "Boxer",
+//         "Bullmastiff",
+//         "Mastiff"
+//       ],
+//       "Dogs_ALL": [
+//         "Beauceron",
+//         "Belgian Sheepdog",
+//         "German Shepherd Dog",
+//         "Icelandic Sheepdog",
+//         "Bearded Collie",
+//         "Border Collie",
+//         "Old English Sheepdog",
+//         "Australian Shepherd",
+//         "Belgian Malinois",
+//         "Bouvier des Flandres",
+//         "Briard",
+//         "Collie",
+//         "Beagle",
+//         "Bloodhound",
+//         "American Foxhound",
+//         "Basset Hound",
+//         "Dachshund",
+//         "Bluetick Coonhound",
+//         "Black and Tan Coonhound",
+//         "Plott Hound",
+//         "Afghan Hound",
+//         "Otterhound",
+//         "Basenji",
+//         "Irish Wolfhound"
+//       ],
+//       "Hounds": [
+//         "Beagle",
+//         "Bloodhound",
+//         "American Foxhound",
+//         "Basset Hound"
+//       ],
+//       "Hounds_01": [
+//         "Beagle",
+//         "Bloodhound",
+//         "American Foxhound",
+//         "Basset Hound"
+//       ],
+//       "Hounds_02": [
+//         "Dachshund",
+//         "Bluetick Coonhound",
+//         "Black and Tan Coonhound",
+//         "Plott Hound"
+//       ],
+//       "Hounds_03": [
+//         "Afghan Hound",
+//         "Otterhound",
+//         "Basenji",
+//         "Irish Wolfhound"
+//       ],
+//       "Hounds_11": [
+//         "Beagle",
+//         "Otterhound",
+//         "Irish Wolfhound",
+//         "American Foxhound"
+//       ],
+//       "Hounds_12": [
+//         "Afghan Hound",
+//         "Bluetick Coonhound",
+//         "Black and Tan Coonhound",
+//         "Basenji"
+//       ],
+//       "Hounds_13": [
+//         "Dachshund",
+//         "Bloodhound",
+//         "Basset Hound",
+//         "Plott Hound"
+//       ],
+//       "Hounds_ALL": [
+//         "Beagle",
+//         "Bloodhound",
+//         "American Foxhound",
+//         "Basset Hound",
+//         "Dachshund",
+//         "Bluetick Coonhound",
+//         "Black and Tan Coonhound",
+//         "Plott Hound",
+//         "Afghan Hound",
+//         "Otterhound",
+//         "Basenji",
+//         "Irish Wolfhound"
+//       ],
+//       "Mastiffs": [
+//         "Boxer",
+//         "Bullmastiff",
+//         "Mastiff"
+//       ],
+//       "Pointers": [
+//         "German Shorthaired Pointer",
+//         "German Wirehaired Pointer"
+//       ],
+//       "Shepherd Dog VS Others": [
+//         "Boxer",
+//         "Boykin Spaniel",
+//         "Border Collie",
+//         "Bloodhound"
+//       ],
+//       "Shepherd dogs": [
+//         "Bearded Collie",
+//         "Border Collie",
+//         "Old English Sheepdog",
+//         "Australian Shepherd"
+//       ],
+//       "Shepherd dogs_ALL": [
+//         "Beauceron",
+//         "Belgian Sheepdog",
+//         "German Shepherd Dog",
+//         "Icelandic Sheepdog",
+//         "Bearded Collie",
+//         "Border Collie",
+//         "Old English Sheepdog",
+//         "Australian Shepherd",
+//         "Belgian Malinois",
+//         "Bouvier des Flandres",
+//         "Briard",
+//         "Collie"
+//       ],
+//       "Shepherds_01": [
+//         "Beauceron",
+//         "Belgian Sheepdog",
+//         "German Shepherd Dog",
+//         "Icelandic Sheepdog"
+//       ],
+//       "Shepherds_02": [
+//         "Bearded Collie",
+//         "Border Collie",
+//         "Old English Sheepdog",
+//         "Australian Shepherd"
+//       ],
+//       "Shepherds_03": [
+//         "Belgian Malinois",
+//         "Bouvier des Flandres",
+//         "Briard",
+//         "Collie"
+//       ],
+//       "Sighthound VS Scenthounds": [
+//         "Italian Greyhound",
+//         "Beagle",
+//         "Bloodhound",
+//         "American Foxhound"
+//       ],
+//       "Sighthounds": [
+//         "Italian Greyhound",
+//         "Ibizan Hound",
+//         "Pharaoh Hound",
+//         "Greyhound"
+//       ],
+//       "Spaniel VS Others": [
+//         "Boxer",
+//         "Boykin Spaniel",
+//         "Silky Terrier",
+//         "Bull Terrier"
+//       ],
+//       "Spaniels": [
+//         "Field Spaniel",
+//         "Boykin Spaniel",
+//         "American Water Spaniel"
+//       ],
+//       "Terriers": [
+//         "Boston Terrier",
+//         "American Staffordshire Terrier",
+//         "Staffordshire Bull Terrier",
+//         "Bull Terrier"
+//       ],
+//       "Terriers_2": [
+//         "Silky Terrier",
+//         "Irish Terrier",
+//         "Yorkshire Terrier",
+//         "Cairn Terrier"
+//       ]
+//     },
+//     "French Bread": {
+//       "Baguette": [
+//         "Baguette classique",
+//         "Ficelle",
+//         "Flute",
+//         "Fournee",
+//         "Viennoise"
+//       ],
+//       "Loaf": [
+//         "Brioche",
+//         "Fougasse",
+//         "Pain de campagne",
+//         "Pain d'epices",
+//         "Pogne de Romans",
+//         "Pompe a l'huile",
+//         "Fouee",
+//         "Gibassier",
+//         "Pain au son",
+//         "Boule au pain",
+//         "Pain au chocolat",
+//         "Croissant"
+//       ],
+//       "Loaf_01": [
+//         "Brioche",
+//         "Fougasse",
+//         "Pain de campagne",
+//         "Pain d'epices"
+//       ],
+//       "Loaf_02": [
+//         "Pogne de Romans",
+//         "Pompe a l'huile",
+//         "Fouee",
+//         "Gibassier"
+//       ],
+//       "Loaf_03": [
+//         "Pain au son",
+//         "Boule au pain",
+//         "Pain au chocolat",
+//         "Croissant"
+//       ],
+//       "Loaf_11": [
+//         "Pompe a l'huile",
+//         "Fougasse",
+//         "Pain au chocolat",
+//         "Pain d'epices"
+//       ],
+//       "Loaf_12": [
+//         "Pain au son",
+//         "Brioche",
+//         "Fouee",
+//         "Gibassier"
+//       ],
+//       "Loaf_13": [
+//         "Pogne de Romans",
+//         "Boule au pain",
+//         "Pain de campagne",
+//         "Croissant"
+//       ]
+//     }
+
+//   },
+
+//   "spoofIncorrectTag": {
+
+//     "Baguette": [
+//       null,
+//       [
+//         "Ficelle",
+//         "Flute"
+//       ],
+//       [
+//         "Baguette classique",
+//         "Flute"
+//       ],
+//       [
+//         "Baguette classique",
+//         "Fournee"
+//       ],
+//       [
+//         "Ficelle",
+//         "Fournee"
+//       ],
+//       [
+//         "Baguette classique",
+//         "Viennoise"
+//       ],
+//       [
+//         "Ficelle",
+//         "Viennoise"
+//       ],
+//       [
+//         "Baguette classique",
+//         "Flute"
+//       ],
+//       [
+//         "Ficelle",
+//         "Fournee"
+//       ],
+//       [
+//         "Baguette classique",
+//         "Viennoise"
+//       ]
+//     ],
+
+//     "Hounds": [
+//       null,
+//       [
+//         "Beagle",
+//         "Bloodhound",
+//         "American Foxhound"
+//       ],
+//       [
+//         "Basset Hound",
+//         "Bloodhound",
+//         "American Foxhound"
+//       ],
+//       [
+//         "Basset Hound",
+//         "Beagle",
+//         "American Foxhound"
+//       ],
+//       [
+//         "Basset Hound",
+//         "Beagle",
+//         "Bloodhound"
+//       ],
+//       [
+//         ""
+//       ]
+//     ],
+//     "Hounds_01": [
+//       null,
+//       [
+//         "Bloodhound",
+//         "American Foxhound"
+//       ],
+//       [
+//         "Basset Hound",
+//         "Beagle"
+//       ],
+//       [
+//         "Beagle",
+//         "Basset Hound"
+//       ],
+//       [
+//         "American Foxhound",
+//         "Bloodhound"
+//       ],
+//       [
+//         ""
+//       ]
+//     ],
+//     "Hounds_02": [
+//       null,
+//       [
+//         "Bluetick Coonhound",
+//         "Black and Tan Coonhound"
+//       ],
+//       [
+//         "Plott Hound",
+//         "Dachshund"
+//       ],
+//       [
+//         "Dachshund",
+//         "Plott Hound"
+//       ],
+//       [
+//         "Black and Tan Coonhound",
+//         "Bluetick Coonhound"
+//       ],
+//       [
+//         ""
+//       ]
+//     ],
+//     "Hounds_03": [
+//       null,
+//       [
+//         "Otterhound",
+//         "Basenji"
+//       ],
+//       [
+//         "Irish Wolfhound",
+//         "Afghan Hound"
+//       ],
+//       [
+//         "Afghan Hound",
+//         "Irish Wolfhound"
+//       ],
+//       [
+//         "Basenji",
+//         "Otterhound"
+//       ],
+//       [
+//         ""
+//       ]
+//     ],
+
+//     "Shepherd dogs": [
+//       null,
+//       [
+//         "Bearded Collie",
+//         "Border Collie",
+//         "Old English Sheepdog"
+//       ],
+//       [
+//         "Australian Shepherd",
+//         "Border Collie",
+//         "Old English Sheepdog"
+//       ],
+//       [
+//         "Australian Shepherd",
+//         "Bearded Collie",
+//         "Old English Sheepdog"
+//       ],
+//       [
+//         "Australian Shepherd",
+//         "Bearded Collie",
+//         "Border Collie"
+//       ],
+//       [
+//         ""
+//       ]
+//     ],
+//     "Shepherds_01": [
+//       null,
+//       [
+//         "Belgian Sheepdog",
+//         "German Shepherd Dog"
+//       ],
+//       [
+//         "Beauceron",
+//         "Icelandic Sheepdog"
+//       ],
+//       [
+//         "Icelandic Sheepdog",
+//         "Beauceron"
+//       ],
+//       [
+//         "German Shepherd Dog",
+//         "Belgian Sheepdog"
+//       ],
+//       [
+//         ""
+//       ]
+//     ],
+//     "Shepherds_02": [
+//       null,
+//       [
+//         "Border Collie",
+//         "Old English Sheepdog"
+//       ],
+//       [
+//         "Australian Shepherd",
+//         "Bearded Collie"
+//       ],
+//       [
+//         "Bearded Collie",
+//         "Australian Shepherd"
+//       ],
+//       [
+//         "Old English Sheepdog",
+//         "Border Collie"
+//       ],
+//       [
+//         ""
+//       ]
+//     ],
+//     "Shepherds_03": [
+//       null,
+//       [
+//         "Bouvier des Flandres",
+//         "Briard"
+//       ],
+//       [
+//         "Collie",
+//         "Belgian Malinois"
+//       ],
+//       [
+//         "Belgian Malinois",
+//         "Collie"
+//       ],
+//       [
+//         "Briard",
+//         "Bouvier des Flandres"
+//       ],
+//       [
+//         ""
+//       ]
+//     ]
+
+//   },
+//   "spoofInstructions": {
+//     "Africa_country_of_location": [
+//       null,
+//       "First, let's identify Morocco.",
+//       "Then Tunisia.",
+//       "Now Algeria",
+//       "Now Libya",
+//       "Finally: Algeria",
+//       "Game complete!"
+//     ],
+//     "Africa_id": [
+//       null,
+//       "First, let's identify Morocco.",
+//       "Then Tunisia.",
+//       "Now Algeria",
+//       "Now Libya",
+//       "Finally: Algeria",
+//       "Game complete!"
+//     ],
+//     "Animal gait from tracks": [
+//       null,
+//       "First, let's identify waddlers.",
+//       "Then leapers and hoppers.",
+//       "Now for zig zaggers.",
+//       "That was the easier stage. Are you ready for the next level?"
+//     ],
+//     "Baguette": [
+//       null,
+//       "Find the Baguette classique.",
+//       "Locate the Ficelle.",
+//       "Identify the Flute.",
+//       "Can you find the Fournee?",
+//       "Can you find the Viennoise?",
+//       "Now, locate the Baguette classique.",
+//       "Try to find the Ficelle.",
+//       "Great! Now, identify the Viennoise.",
+//       "Game complete!"
+//     ],
+//     "Cheeses": [
+//       null,
+//       "First, let's find the Rochebaron.",
+//       "We now look at the Bleu d'Auvergne.",
+//       "Can you tell which is the Roquefort?",
+//       "Test your knowledge: find the Bleu d'Auvergne."
+//     ],
+//     "Choose the right knot": [
+//       null,
+//       "Ribbon for a present.",
+//       "A head bandage out of a cloth.",
+//       "Tying flintwood together.",
+//       "Anchoring around a tree trunk.",
+//       "Between fishing line and fishing hook.",
+//       "Game complete!"
+//     ],
+//     "Dog hunting situations": [
+//       null,
+//       "Environment 1.",
+//       "Environment 2.",
+//       ""
+//     ],
+//     "DogTest": [
+//       null,
+//       "Level 1: Find all the Australian Shepherds.",
+//       "We now look at the American Water Spaniel.",
+//       "Where is the Border Collie?",
+//       "Congratulations! You completed all the levels."
+//     ],
+//     "Dogs": [
+//       null,
+//       "Level 1: Find all the Boxers.",
+//       "Level 2: Find the Bullmastiffs",
+//       "Level 3: Where is the English Mastiff?",
+//       "Nice work, ready for the next level?"
+//     ],
+//     "Footprints of species": [
+//       null,
+//       "First, let's look for bear tracks.",
+//       "Can you identify the lion tracks?",
+//       "Now for finding the Dog tracks.",
+//       "Are you ready for the next level?"
+//     ],
+//     "Historical eras": [
+//       null,
+//       "Order inventions from most ancient to most recent.",
+//       "Game complete!"
+//     ],
+//     "Hounds": [
+//       null,
+//       "First, let's find the Basset Hounds.",
+//       "We now look at the Beagles.",
+//       "Can you tell which is the Bloodhound?",
+//       "Test your knowledge: find the American Foxhound.",
+//       "Done with the Hounds."
+//     ],
+//     "Hounds_01": [
+//       null,
+//       "Find the Beagle.",
+//       "Locate the Bloodhound.",
+//       "Identify the American Foxhound.",
+//       "Can you find the Basset Hound?",
+//       "Game complete!"
+//     ],
+//     "Hounds_02": [
+//       null,
+//       "Find the Dachshund.",
+//       "Locate the Bluetick Coonhound.",
+//       "Identify the Black and Tan Coonhound.",
+//       "Can you find the Plott Hound?",
+//       "Game complete!"
+//     ],
+//     "Hounds_03": [
+//       null,
+//       "Find the Afghan Hound.",
+//       "Locate the Otterhound.",
+//       "Identify the Basenji.",
+//       "Can you find the Irish Wolfhound?",
+//       "Game complete!"
+//     ],
+//     "Life expectancy": [
+//       null,
+//       "Order by life expectancy.",
+//       "Order by life expectancy (2).",
+//       "Order by life expectancy (3)",
+//       "Congratulations! You completed all the levels."
+//     ],
+//     "Light twin engine": [
+//       null,
+//       "Find the AS355.",
+//       "Locate the H135.",
+//       "Identify the H145.",
+//       "Can you find the AS355?",
+//       "Can you find the H135?",
+//       "Game complete!"
+//     ],
+//     "Loaf": [
+//       null,
+//       "Find the Brioche.",
+//       "Locate the Fougasse.",
+//       "Identify the Pain de campagne.",
+//       "Can you find the Pain d'epices?",
+//       "Can you find the Pogne de Romans?",
+//       "Can you find the Pompe a l'huile?",
+//       "Game complete!"
+//     ],
+//     "One rope": [
+//       null,
+//       "Level 1: Find the Overhand Knot.",
+//       "Level 2: Locate the Slip Knot.",
+//       "Level 3: Identify the Figure-8 Loop.",
+//       "Level 4: Can you find the Figure-8 Knot?",
+//       "Game complete!"
+//     ],
+//     "One rope applications": [
+//       null,
+//       "Find the Overhand Knot.",
+//       "Locate the Slip Knot.",
+//       "Identify the Figure-8 Loop.",
+//       "Can you find the Figure-8 Knot?",
+//       "Can you find the Bowline Knot?",
+//       "Game complete!"
+//     ],
+//     "Shepherd Dog VS Others": [
+//       null,
+//       "The sheep have broken through the fence and they are dispersing.",
+//       ""
+//     ],
+//     "Shepherd dogs": [
+//       null,
+//       "Level 1: Find all the Australian Shepherds.",
+//       "Level 2: Find the Bearded Collies.",
+//       "Level 3: Where is the Border Collie?",
+//       "Nice work! Can you locate the Old English Sheepdog?",
+//       "Congratulations! You completed all the levels."
+//     ],
+//     "Shepherds_01": [
+//       null,
+//       "Find the Beauceron.",
+//       "Locate the Belgian Sheepdog.",
+//       "Identify the German Shepherd Dog.",
+//       "Can you find the Icelandic Sheepdog?",
+//       "Game complete!"
+//     ],
+//     "Shepherds_02": [
+//       null,
+//       "Find the Bearded Collie.",
+//       "Locate the Border Collie.",
+//       "Identify the Old English Sheepdog.",
+//       "Can you find the Australian Shepherd?",
+//       "Game complete!"
+//     ],
+//     "Shepherds_03": [
+//       null,
+//       "Find the Belgian Malinois.",
+//       "Locate the Bouvier des Flandres.",
+//       "Identify the Briard.",
+//       "Can you find the Collie?",
+//       "Game complete!"
+//     ],
+//     "Sighthound VS Scenthounds": [
+//       null,
+//       "Wide open fields. A deer in the distance.",
+//       ""
+//     ],
+//     "Sighthounds": [
+//       null,
+//       "Level 1: Find all the Greyhounds.",
+//       "Level 2: Find the Italian Greyhounds.",
+//       "Level 3: Where is the Ibizan Hound?",
+//       "Nice work! Can you locate the Pharaoh Hound?",
+//       "Congratulations! You completed all the levels."
+//     ],
+//     "Spaniel VS Others": [
+//       null,
+//       "Moles are damaging the vineyard.",
+//       ""
+//     ],
+//     "Spaniels": [
+//       null,
+//       "First, let's find the Boykin Spaniel.",
+//       "We now look at the American Water Spaniel.",
+//       "Can you tell which is the Field Spaniel?",
+//       "Test your knowledge: find the American water spaniel."
+//     ],
+//     "Terriers": [
+//       null,
+//       "First, let's find the Bull Terriers.",
+//       "We now look at the Boston Terriers.",
+//       "Can you tell which is the American Staffordshire Terrier?",
+//       "Test your knowledge: find the Staffordshire Bull Terrier.",
+//       "Nice work! Ready for the next level?"
+//     ],
+//     "Terriers_2": [
+//       null,
+//       "Level 1: Find all the Cairn Terriers.",
+//       "Level 2: Find the Silky Terriers.",
+//       "Level 3: Where is the Irish Terrier?",
+//       "Nice work! Can you locate the Yorkshire Terrier?",
+//       "Congratulations! You completed all the levels."
+//     ]
+//   },
+//   "spoofMacroGameSets": {
+
+//     "Cheeses": {
+//       "Cow": [
+//         null,
+//         [
+//           "Hounds_03",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_02",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_01",
+//           "Home",
+//           "Dogs",
+//           1
+//         ]
+//       ],
+//       "Goat": [
+//         null,
+//         [
+//           "Hounds_03",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_02",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_01",
+//           "Home",
+//           "Dogs",
+//           1
+//         ]
+//       ]
+//     },
+//     "Dogs": {
+//       "Hounds": [
+//         null,
+//         [
+//           "Hounds_03",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_02",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_01",
+//           "Home",
+//           "Dogs",
+//           1
+//         ]
+//       ],
+//       "Shepherd dogs": [
+//         null,
+//         [
+//           "Shepherds_02",
+//           "Home",
+//           "Dogs",
+//           4
+//         ],
+//         [
+//           "Shepherds_02",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Shepherds_01",
+//           "Home",
+//           "Dogs",
+//           2
+//         ]
+//       ]
+//     },
+//     "Footprints": {
+//       "Straddlers": [
+//         null,
+//         [
+//           "Hounds_03",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_02",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_01",
+//           "Home",
+//           "Dogs",
+//           1
+//         ]
+//       ],
+//       "Waddlers": [
+//         null,
+//         [
+//           "Hounds_03",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_02",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_01",
+//           "Home",
+//           "Dogs",
+//           1
+//         ]
+//       ]
+//     },
+//     "French Bread": {
+//       "Baguette": [
+//         null,
+//         [
+//           "Shepherd dogs",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Shepherds_02",
+//           "Home",
+//           "Dogs",
+//           4
+//         ],
+//         [
+//           "Shepherds_01",
+//           "Home",
+//           "Dogs",
+//           2
+//         ],
+//         [
+//           "Shepherd dogs",
+//           "Score",
+//           "Dogs",
+//           1
+//         ]
+//       ],
+//       "Loaf": [
+//         null,
+//         [
+//           "Loaf_01",
+//           "Home",
+//           "French Bread",
+//           1
+//         ],
+//         [
+//           "Loaf_02",
+//           "Home",
+//           "French Bread",
+//           1
+//         ],
+//         [
+//           "Loaf_03",
+//           "Home",
+//           "French Bread",
+//           1
+//         ]
+//       ]
+//     },
+//     "Vegetables": {
+//       "Legumes": [
+//         null,
+//         [
+//           "Hounds_03",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_02",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_01",
+//           "Home",
+//           "Dogs",
+//           1
+//         ]
+//       ],
+//       "Roots": [
+//         null,
+//         [
+//           "Hounds_03",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_02",
+//           "Home",
+//           "Dogs",
+//           1
+//         ],
+//         [
+//           "Hounds_01",
+//           "Home",
+//           "Dogs",
+//           1
+//         ]
+//       ]
+//     }
+//   },
+  
 const spoofGameSets = {
     // "Dogs":         ["Sighthounds", "Shepherd dogs", "Terriers_2", "Hounds", "Dogs", "Spaniels", "Terriers" ],
     "Dogs":         ["Hounds", "Shepherd dogs", "Spaniels", "Terriers", "Mastiffs" ],
@@ -134,7 +1168,6 @@ const spoofGameFolders = {
         "Hounds":           ['Beagle',              'Bloodhound',       'American Foxhound',    'Basset Hound'],
 
         "Hounds_ALL":       ['Beagle',              'Bloodhound',           'American Foxhound',        'Basset Hound',
-                             
                              'Afghan Hound',     'Otterhound',           'Basenji',                  'Irish Wolfhound',
                              'Dachshund',        'Bluetick Coonhound',   'Black and Tan Coonhound',  'Plott Hound',],
 

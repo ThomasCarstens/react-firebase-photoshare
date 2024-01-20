@@ -1,8 +1,8 @@
 {
   "version": "2.0.0",
   "expo": {
-    "name": "Cultivate",
-    "slug": "FirebaseAuth",
+    "name": "Cognitive Gen",
+    "slug": "firebaseauth",
     "version": "2.0.0",
     "orientation": "portrait",
     "icon": "logo.png",
@@ -17,23 +17,29 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "io.cognitivegen.cultivate"
+      "bundleIdentifier": "io.cognitivegen.cognitivegen",
+      "buildNumber": "27",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Photos to create memory keycards from stored photos",
+        "NSMicrophoneUsageDescription": "Voice to answer game question without typing"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "io.cognitivegen.cultivate",
-      "versionCode": 3
+      "package": "io.cognitivegen.cognitivegen",
+      "versionCode": 4
     },
     "web": {
       "favicon": "logo.png"
     },
     "extra": {
       "eas": {
-        "projectId": "f8b34b3a-8ef3-420d-a034-b66a9b141e23"
+        "projectId": "83c32aa5-fc8a-41d3-9d91-63203731beda"
       }
-    }
+    },
+    "owner": "txarst"
   }
 }

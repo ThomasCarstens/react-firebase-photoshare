@@ -1,0 +1,253 @@
+{
+  "gameFile": {
+    "spoofCorrectTag": {
+      
+      "Hounds_01": [
+        null,
+        "Beagle",
+        "Bloodhound",
+        "American Foxhound",
+        "Basset Hound",
+        ""
+      ],
+      "Hounds_02": [
+        null,
+        "Dachshund",
+        "Bluetick Coonhound",
+        "Black and Tan Coonhound",
+        "Plott Hound",
+        ""
+      ],
+      "Hounds_03": [
+        null,
+        "Afghan Hound",
+        "Otterhound",
+        "Basenji",
+        "Irish Wolfhound",
+        ""
+      ]
+    },
+    "spoofGameFolders": {
+      
+      "Dogs": {
+        "Dogs_ALL": [
+          "Beauceron",
+          "Belgian Sheepdog",
+          "German Shepherd Dog",
+          "Icelandic Sheepdog",
+          "Bearded Collie",
+          "Border Collie",
+          "Old English Sheepdog",
+          "Australian Shepherd",
+          "Belgian Malinois",
+          "Bouvier des Flandres",
+          "Briard",
+          "Collie",
+          "Beagle",
+          "Bloodhound",
+          "American Foxhound",
+          "Basset Hound",
+          "Dachshund",
+          "Bluetick Coonhound",
+          "Black and Tan Coonhound",
+          "Plott Hound",
+          "Afghan Hound",
+          "Otterhound",
+          "Basenji",
+          "Irish Wolfhound"
+        ],
+        "Hounds": [
+          "Beagle",
+          "Bloodhound",
+          "American Foxhound",
+          "Basset Hound"
+        ],
+        "Hounds_01": [
+          "Beagle",
+          "Bloodhound",
+          "American Foxhound",
+          "Basset Hound"
+        ],
+        "Hounds_02": [
+          "Dachshund",
+          "Bluetick Coonhound",
+          "Black and Tan Coonhound",
+          "Plott Hound"
+        ],
+        "Hounds_03": [
+          "Afghan Hound",
+          "Otterhound",
+          "Basenji",
+          "Irish Wolfhound"
+        ],
+
+        "Hounds_ALL": [
+          "Beagle",
+          "Bloodhound",
+          "American Foxhound",
+          "Basset Hound",
+          "Dachshund",
+          "Bluetick Coonhound",
+          "Black and Tan Coonhound",
+          "Plott Hound",
+          "Afghan Hound",
+          "Otterhound",
+          "Basenji",
+          "Irish Wolfhound"
+        ]
+      },
+    },
+    "spoofIncorrectTag": {
+     
+      "Hounds_01": [
+        null,
+        [
+          "Bloodhound",
+          "American Foxhound",
+          "Basset Hound"
+        ],
+        [
+          "Basset Hound",
+          "Beagle",
+          "American Foxhound"
+        ],
+        [
+          "Beagle",
+          "Bloodhound",
+          "Basset Hound"
+        ],
+        [
+          "American Foxhound",
+          "Beagle",
+          "Bloodhound"
+        ],
+        [
+          ""
+        ]
+      ],
+      "Hounds_02": [
+        null,
+        [
+          "Bluetick Coonhound",
+          "Plott Hound",
+          "Black and Tan Coonhound"
+        ],
+        [
+          "Plott Hound",
+          "Black and Tan Coonhound",
+          "Dachshund"
+        ],
+        [
+          "Dachshund",
+          "Bluetick Coonhound",
+          "Plott Hound"
+        ],
+        [
+          "Black and Tan Coonhound",
+          "Dachshund",
+          "Bluetick Coonhound"
+        ],
+        [
+          ""
+        ]
+      ],
+      "Hounds_03": [
+        null,
+        [
+          "Otterhound",
+          "Irish Wolfhound",
+          "Basenji"
+        ],
+        [
+          "Irish Wolfhound",
+          "Basenji",
+          "Afghan Hound"
+        ],
+        [
+          "Afghan Hound",
+          "Otterhound",
+          "Irish Wolfhound"
+        ],
+        [
+          "Basenji",
+          "Afghan Hound",
+          "Otterhound"
+        ],
+        [
+          ""
+        ]
+      ]
+    },
+    "spoofInstructions": {
+      "Hounds": [
+        null,
+        "First, let's find the Basset Hounds.",
+        "We now look at the Beagles.",
+        "Can you tell which is the Bloodhound?",
+        "Test your knowledge: find the American Foxhound.",
+        "Done with the Hounds."
+      ],
+      "Hounds_01": [
+        null,
+        "Find the Beagle.",
+        "Locate the Bloodhound.",
+        "Identify the American Foxhound.",
+        "Can you find the Basset Hound?",
+        "Game complete!"
+      ],
+      "Hounds_02": [
+        null,
+        "Find the Dachshund.",
+        "Locate the Bluetick Coonhound.",
+        "Identify the Black and Tan Coonhound.",
+        "Can you find the Plott Hound?",
+        "Game complete!"
+      ],
+      "Hounds_03": [
+        null,
+        "Find the Afghan Hound.",
+        "Locate the Otterhound.",
+        "Identify the Basenji.",
+        "Can you find the Irish Wolfhound?",
+        "Game complete!"
+      ]
+    },
+    "spoofMacroGameSets": {
+     
+      "Dogs": {
+        "Hounds": [
+          null,
+          [
+            "Hounds_03",
+            "Home",
+            "Dogs",
+            1
+          ],
+          [
+            "Hounds_02",
+            "Home",
+            "Dogs",
+            1
+          ],
+          [
+            "Hounds_01",
+            "Home",
+            "Dogs",
+            1
+          ]
+        ]
+        
+      }
+    },
+    "spoofReleaseStatus": {
+      "Dogs": {
+        "released": 1,
+        "visible": 1
+      }
+      
+    }
+    
+  }
+  }
+}
+  

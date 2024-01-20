@@ -355,7 +355,7 @@ const SelectionScreen = ({ navigation }) => {
       
       <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
       <Text  style={{color: '#b6dbd8', fontSize:20}} marginTop={135} marginLeft={(webView)?200:20} >
-        {'Cultivate'} 
+        {'Cognitive Gen'} 
       </Text>
 
       <Text  style={{color: '#b6dbd8'}} marginTop={45} marginLeft={(webView)?200:20} onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfUEBELjhxyWh9OnZihgpEBbdzfSr1nO1hb5atfWFZfEsZgzg/viewform?usp=sf_link')}>

@@ -48,9 +48,11 @@ const HomeScreen = (props) => {
   const [gameFile, setGameFile] = useState()
   const [gameDownloaded, setGameDownloaded] = useState()
   const [tagDictionary, setTagDictionary] = useState()
-
-  const selectedGame = props.route.params.name  
+  const [selectedGame, setSelectedGame] = useState(props.route.params.name)
+  // const selectedGame =  
+  console.log('selected Game is', selectedGame)
   const selectedFolder = props.route.params?.folder
+  console.log('selected Folder is', selectedFolder)
   useEffect(()=>{   
 
 
@@ -83,15 +85,16 @@ const HomeScreen = (props) => {
           // Get allTags from passed parameter.
           
           // setGalleryTags(savedMacroTags)
-          console.log("Doing Shuffle.")
+          console.log("--> Images already Downloaded. Starting the Shuffle.")
+          console.log(savedMacroTags)
           doShuffleAndLay(savedMacroTags)
           setTagDictionary(savedMacroTags)
           setGalleryTags(savedMacroTags)
 
         } else {
           //GetImagesRecursively from Firebase Realtime Database.
-          macroTags = spoofGameFolders[selectedFolder][macroName+'_ALL'] //4 tags
-          console.log('gathering images for: ', macroName)
+          macroTags = spoofGameFolders[selectedFolder][macroName+'_ALL'] // All macro tags
+          console.log('--> Downloading images for: ', macroName+'_ALL')
           getImagesRecursively(macroTags) //gameDownloaded set at end
         }
 
@@ -196,9 +199,9 @@ const HomeScreen = (props) => {
   
   const [successRate, setSuccessRate] = useState(1)
   const [modalVisible, setModalVisible] = useState(true)
-  
+  // setSelectedGame(spoofMacroGameSets[selectedFolder][macroName][gameSetLevel][0])
   var gameName = spoofMacroGameSets[selectedFolder][macroName][gameSetLevel][0]//spoofGameSets[selectedGame][gameSetLevel]
-  console.log(macroName, "is the game noww.")
+  console.log(macroName, "is the game noww. Selected Game is", selectedGame, "and gameName is", gameName)
   // const [gameName, setGameName ] = useState(spoofIncorrectTag[gameName][learningLevel]) // this is an issue upon first load.
   const [incorrectTag, setIncorrectTag ] = useState(spoofIncorrectTag[selectedGame][learningLevel]) // this is an issue upon first load.
   const [instructionText, setInstructionText] = useState(spoofInstructions[selectedGame][learningLevel])
@@ -255,6 +258,7 @@ const HomeScreen = (props) => {
     setIncorrectTag(spoofIncorrectTag[selectedGame][learningLevel]) //Triggers DB Download + myTags (Hook)
     setShowHint(false)
     setGallery(old => [])
+    console.log('tagDictionary: \n', tagDictionary)
     doShuffleAndLay(tagDictionary)
     // if (gameDownloaded) {
     //   doShuffleAndLay()
@@ -279,6 +283,7 @@ const HomeScreen = (props) => {
     // Empty the gallery in preparation for Download
     const myTags = spoofGameFolders[selectedFolder][selectedGame]
     allTags = spoofGameFolders[selectedFolder][selectedGame] //4 tags
+    console.log("allTags is ", allTags)
     // allTags = spoofGameFolders[selectedFolder][selectedGame] //all macro tags
     setTagList(myTags)
     // next_ref = ref(storage, selectedFolder + '/'+correctTag+'/');
@@ -329,7 +334,7 @@ const HomeScreen = (props) => {
   const getImagesRecursively = (allTags) => {
       // console.log("CURRENT TAGS:", allTags)
       nextTag = allTags[0]
-      // console.log('Calling tag: ', nextTag)
+      console.log('--> Calling tag: ', nextTag, 'inside selectedFolder:', selectedFolder)
       next_ref = ref(storage, selectedFolder + '/'+nextTag+'/');
       let shiftedAllTags= allTags.filter((tag => tag!==nextTag))
       
@@ -338,7 +343,7 @@ const HomeScreen = (props) => {
           // sleep(100).then(() => { getImagesRecursively(shiftedAllTags); });
           getImagesRecursively(shiftedAllTags);
         } else {
-          console.log(galleryTags)
+          console.log("################### Final updated Gallery:", galleryTags)
           // setGameDownloaded(true) // This is now a hook
           // getImagesFromRef(next_ref, nextTag, 4).then(()=>{
           //   doShuffleAndLay(galleryTags)
@@ -1230,7 +1235,7 @@ const HomeScreen = (props) => {
                       macroName: macroName,
                       hint: hint, 
                       gameIsThreaded: 1,
-                      gameDownloaded: 1,
+                      gameDownloaded: 0,
                       galleryTags: tagDictionary,
                       application: applicationImages,
                       level: gameSetLevel, //gameName?

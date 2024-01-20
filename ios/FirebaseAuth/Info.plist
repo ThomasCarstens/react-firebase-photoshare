@@ -17,7 +17,7 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>2.0.0</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -25,12 +25,12 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>io.cognitivegen.cultivate</string>
+          <string>io.cognitivegen.cognitivegen</string>
         </array>
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>1</string>
+    <string>27</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
@@ -72,5 +72,9 @@
     <string>Light</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Photos to create memory keycards from stored photos</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Voice to answer game question without typing</string>
   </dict>
 </plist>
