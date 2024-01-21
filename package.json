@@ -11,6 +11,7 @@
     "@bam.tech/react-native-make": "^3.0.3",
     "@expo/webpack-config": "^18.0.1",
     "@react-native-async-storage/async-storage": "1.17.11",
+    "@react-native-community/netinfo": "9.3.7",
     "@react-native-firebase/app": "^17.5.0",
     "@react-native-firebase/auth": "^17.5.0",
     "@react-navigation/native": "^6.1.6",
@@ -27,10 +28,12 @@
     "firebase": "9",
     "patch-package": "^8.0.0",
     "react": "18.2.0",
-    "react-native": "0.71.8",
+    "react-native": "0.71.14",
     "react-native-document-picker": "^9.0.1",
     "react-native-elements": "^3.4.3",
+    "react-native-fast-image": "^8.6.3",
     "react-native-fast-toast": "^3.0.1",
+    "react-native-image-modal": "^2.0.4",
     "react-native-image-picker": "^5.3.1",
     "react-native-image-slider": "^2.0.3",
     "react-native-image-slider-box": "^2.0.7",
@@ -45,8 +48,7 @@
     "react-native-toast-notifications": "^3.3.1",
     "react-native-web": "~0.18.10",
     "uid": "^2.0.2",
-    "vercel": "^29.4.0",
-    "@react-native-community/netinfo": "9.3.7"
+    "vercel": "^29.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

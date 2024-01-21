@@ -16,6 +16,10 @@ import { SafeAreaView } from 'react-native-web';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Audio } from "expo-av"
 import { useNetInfo } from '@react-native-community/netinfo';
+// import Image from 'react-native-fast-image';
+// import {ImageCacheProvider} from 'react-native-cached-image'; //<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+// import Image from 'react-native-fast-image';
+
 // import Toast, { useToast } from 'react-native-toast-notifications';
 // import { Platform } from 'react-native/types';
 // import Toast from 'react-native-fast-toast/lib/typescript/toast';
@@ -94,8 +98,12 @@ const HomeScreen = (props) => {
         } else {
           //GetImagesRecursively from Firebase Realtime Database.
           macroTags = spoofGameFolders[selectedFolder][macroName+'_ALL'] // All macro tags
+          console.log(selectedFolder + ' / ', macroName+'_ALL')
           console.log('--> Downloading images for: ', macroName+'_ALL')
-          getImagesRecursively(macroTags) //gameDownloaded set at end
+          persistantMacroTagList = []
+          persistantMacroTagList.push(...macroTags)
+          
+          getImagesRecursively(macroTags, persistantMacroTagList) //since macroTags: gameDownloaded set at end
         }
 
         // if (gameDownloaded){ //galleryVal.length>8 && 
@@ -331,17 +339,20 @@ const HomeScreen = (props) => {
       await sound.playAsync().then(()=>console.log('sound has been played.'))
     })
   }
-  const getImagesRecursively = (allTags) => {
+  const getImagesRecursively = (localMacroTagList, persistantMacroTagList) => {
+
+      console.log('#getImagesRecursively function ---- tagPersistance', persistantMacroTagList)
       // console.log("CURRENT TAGS:", allTags)
-      nextTag = allTags[0]
+      nextTag = localMacroTagList[0]
+      
       console.log('--> Calling tag: ', nextTag, 'inside selectedFolder:', selectedFolder)
       next_ref = ref(storage, selectedFolder + '/'+nextTag+'/');
-      let shiftedAllTags= allTags.filter((tag => tag!==nextTag))
+      let shiftedLocalTags= localMacroTagList.filter((tag => tag!==nextTag))
       
-      getImagesFromRef(next_ref, nextTag, 3).then(()=>{
-        if (shiftedAllTags.length > 0) {
+      getImagesFromRef(next_ref, nextTag, 3, persistantMacroTagList).then(()=>{
+        if (shiftedLocalTags.length > 0) {
           // sleep(100).then(() => { getImagesRecursively(shiftedAllTags); });
-          getImagesRecursively(shiftedAllTags);
+          getImagesRecursively(shiftedLocalTags, persistantMacroTagList);
         } else {
           console.log("################### Final updated Gallery:", galleryTags)
           // setGameDownloaded(true) // This is now a hook
@@ -356,7 +367,8 @@ const HomeScreen = (props) => {
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  const getImagesFromRef = async(ref, tagLabel, upperLimit=5) => {
+  const getImagesFromRef = async(ref, tagLabel, upperLimit=5, persistantMacroTagList) => {
+    console.log('#getImagesFromRef function ---- tagPersistance', persistantMacroTagList)
     if (ref==undefined){
       console.log('skipping ref because storage is undefined:', ref)
       return
@@ -376,9 +388,12 @@ const HomeScreen = (props) => {
       console.log('Cutting', tagLabel, ' from ', randomDatabaseImageIndex, ' to ', randomDatabaseImageIndex+upperLimit, 'with max at', (res.items).length-1)
       res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
       
-
+                        
+                        // This works like 3 times and then error: 
                         getDownloadURL(itemRef).then((y)=> {
-                          console.log(y)
+                          // Prototype working, should only be run when uncached.
+                          var nextPrefetch = Image.prefetch(y, (id)=> console.log("fetched ", id, "url: ", y))
+                          // console.log(y)
                           // getMetadata(itemRef)
                           //   .then((metadata) => {
                               
@@ -397,7 +412,15 @@ const HomeScreen = (props) => {
                                   // }                                  
                                   console.log(tagLabel, 'length to beat: ', upperLimit, 'ie.', upperLimit*tagList.length, 'and we have ', tagDict[tagLabel].length)
 
+                                  if (Object.keys(tagDict).length==(persistantMacroTagList.length)){
+                                    // if (galleryVal.length==(upperLimit*tagList.length)){  // for local version
+                                      // Really important to get all the {gameName}_ALL before setting this variable -> Allowing user interaction.
+                                      setTagDictionary(tagDict)
+                                      
+                                      console.log("Tag Dictionary", tagDict)
+                                    }
 
+                                    
                                   if ((tagList.includes(tagLabel) && tagDict[tagLabel].length >= upperLimit)) {
                                     console.log('detected true')
                                     /* (2) Displaying urls on Page */
@@ -406,9 +429,10 @@ const HomeScreen = (props) => {
                                       // gallery urls taken from galleryTags[tag] of length upperLimit
                                       galleryVal = [...gallery, ...tagDict[tagLabel]] 
                                       console.log('val length: '+galleryVal.length)
-                                      if (galleryVal.length==(upperLimit*tagList.length)){
-                                        setTagDictionary(tagDict)
-                                      }
+                                      console.log('Building a tagDict now at '+Object.keys(tagDict).length + '/'+persistantMacroTagList.length+ ' keys.')
+                                      // console.log('ORIGINAL LIST: ', persistantMacroTagList)
+                                      // console.log("sortingGallery", gallery)
+                                      
                                       // sorting Gallery: if 12 urls reached, shuffle until only 2 correct in the visible portion.
 
                                       // if ((galleryVal.length>=(upperLimit*tagList.length))||( tagLabel == tagList[3] )){ // && gameDownloaded(upperLimit*tagList.length)
@@ -419,7 +443,8 @@ const HomeScreen = (props) => {
                                       // }
                                       
                                       
-                                      
+                                      // setTagDictionary(tagDict)
+                                      // console.log("Updated Tag Dictionary", tagDict)
                                       return galleryVal
                                     });
                                   };                                   
@@ -682,9 +707,6 @@ const HomeScreen = (props) => {
         // Learning Level Hook changes the gallery + instructions
         setLearningLevel(prev => prev+1) 
       }
-      
-      
-      
     }
     
     
@@ -938,7 +960,7 @@ const HomeScreen = (props) => {
         />
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={()=> handlePicSelection(5)}>
+        <TouchableHighlight onPress={()=> handlePicSelection(6)}>
           <Image 
             source={{uri:`${gallery[5]}`,}}
             style={styles.imageContainer}
@@ -1005,7 +1027,12 @@ const HomeScreen = (props) => {
 
           
       </View>
-      <View style={{padding: 3}}></View>
+
+
+    
+      <View style={{padding: 3}}>      
+
+    </View>
           {/* {(hint[(gameSetLevel+1).toString()])?
            <Image source={{uri: `${hint[(gameSetLevel+1).toString()]}`}} style={{height:(webView)?600:200, width:(webView)?1000:330, marginLeft:(webView)?300:15, marginBottom:-150}}></Image>
             : 
@@ -1235,7 +1262,7 @@ const HomeScreen = (props) => {
                       macroName: macroName,
                       hint: hint, 
                       gameIsThreaded: 1,
-                      gameDownloaded: 0,
+                      gameDownloaded: 1, // Ideally set to 1 to limit the number of downloads
                       galleryTags: tagDictionary,
                       application: applicationImages,
                       level: gameSetLevel, //gameName?
@@ -1243,6 +1270,7 @@ const HomeScreen = (props) => {
                     // setGameSetLevel(previous => previous+1)
                     } else {
                       toast.current.show("Loading game.");
+                      
                     }
                   }}>
                     <Text style={{fontWeight:"bold"}}> {(tagDictionary)?"\n SKIP LEVEL":"\n LOADING..."} </Text>

@@ -30,7 +30,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "io.cognitivegen.cognitivegen",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "logo.png"
