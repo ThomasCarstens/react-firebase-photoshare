@@ -61,12 +61,12 @@ const HomeScreen = (props) => {
 
 
 
-    // First if-else attributes the gameFile.
+    // First if-else downloads the gameFile (and avoids task if already done)
 
     if (props.route.params.gameFile){
       setGameFile(props.route.params.gameFile)
     } else {
-      //GameFile loaded on Firebase Realtime Database.
+      //GameFile loaded from Firebase Realtime Database.
       const gameFileRef = ref_d(database, "gameFile" );
 
       onValue(gameFileRef, (snapshot) => {
@@ -76,48 +76,37 @@ const HomeScreen = (props) => {
               setGameFile(data)
             }            
           })
-
     }
 
-      // }, [])
 
-      // useEffect(()=>{
 
-        // Second if-else attributes game tags:
+    // Second if-else downloads all images and attributes game tags (and avoids task if already done) :
 
-        if (props.route.params.gameDownloaded){ //if exists and true.
-          // Get allTags from passed parameter.
-          
-          // setGalleryTags(savedMacroTags)
-          console.log("--> Images already Downloaded. Starting the Shuffle.")
-          console.log(savedMacroTags)
-          doShuffleAndLay(savedMacroTags)
-          setTagDictionary(savedMacroTags)
-          setGalleryTags(savedMacroTags)
+    if (props.route.params.gameDownloaded){ //if exists and true.
+      // Tags already passed through the navigator
+      console.log("--> Images already Downloaded. Starting the Shuffle.")
+      // setGalleryTags(savedMacroTags)
+      // console.log(savedMacroTags)
+      doShuffleAndLay(savedMacroTags)
+      setTagDictionary(savedMacroTags)
+      setGalleryTags(savedMacroTags)
 
-        } else {
-          //GetImagesRecursively from Firebase Realtime Database.
-          macroTags = spoofGameFolders[selectedFolder][macroName+'_ALL'] // All macro tags
-          console.log(selectedFolder + ' / ', macroName+'_ALL')
-          console.log('--> Downloading images for: ', macroName+'_ALL')
-          persistantMacroTagList = []
-          persistantMacroTagList.push(...macroTags)
-          
-          getImagesRecursively(macroTags, persistantMacroTagList) //since macroTags: gameDownloaded set at end
-        }
+    } else {
+      // Set up the Tag List to retrieve images by reference from Firebase Realtime Database.
+      macroTags = spoofGameFolders[selectedFolder][macroName+'_ALL'] // All macro tags
+      console.log(selectedFolder + ' / ', macroName+'_ALL')
+      console.log('--> Downloading images for: ', macroName+'_ALL')
+      persistantMacroTagList = []
+      persistantMacroTagList.push(...macroTags)
+      getImagesRecursively(macroTags, persistantMacroTagList) //since macroTags: gameDownloaded set at end
+    }
 
-        // if (gameDownloaded){ //galleryVal.length>8 && 
-        //   doShuffleAndLay()
-        // }
     }, []) 
 
-    useEffect(()=>{
 
 
-      if (gameDownloaded){ //galleryVal.length>8 && 
-        // doShuffleAndLay()
-      }
-  }, [gameDownloaded]) 
+
+    
 
   const doShuffleAndLay = async(allGalleryTags) => {
     // setGalleryTags(allGalleryTags)
@@ -339,6 +328,11 @@ const HomeScreen = (props) => {
       await sound.playAsync().then(()=>console.log('sound has been played.'))
     })
   }
+
+
+
+
+  
   const getImagesRecursively = (localMacroTagList, persistantMacroTagList) => {
 
       console.log('#getImagesRecursively function ---- tagPersistance', persistantMacroTagList)
@@ -364,6 +358,8 @@ const HomeScreen = (props) => {
         }
       })
   }
+
+
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -420,7 +416,7 @@ const HomeScreen = (props) => {
                                       console.log("Tag Dictionary", tagDict)
                                     }
 
-                                    
+
                                   if ((tagList.includes(tagLabel) && tagDict[tagLabel].length >= upperLimit)) {
                                     console.log('detected true')
                                     /* (2) Displaying urls on Page */
@@ -1209,7 +1205,7 @@ const HomeScreen = (props) => {
               <View style={{padding: 20}}></View>
 
             <View style={styles.modalRow}>
-                  <Text style={{fontWeight:"bold", color:"white"}}> ⚠️ Wifi required to play.</Text>  
+                  {(tagDictionary)?<Text style={{fontWeight:"bold", color:"white"}}> ⚠️ Downloading images...</Text>:<Text> Game is ready.</Text> }
                 <TouchableOpacity
                   style={{...styles.gameSelection}}
                   onPress={() => {

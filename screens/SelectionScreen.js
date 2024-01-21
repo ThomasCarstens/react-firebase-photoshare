@@ -1,4 +1,4 @@
-import { Button, Image, ImageBackground, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Button, Image, ImageBackground, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useRef } from 'react'
 import {useState, useEffect} from 'react'
 import { auth, firebase } from '../firebase'
@@ -35,6 +35,10 @@ const SelectionScreen = (props) => {
     const [gameName, setGameName] = useState()
     const [gameFile, setGameFile] =   useState()
     const [gameFileLoad, setGameFileLoad] =   useState(true)
+    const [selectionScreenGalleryTags, setSelectionScreenGalleryTags] = useState({})
+    const [selectionScreenTagDictionary, setSelectionScreenTagDictionary] = useState()
+
+
     // const [spoofMacroGameSetsTitles, setspoofMacroGameSetsTitles] = useState()
     
     // Using gameFile downloaded upon Login.
@@ -54,32 +58,182 @@ const SelectionScreen = (props) => {
         console.log('Gamefile passed through navigator.')
       } else {
         //GameFile loaded on Firebase Realtime Database.
-
-        // const gameFileRef = ref_d(database, "gameFile" );
-  
-        // onValue(gameFileRef, (snapshot) => {
-        //       const data = snapshot.val();
-        //       if (data){
-        //         console.log('REDOWNLOAD: Gamefile downloaded and set to state.')
-        //         setGameFile(data)
-        //         setGameFileLoad(false)
-        //         // setspoofMacroGameSetsTitles(data.spoofMacroGameSets)
-        //       }            
-        //     })
-
-        
-        // Attempt to AsyncStorage. Parse error
-                // try {
-        //   const savedUser = AsyncStorage.getItem("user");
-        //   const currentUser = JSON.parse(savedUser);
-        //   console.log('CURRENT ASYNCSTORAGE:', currentUser);
-        //   setGameFile(currentUser)
-        // } catch (error) {
-        //   console.log(error);
-        // }
+            const gameFileRef = ref_d(database, "gameFile" );
+      
+            onValue(gameFileRef, (snapshot) => {
+                  const data = snapshot.val();
+                  if (data){
+                    console.log('Gamefile downloaded and set to state.')
+                    setGameFile(data)
+                  }            
+                })
       }
 
+
+
+
+      
+
         }, [])
+
+        const remoteFetchTasks = async() => {
+        
+
+
+          // First if-else downloads the gameFile (and avoids task if already done)
+      
+          if (props.route.params.gameFile){
+            setGameFile(props.route.params.gameFile)
+          } else {
+
+            //GameFile loaded from Firebase Realtime Database.
+            const gameFileRef = ref_d(database, "gameFile" );
+      
+            onValue(gameFileRef, (snapshot) => {
+                  const data = snapshot.val();
+                  if (data){
+                    console.log('Gamefile downloaded and set to state.')
+                    setGameFile(data)
+                  }            
+                })
+      
+          }
+      
+
+
+              // Second if-else downloads all images and attributes game tags (and avoids task if already done) :
+      
+              if (props.route.params.gameDownloaded){ //if exists and true.
+                // Tags already passed through the navigator
+                console.log("--> Images already Downloaded. Stopping Task")
+                // Home Screen things
+                // doShuffleAndLay(savedMacroTags)
+                // setTagDictionary(savedMacroTags)
+                // setGalleryTags(savedMacroTags)
+      
+              } else {
+                // Set up the Tag List to retrieve images by reference from Firebase Realtime Database.
+                const selectedFolder = props.route.params?.folder //replaced with foldername
+                console.log('selected Folder is', folderName)
+                // const macroName = props.route.params?.macroName //replaced with foldername
+
+                macroTags = spoofGameFolders[folderName][folderName+'_ALL'] // All macro tags
+                console.log(folderName + ' / ', folderName+'_ALL')
+                console.log('--> Downloading images for: ', folderName+'_ALL')
+                persistantMacroTagList = []
+                persistantMacroTagList.push(...macroTags)
+                getImagesRecursively(macroTags, persistantMacroTagList) //since macroTags: gameDownloaded set at end
+              }
+            }
+
+
+
+
+
+
+
+
+            const getImagesRecursively = (localMacroTagList, persistantMacroTagList) => {
+
+              console.log('#getImagesRecursively function ---- tagPersistance', persistantMacroTagList)
+
+              nextTag = localMacroTagList[0]
+              
+              console.log('--> Calling tag: ', nextTag, 'inside selectedFolder:', folderName)
+              next_ref = ref(storage, folderName + '/'+nextTag+'/');
+              let shiftedLocalTags= localMacroTagList.filter((tag => tag!==nextTag))
+              
+              getImagesFromRef(next_ref, nextTag, 3, persistantMacroTagList).then(()=>{
+                if (shiftedLocalTags.length > 0) {
+
+                  getImagesRecursively(shiftedLocalTags, persistantMacroTagList);
+
+                } else {
+                  console.log("########getImagesRecursively Final updated Gallery:", selectionScreenGalleryTags)
+                }
+              })
+          }
+
+
+          const getImagesFromRef = async(ref, tagLabel, upperLimit=5, persistantMacroTagList) => {
+            console.log('#getImagesFromRef function ---- tagPersistance', persistantMacroTagList)
+            if (ref==undefined){
+              console.log('skipping ref because storage is undefined:', ref)
+              return
+            }
+        
+            await list(ref)
+            .then((res) => { 
+              // Start index of download can choose in a safe range "window"
+              let window = (((res.items).length) > upperLimit)? ((res.items).length-upperLimit-2) : 0; 
+              // Start index chosen as random int in range (0, safe length)
+              const randomDatabaseImageIndex = Math.floor(Math.random() * (window));
+              // Download list length constrained to upperLimit or smaller if less at location
+              upperLimit = (window==0)?((res.items).length):upperLimit;
+
+              // Start download
+              let galleryVal = []
+              console.log('Cutting', tagLabel, ' from ', randomDatabaseImageIndex, ' to ', randomDatabaseImageIndex+upperLimit, 'with max at', (res.items).length-1)
+              res.items.slice(randomDatabaseImageIndex, randomDatabaseImageIndex+upperLimit).forEach((itemRef) => {
+              
+                                
+                                getDownloadURL(itemRef).then((y)=> {
+
+                                  var nextPrefetch = Image.prefetch(y, (id)=> console.log("fetched ", id, "url: ", y))
+
+                                      
+                                      /* (1) Ordering urls by Tag */
+                                      setSelectionScreenGalleryTags(old => {
+                                        let tagDict = {...old}
+
+                                        // if tag is in tagDict: add url. Else: create key-value pair. metadata.customMetadata['tag']
+                                        if (Object.keys(tagDict).includes(tagLabel)){ 
+                                          tagDict[tagLabel].push(y)
+
+                                          // console.log(tagLabel, 'is or is not in', tagList, ': ', tagList.includes(tagLabel) )
+              
+                                          // console.log(tagLabel, 'length to beat: ', upperLimit, 'ie.', upperLimit*tagList.length, 'and we have ', tagDict[tagLabel].length)
+        
+                                          if (Object.keys(tagDict).length==(persistantMacroTagList.length)){
+
+                                              // Really important to get all the {gameName}_ALL before setting this variable -> Allowing user interaction.
+                                              setSelectionScreenTagDictionary(tagDict)
+                                              
+                                              console.log("Tag Dictionary", tagDict)
+                                            }
+        
+        
+                                          // if ((tagList.includes(tagLabel) && tagDict[tagLabel].length >= upperLimit)) {
+                                          //   console.log('detected true')
+
+                                            /* (2) Displaying urls on Page */
+                                            
+                                            // setSortingGallery(gallery => {
+                                            //   // gallery urls taken from galleryTags[tag] of length upperLimit
+                                            //   galleryVal = [...gallery, ...tagDict[tagLabel]] 
+                                            //   console.log('val length: '+galleryVal.length)
+                                            //   console.log('Building a tagDict now at '+Object.keys(tagDict).length + '/'+persistantMacroTagList.length+ ' keys.')
+                                            //   return galleryVal
+                                            // });
+                                          // };                                   
+                                        } else {
+                                          tagDict[tagLabel]=[y]
+                                        }
+                                        return tagDict
+                                        
+                                      });
+        
+
+        
+                                }).catch((error) => { // download error
+                                  console.log('Error in CatList.')
+                                  console.log(error)
+                                });
+                            }) 
+                            
+              }) 
+              
+          }
 
 
     const [gameType, setGameType] = useState()
@@ -479,10 +633,39 @@ const SelectionScreen = (props) => {
       // console.log('### metricList: ', metricList)
       FamiliesButtons.push(
         <View>
-        <View key={'FamiliesBlock Wifi'} style={{position: 'absolute'}}>
+
+        {(!selectionScreenTagDictionary&&!downloadRequested)?
+        <View key={'FamiliesBlock Wifi'} style={{position: 'absolute', justifyContent: 'space-between'}} flexDirection='row'>
         <Text style={{fontWeight:"bold", color:"white", marginTop:50}}> ⚠️ Wifi required to play.</Text>  
-        
+        <Pressable 
+        onPress={remoteFetchTasks}
+        >
+          <Text style={{fontWeight:"bold", color:"white", marginTop:50, marginLeft:10, backgroundColor: 'purple'}}>Download for later</Text>
+        </Pressable>
         </View >
+        : 
+        
+        (!selectionScreenTagDictionary&&downloadRequested)? 
+          <View key={'FamiliesBlock Wifi'} style={{position: 'absolute', justifyContent: 'space-between'}} flexDirection='row'>
+        <Text style={{fontWeight:"bold", color:"white", marginTop:50}}> ⬇️⬇️⬇️</Text>  
+        <Pressable 
+        >
+          <Text style={{fontWeight:"bold", color:"white", marginTop:50, marginLeft:10, backgroundColor: 'purple'}}>Downloading... Please wait.</Text>
+        </Pressable>
+        </View >
+        : 
+        <View key={'FamiliesBlock Wifi'} style={{position: 'absolute', justifyContent: 'space-between'}} flexDirection='row'>
+
+        <Text style={{fontWeight:"bold", color:"white", marginTop:50}}> 💪 </Text>  
+        <Pressable 
+        >
+          <Text style={{fontWeight:"bold", color:"white", marginTop:50, marginLeft:10, backgroundColor: 'purple'}}>Game ready.</Text>
+        </Pressable>
+        </View >
+        
+        }
+
+
         <View key={'FamiliesBlock padding'} padding={20}></View>
         </View>
       )
